@@ -1,0 +1,93 @@
+<div class="row">
+
+    <div class="col-sm-6 col-md-6">
+        <div class="panel panel-success panel-stat">
+            <div class="panel-heading">
+
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">Total Taquillas</small>
+                            <h1 id="totalTaquillas">--</h1>
+                        </div>
+                    </div><!-- row -->
+
+                    <div class="mb15"></div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">ACTIVAS</small>
+                            <h4 id="taqAct">--</h4>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <small class="stat-label">INACTIVAS</small>
+                            <h4 id="taqInac">--</h4>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+
+    <div class="col-sm-6 col-md-6">
+        <div class="panel panel-danger panel-stat">
+            <div class="panel-heading">
+
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">BANCAS</small>
+                            <h1 id="totalBancas">--</h1>
+                        </div>
+                    </div><!-- row -->
+
+                    <div class="mb15"></div>
+
+                    <small class="stat-label">Avg. Visit Duration</small>
+                    <h4>01:80:22</h4>
+
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+</div><!-- row -->
+
+<div class="panel">
+    <div class="panel-body">
+        <div class="help-block" id="taquilla-hlp"></div>
+        <div class="table-responsive">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Banca</th>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                    <th>Comision</th>
+                    <th>Clave</th>
+                    <th>Activa</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="taquillas-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-taquilla-row">
+    <tr>
+        <td>
+            <a href="#bancas/taquilla|{{:taquillaID}}"><i class="fa fa-eye"></i></a>
+            <a href="#remover" data-target="{{:taquillaID}}" class="taq-rem"><i class="fa fa-remove"></i></a>
+        </td>
+        <td class="banca-celda">{{:bancaID}}</td>
+        <td>{{:nombre}}</td>
+        <td>{{:usuario}}</td>
+        <td>{{:comision}}</td>
+        <td class="password" data-clave="{{:clave}}">***</td>
+        <td><div data-target="{{:taquillaID}}" data-activa="{{:activa}}" class="toggle toggle-success"></div></td>
+    </tr>
+</script>

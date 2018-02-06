@@ -1,0 +1,38 @@
+<div class="pageheader">
+    <h2><i class="fa fa-home"></i> Panel de Control</h2>
+</div>
+<div class="row">
+    <div class="panel">
+        <div class="panel-heading hidden-xs">
+            <div class="panel-title">SORTEOS DEL DIA</div>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-bordered mb30">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Hora</th>
+                        <th>Ganador</th>
+                        <th>Jugado</th>
+                        <th>Premio</th>
+                        <th>Balance</th>
+                    </tr>
+                    </thead>
+                    <tbody id="srt_dia"></tbody>
+                </table>
+            </div><!-- table-responsive -->
+            <label class="pull-right" >Actualizado a las <span id="str-dia-stamp"></span></label>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-sorteos-dia-row">
+    <tr>
+        <td><a href="#sorteo|{{:sorteoID}}">#{{:~padding(sorteoID,6)}}</a> </td>
+        <td>{{:descripcion}}</td>
+        <td>{{:~ganador(ganador)}}</td>
+        <td>{{:~formatNumber(monto,0)}}</td>
+        <td>{{:~formatNumber(premio,0)}}</td>
+        <td>{{:~formatNumber(monto-premio,0)}}</td>
+    </tr>
+</script>

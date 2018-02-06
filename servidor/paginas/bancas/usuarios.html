@@ -1,0 +1,75 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-users"></i> Usuarios</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="usuario-nuevo">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Usuario</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="usuario" autofocus>
+                </div>
+            </div>
+            <div class="form-group" id="psw-grupo">
+                <label class="col-sm-3 control-label">Clave</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control ctrl-danger" name="clave" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Nombre</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="nombre">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Renta</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="renta">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Activo</label>
+                <div class="col-sm-6">
+                    <select class="form-control" name="activo">
+                        <option value="1">SI</option>
+                        <option value="0">NO</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>usuario</th>
+                    <th>nombre</th>
+                    <th>% renta</th>
+                    <th>clave</th>
+                    <th>activo</th>
+                    <th>registrado</th>
+                </tr>
+            </thead>
+            <tbody id="usuarios-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/x-jsrender" id="rd-usuario-row">
+    <tr>
+        <td><a href="#bancas/usuario|{{:usuarioID}}">{{:usuario}}</a></td>
+        <td>{{:nombre}}</td>
+        <td>{{:renta*100}}</td>
+        <td class="clave" uid="{{:usuarioID}}">***</td>
+        <td><div data-target="{{:usuarioID}}" data-activo="{{:activo}}" class="toggle toggle-success btgl"></div></td>
+        <td>{{:~formatDate(registrado)}}</td>
+    </tr>
+</script>

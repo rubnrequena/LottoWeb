@@ -1,0 +1,127 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-balance-scale"></i> Midas</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="midas">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Fecha</label>
+                <div class="col-sm-6">
+                    <input class="date now form-control" onfocus="blur()" name="fecha">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button class="btn btn-darkblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6 col-md-6">
+        <div class="panel panel-success panel-stat">
+            <div class="panel-heading">
+
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">Sorteos Registrados</small>
+                            <h1 id="st" class="clr">--</h1>
+                        </div>
+                    </div><!-- row -->
+
+                    <div class="mb15"></div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Jugada</small>
+                            <h4 id="jg" class="clr">--</h4>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <small class="stat-label">Premios</small>
+                            <h4 id="pr" class="clr">--</h4>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+
+    <div class="col-sm-6 col-md-6">
+        <div class="panel panel-primary panel-stat">
+            <div class="panel-heading">
+
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">Reportes Registrados</small>
+                            <h1 id="rst" class="clr">--</h1>
+                        </div>
+                    </div><!-- row -->
+
+                    <div class="mb15"></div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Jugada</small>
+                            <h4 id="rjg" class="clr">-- </h4>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <small class="stat-label">Premios</small>
+                            <h4 id="rpr" class="clr">--</h4>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+</div>
+<div class="row">
+    <div class="col-sm-6 alert" id="jgc">
+
+    </div>
+    <div class="col-sm-6 alert" id="prc">
+
+    </div>
+</div>
+<div class="row">
+    <div class="table-responsive">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Sorteo</th>
+                    <th>Jugado</th>
+                    <th>Premio</th>
+                </tr>
+            </thead>
+            <tbody id="tb-dif"></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="table-responsive">
+        <table class="table table-condensed">
+            <thead>
+            <tr>
+                <th>Sorteo</th>
+                <th>Jugado</th>
+                <th>Premio</th>
+            </tr>
+            </thead>
+            <tbody id="tb-midas"></tbody>
+        </table>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-midas">
+    <tr>
+        <td><a class="mds-sorteo" mdssorteo="{{:es}}" href="#{{:es}}">#{{:es}} / {{if rs}} {{:rs}} {{else}} S/R {{/if}}</a></td>
+        <td>{{:~formatNumber(ej)}} / {{if rj}} {{:~formatNumber(rj)}} {{else}} 0 {{/if}}</td>
+        <td>{{:~formatNumber(ep)}} / {{if rp}} {{:~formatNumber(rp)}} {{else}} 0 {{/if}}</td>
+    </tr>
+</script>

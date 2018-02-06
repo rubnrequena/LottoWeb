@@ -1,0 +1,91 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-area-chart"></i> Reporte Sorteo</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="reporte">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Fecha</label>
+                <div class="col-sm-6">
+                    <input class="date now form-control" onfocus="blur()" id="reporte-fecha">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Sorteo</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="sorteoID" id="sorteos"></select>
+                    <span id="hb-sorteo"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize">&minus;</a>
+        </div>
+        <h3 class="panel-title">NUMEROS</h3>
+    </div>
+    <div class="panel-body">
+        <table id="tb" class="table table-hover table-condensed reporte">
+            <thead>
+            <tr>
+                <th>ELEMENTO</th>
+                <th>MONTO</th>
+                <th>PREMIO</th>
+            </tr>
+            </thead>
+            <tbody id="reporte-body"></tbody>
+        </table>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize">&minus;</a>
+        </div>
+        <h3 class="panel-title">TAQUILLAS</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover table-condensed reporte">
+            <thead>
+            <tr>
+                <th>TAQUILLA</th>
+                <th>MONTO</th>
+                <th>PREMIO</th>
+            </tr>
+            </thead>
+            <tbody id="taquillas-body"></tbody>
+        </table>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-reporte-taquilla">
+    <tr>
+        {{if taquillaID }}
+            <td>{{:taquilla}}</td>
+        {{else}}
+            <td>TOTAL</td>
+        {{/if}}
+        <td>{{:monto}}</td>
+        <td>{{:premio}}</td>
+    </tr>
+</script>
+<script type="text/x-jsrender" id="rd-reporte-elemento">
+    <tr>
+    {{if numero }}
+        <td>{{:~elm(numero)}}</td>
+        <td>{{:monto}}</td>
+        <td>{{:premio}}</td>
+    {{else}}
+        <td>TOTAL</td>
+        <td>{{:monto}}</td>
+        <td>{{:premio}}</td>
+    {{/if}}
+    </tr>
+</script>

@@ -1,0 +1,96 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-area-chart"></i> Topes</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="tope-nuevo">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Taquilla</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="taquillaID" id="taquilla">
+                        <option value="0">TODAS</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Sorteo</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="sorteo" id="sorteo"></select>
+                </div>
+            </div>
+            <div class="form-group mb5">
+                <label class="col-sm-3 control-label">Horario</label>
+                <div class="col-sm-3">
+                    <input class="date now form-control" onfocus="blur()" id="sorteo-fecha">
+                </div>
+                <div class="col-sm-3">
+                    <select class="s2 form-control" name="sorteoID" id="sorteos"></select>
+                    <div class="help-block" id="hlp-sorteos"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Numero</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="elemento" id="elemento"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Monto</label>
+                <div class="col-sm-6">
+                    <input type="number" name="monto" class="form-control" id="monto" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">General</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="compartido" id="tp-compartido">
+
+                    </select>
+                    <span class="text-danger"><i class="fa fa-warning"></i> IMPORTANTE: Al asignar el tope como compartido, el campo taquillas deber&aacute; ser para <strong>TODAS</strong>, de lo contrario el tope no funcionara como se espera.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-6">
+                    <button TYPE="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> GUARDAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th>TAQUILLA</th>
+                    <th>SORTEO</th>
+                    <th>PLENO</th>
+                    <th>GENERAL</th>
+                </tr>
+            </thead>
+            <tbody id="topes-body"></tbody>
+        </table>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-topes-row">
+    <tr id="tope{{:topeID}}">
+        {{if usuarioID>0 && ~eliminar(compartido)}}
+            <td><a class="tope-rem" title="Click para remover tope" topeID="{{:topeID}}" bancaID="{{:bancaID}}" taquillaID="{{:taquillaID}}" href="#{{:topeID}}"><i style="color:maroon;" class="fa fa-remove"></i> {{if taquilla}} {{:taquilla}} {{else}} TODOS {{/if}}</a></th>
+        {{else}}
+            <td>{{if taquilla}} {{:taquilla}} {{else}} TODOS {{/if}}</td>
+        {{/if}}
+        {{if sorteoID>0}} <td>#{{:sorteoID}} {{:descripcion}}</td>
+        {{else sorteo>0}} <td>{{:nsorteo}}</td>
+        {{else}} <td>TODOS</td> {{/if}}
+        <td>{{:~elm(elemento)}}</td>
+        <td>{{:monto}}</td>
+        {{if compartido==1}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> BANCA</td>
+        {{else compartido==2}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> USUARIO</td>
+        {{else}}
+        <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> NO</td>
+        {{/if}}
+    </tr>
+</script>
+<script type="text/x-jsrender" id="rd-topes-comp">
+    <option value="{{:val}}">{{:desc}}</option>
+</script>

@@ -1,0 +1,47 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-users"></i> Usuarios</h2>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">Registrar</div>
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal" id="reg-usuario">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Usuario</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="usuario" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Registrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                    </tr>
+                </thead>
+                <tbody id="ubody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="usuario-row">
+    <tr>
+        <td>{{:usuarioID}}</td>
+        <td>{{:usuario}}</td>
+        <td><button data-id="{{:sID}}" class="btn btn-xs usuario-rem"><i style="color:red;" class="fa fa-trash"></i></button></td>
+    </tr>
+</script>

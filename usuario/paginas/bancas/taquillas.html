@@ -1,0 +1,86 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-home"></i> Taquillas</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="taquilla-nueva">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Nombre</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="nombre" autofocus required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Usuario</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control toLower" name="usuario" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Clave</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control toLower" name="clave" autocomplete="off" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Comisi&oacute;n</label>
+                <div class="col-sm-6">
+                    <input type="number"  class="form-control" name="comision" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Activa</label>
+                <div class="col-sm-6">
+                    <select class="form-control" name="activa" id="taq_activar">
+                        <option value="1">SI</option>
+                        <option value="0">NO</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Registrar </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <i class="fa fa-shield text-success"></i> Huella registrada | <i class="fa fa-shield"></i> Huella sin registrar.
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>FP</th>
+                        <th>Nombre</th>
+                        <th>Comision</th>
+                        <th>Usuario</th>
+                        <th>Clave</th>
+                        <th>Activa</th>
+                        <th>Huella</th>
+                    </tr>
+                </thead>
+                <tbody id="taquillas-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-taquilla-row">
+    <tr>
+        {{if fingerprint}}
+            <td><a href="#fp"><i class="fa fa-shield text-success"></i></a> </td>
+        {{else}}
+            <td><i class="fa fa-shield"></i></td>
+        {{/if}}
+        <td>
+            <a href="#bancas/taquilla|{{:taquillaID}}"><i class="fa fa-pencil"></i> {{:nombre}}</a>
+            <!--<a href="#remover" data-target="{{:taquillaID}}" class="taq-rem"><i class="fa fa-remove"></i></a>-->
+        </td>
+        <td>{{:comision}}%</td>
+        <td>{{:usuario}}</td>
+        <td class="password" data-clave="{{:clave}}">***</td>
+        <td><div data-target="{{:taquillaID}}" data-activa="{{:activa}}" class="toggle activart toggle-success"></div></td>
+        <td><div data-target="{{:taquillaID}}" data-activa="{{:fingerlock}}" class="toggle fingerlock toggle-success"></div></td>
+    </tr>
+</script>

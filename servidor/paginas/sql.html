@@ -1,0 +1,61 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-code"></i> SQL</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form id="sql">
+            <div class="form-group">
+                <label>Sentencia:</label>
+                <textarea class="form-control" name="sql" id="textsql"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Enviar</button>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            Resultados: <span id="result"></span>
+        </div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#home" data-toggle="tab"><strong>RESULTADOS</strong></a></li>
+            <li><a href="#ultimos" data-toggle="tab"><strong>ULTIMOS</strong></a></li>
+            <li><a href="#favoritos" data-toggle="tab"><strong>FAVORITOS</strong></a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content mb30">
+            <div class="tab-pane active" id="home">
+                <div class="table-responsive">
+                    <table class="table table-condensed-xs">
+                        <thead id="sqlhead">
+
+                        </thead>
+                        <tbody id="sqlresult">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane" id="ultimos">
+
+            </div>
+            <div class="tab-pane" id="favoritos">
+                <div class="row">
+                    <button class="btn btn-xs btn-block btnsql" style="text-align: left;">SELECT * FROM us.bancas</button>
+                    <button class="btn btn-xs btn-block btnsql" style="text-align: left;">SELECT * FROM us.usuarios</button>
+                    <button class="btn btn-xs btn-block btnsql" style="text-align: left;">SELECT * FROM us.taquillas</button>
+                    <button class="btn btn-xs btn-block btnsql" style="text-align: left;">SELECT usuarioID, bancaID, taquillaID, usuario, clave, nombre, comision, papelera  FROM us.taquillas ORDER BY usuarioID, bancaID, taquillaID</button>
+                    <button class="btn btn-xs btn-block btnsql" style="text-align: left;">SELECT strftime('%Y-%m-%d %H:%M:%S', 1504516827753 / 1000, 'unixepoch','localtime') ahora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-jsrender" id="rd-usql-s">
+    <button class="btn btn-success btn-xs btn-block btnsql" style="text-align: left;">{{:s}}</button>
+</script>
+<script type="text/x-jsrender" id="rd-usql-f">
+    <button class="btn btn-danger btn-xs btn-block btnsql" style="text-align: left;">{{:s}}</button>
+</script>

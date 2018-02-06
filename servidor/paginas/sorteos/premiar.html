@@ -1,0 +1,67 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-flag-checkered"></i> Premiaci&oacute;n</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Fecha</label>
+                <div class="col-sm-6">
+                    <input id="premiar-fecha" class="date now form-control" onfocus="blur()" required>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="premiar-form">
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="mt10 col-sm-3 text-right">Sorteo</label>
+                    <div class="col-sm-6">
+                        <select name="sorteoID" class="s2 form-control" id="premiar-sorteo" data-placeholder="No hay sorteos para la fecha" required></select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Numero</label>
+                <div class="col-sm-6">
+                    <select name="elemento" id="premiar-numero" class="s2 form-control" required></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> PREMIAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-title">Reiniciar</div>
+        <div class="panel-body panel-body-nopadding">
+            <form class="form-horizontal" id="reiniciar-form">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label class="mt10 col-sm-3 text-right">Sorteo</label>
+                        <div class="col-sm-6">
+                            <select name="sorteoID" class="s2 form-control" id="reiniciar-sorteo" data-placeholder="No hay sorteos para la fecha" required></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <button class="btn btn-maroon btn-block"><i class="fa fa-refresh"></i> REINICIAR</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-jsrender" id="rd-sorteo-option">
+    <option value="{{:sorteoID}}">#{{:sorteoID}} {{:descripcion}}</option>
+</script>

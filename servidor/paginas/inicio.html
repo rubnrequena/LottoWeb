@@ -1,0 +1,66 @@
+<style>
+    tbody>tr:last-child { font-weight: bold; }
+</style>
+<div class="pageheader">
+    <h2><i class="fa fa-home"></i> Panel de Control</h2>
+</div>
+<div class="row">
+    <div class="panel">
+        <div class="panel-heading hidden-xs">
+            <div class="panel-title">SORTEOS DEL DIA</div>
+        </div>
+        <div class="panel-body" id="inicio-sorteodia">
+            <div style="margin: auto; width: 50%; text-align: center;">
+                Presionar la nube para mostrar reporte rapido<br>
+                <button id="btnload" class="btn-link"><i class="fa fa-cloud-download fa-4x"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-sorteos-dia-row">
+    <tr>
+        <td><a href="#sorteo|{{:sorteoID}}">#{{:~padding(sorteoID,6)}}</a> </td>
+        <td>{{:descripcion}}</td>
+        <td>{{:~ganador(ganador)}}</td>
+        <td>{{:~formatNumber(jugado,0)}}</td>
+        <td>{{:~formatNumber(premio,0)}}</td>
+        <td>{{:~formatNumber(jugado-premio,0)}}</td>
+    </tr>
+</script>
+<script type="text/x-jsrender" id="rd-pnlsorteo">
+    <div class="table-responsive">
+            <table class="table table-bordered mb30">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Sorteo</th>
+                    <th>Ganador</th>
+                    <th>Jugado</th>
+                    <th>Premios</th>
+                    <th>Balance</th>
+                </tr>
+                </thead>
+                <tbody id="srt_dia">
+                    <tr>
+                        <td><i class="fa fa-spinner fa-spin"></i> Espere.. cargando.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div><!-- table-responsive -->
+        <label class="pull-right" >Actualizado a las <span id="str-dia-stamp">--</span></label>
+</script>
+<!--<div class="table-responsive">-->
+    <!--<table class="table table-bordered mb30">-->
+        <!--<thead>-->
+        <!--<tr>-->
+            <!--<th>#</th>-->
+            <!--<th>Hora</th>-->
+            <!--<th>Ganador</th>-->
+            <!--<th>Jugado</th>-->
+            <!--<th>Premio</th>-->
+            <!--<th>Balance</th>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tbody id="srt_dia"></tbody>-->
+    <!--</table>-->
+<!--</div>-->

@@ -1,0 +1,157 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-area-chart"></i> Reporte General</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="reporte">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Fecha</label>
+                <div class="col-sm-3">
+                    <input class="date now form-control" onfocus="blur()" id="reporte-fecha1" name="inicio">
+                </div>
+                <div class="col-sm-3">
+                    <input class="date now form-control" onfocus="blur()" id="reporte-fecha2" name="fin">
+                </div>
+                <div class="help-block" id="reporte-hlp"></div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Agrupar</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" id="rp-agrupar">
+                        <option value="0">BANCA</option>
+                        <option value="1">FECHA</option>
+                        <option value="2">USUARIO</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4 col-md-4">
+        <div class="panel panel-success panel-stat">
+            <div class="panel-heading">
+
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">Jugado</small>
+                            <h1 id="mnt-jugado" class="clr">--</h1>
+                        </div>
+                    </div><!-- row -->
+
+                    <div class="mb15"></div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Premios</small>
+                            <h4 id="mnt-premios" class="clr">--</h4>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <small class="stat-label">Pagos</small>
+                            <h4 id="mnt-pagos" class="clr">--</h4>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+
+    <div class="col-sm-4 col-md-4">
+        <div class="panel panel-danger panel-stat">
+            <div class="panel-heading">
+
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <small class="stat-label">MAYOR RENTA</small>
+                            <h2 id="tj-banca" class="clr">--</h2>
+                        </div>
+                    </div><!-- row -->
+
+                    <div class="mb15"></div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Jugado</small>
+                            <h4 id="tj-jugada" class="clr">--</h4>
+                        </div>
+                        <div class="col-xs-6">
+                            <small class="stat-label">Renta</small>
+                            <h4 id="tj-renta" class="clr">--</h4>
+                        </div>
+                    </div><!-- row -->
+
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+
+    <div class="col-sm-4 col-md-4">
+        <div class="panel panel-primary panel-stat">
+            <div class="panel-heading">
+
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <small class="stat-label">Renta</small>
+                            <h1 id="renta" class="clr">--</h1>
+                        </div>
+                    </div><!-- row -->
+
+                    <div class="mb15"></div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Comisiones</small>
+                            <h4 id="comision" class="clr">--</h4>
+                        </div>
+                    </div><!-- row -->
+
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+</div>
+<div class="panel">
+    <div class="panel-body">
+		<div class="table-responsive">
+			<table id="tb" class="table table-hover table-condensed">
+				<thead>
+				<tr>
+					<th><a href="#" id="rtp-desc-o">FECHA / BANCA</a> </th>
+					<th>JUGADO</th>
+					<th>PAGO/PREMIO</th>
+					<th class="hidden-xs">COMISION</th>
+					<th>RENTA</th>
+					<th>BALANCE</th>
+				</tr>
+				</thead>
+				<tbody id="reporte-body"></tbody>
+			</table>
+		</div>
+    </div>
+    <div class="panel-footer">
+        <button class="btn btn-lightblue disabled"><i class="fa fa-print"></i> IMPRIMIR</button>
+        <button class="btn btn-success disabled"><i class="fa fa-file-excel-o"></i> EXPORTAR</button>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-reporte">
+    <tr>
+        <td class="text-uppercase">{{:desc}}</td>
+        <td>{{:~formatNumber(jugada,0)}}</td>
+        <td>{{:~formatNumber(premio,0)}}</td>
+        <td class="hidden-xs">{{:~formatNumber(comision,0)}}</td>
+        <td>{{:~formatNumber(renta,0)}}</td>
+        <td>{{:~formatNumber(balance,0)}}</td>
+    </tr>
+</script>

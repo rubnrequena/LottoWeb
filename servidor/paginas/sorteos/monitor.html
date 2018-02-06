@@ -1,0 +1,164 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-area-chart"></i> Monitor Sorteos</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="monitor-form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Fecha</label>
+                <div class="col-sm-6">
+                    <input id="sfecha" class="date now form-control" onfocus="blur()">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="mt10 col-sm-3 text-right">Sorteo</label>
+                    <div class="col-sm-6">
+                        <select id="ssorteos" name="sorteoID" class="s2 form-control"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-area-chart"></i> INICIAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6 col-md-3">
+        <div class="panel panel-primary panel-stat">
+            <div class="panel-heading">
+
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <small class="stat-label">Lider</small>
+                            <h1 id='numLider'>--</h1>
+                        </div>
+                    </div><!-- row -->
+
+                    <div class="mb15"></div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Jugado</small>
+                            <h4 id='numLider-jg'>--</h4>
+                        </div>
+                    </div>
+
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+
+    <div class="col-sm-6 col-md-3">
+        <div class="panel panel-dark panel-stat">
+            <div class="panel-heading">
+
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <small class="stat-label">En juego</small>
+                            <h1 id="jugada">--</h1>
+                        </div>
+                    </div><!-- row -->
+
+                    <div class="mb15"></div>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <small class="stat-label">Banca lider</small>
+                            <h4 id="bnLider">--</h4>
+                        </div>
+                        <div class="col-xs-6">
+                            <small class="stat-label">Jugada</small>
+                            <h4 id="bnLider-jg">--</h4>
+                        </div>
+                    </div><!-- row -->
+
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+</div><!-- row -->
+<div class="panel">
+    <div class="panel-body">
+        <p>Actualizado el: <span id="ultact"></span></p>
+        <ul class="nav nav-tabs nav-dark">
+            <li class="active"><a href="#vttaq" data-toggle="tab"><strong>BANCAS</strong></a></li>
+            <li><a href="#vtnumeros" data-toggle="tab"><strong>NUMEROS</strong></a></li>
+        </ul>
+        <div class="tab-content mb30">
+            <div class="tab-pane active" id="vttaq">
+                <div class="table-responsive">
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Banca</th>
+                            <th>Jugado</th>
+                        </tr>
+                        </thead>
+                        <tbody id="ventas-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane" id="vtnumeros">
+                <div class="table-responsive">
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Numero</th>
+                            <th>Jugado</th>
+                        </tr>
+                        </thead>
+                        <tbody id="numeros-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-ventas-row">
+    <tr>
+        <td>
+            <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    {{:banca}}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Taquillas</a></li>
+                    <li><a href="#">Elemento</a></li>
+                </ul>
+            </div>
+        </td>
+        <td>{{:~formatNumber(jugada,0)}}</td>
+    </tr>
+</script>
+<script type="text/x-jsrender" id="rd-vtnum-row">
+    <tr>
+        <td>#{{:numero}} {{:desc}}</td>
+        <td>
+            {{if pcj<10}}
+            <span class="label label-default">{{:~formatNumber(pcj,0)}}%</span>
+            {{else}}
+            <span class="label label-danger">{{:~formatNumber(pcj,0)}}%</span>
+            {{/if}}
+            {{:~formatNumber(jugada,0)}}
+        </td>
+        <td>
+            {{if (jugada*100/glb)>30}}
+            <span class="label label-danger">{{:~formatNumber(jugada*100/glb,0)}}%</span>
+            {{else (jugada*100/glb)<10}}
+            <span class="label label-success">{{:~formatNumber(jugada*100/glb,0)}}%</span>
+            {{else}}
+            <span class="label label-default">{{:~formatNumber(jugada*100/glb,0)}}%</span>
+            {{/if}}
+            {{:~formatNumber(glb,0)}}
+        </td>
+    </tr>
+</script>

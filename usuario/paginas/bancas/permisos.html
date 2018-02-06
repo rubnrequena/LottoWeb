@@ -1,0 +1,90 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-user-secret"></i> Permisos</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="permisos">
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Grupo</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" id="bancas" name="banca"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Permisos</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" id="permiso" multiple name="permisos">
+                        <option value="1">PUBLICAR SORTEOS</option>
+                        <option value="2">ACCEDER A TAQUILLAS</option>
+                        <option value="3">ACTIVAR TAQUILLAS</option>
+                        <option value="5">TAQUILLAS ACTIVADAS</option>
+                        <option value="4">ACCEDER A TOPES</option>
+                        <option value="6">TOPE GENERAL</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Conceder</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="valor">
+                        <option value="1">SI</option>
+                        <option value="0">NO</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button class="btn btn-darkblue btn-block"><i class="fa fa-check"></i> CONFIRMAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="panel-title">Informacion de permisos</h3>
+    </div>
+    <div class="panel-body">
+        <h4>SORTEOS</h4>
+        <h5><label class="label label-default">PUBLICAR SORTEOS</label> Permite/Niega acceso al modulo de publicacion de sorteos.</h5>
+        <h4>TAQUILLAS</h4>
+        <h5><label class="label label-default">ACCEDER A TAQUILLAS</label> Permite/Niega acceso al modulo de taquillas.</h5>
+        <h5><label class="label label-default">ACTIVAR TAQUILLAS</label> Permite/Niega la capacidad de activar/desactivar taquillas.</h5>
+        <h5><label class="label label-default">TAQUILLAS ACTIVADAS</label> Establece el estado activo/inactivo de una taquilla al momento de su creacion.</h5>
+        <h4>TOPES</h4>
+        <h5><label class="label label-default">ACCEDER A TOPES</label> Permite/Niega acceso al modulo de topes.</h5>
+        <h5><label class="label label-default">TOPE GENERAL</label> Permite/Niega el privilegio de crear/borrar topes generales.</h5>
+    </div>
+</div>
+<div class="panel">
+    <div class="table-responsive">
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>BANCA</th>
+                    <th>PERMISO</th>
+                    <th>CONCEDIDO</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="permisos-table"></tbody>
+        </table>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-permiso-row">
+    {{if usuarioID>0}}
+        <tr>
+            <td><a href="#bancas/permisos|remover|{{:metaID}}" metaID="{{:metaID}}" class="permiso-remover"><i class="fa fa-remove"></i> </a> </td>
+            {{if nombre}} <td>{{:nombre}}</td> {{else}} <td>TODAS</td> {{/if}}
+            <td>{{:~permiso(campoID)}}</td>
+            <td><div data-target="{{:metaID}}" data-click="1" data-activa="{{:valor}}" class="toggle toggle-success"></div></td>
+        {{else}}
+        <tr class="info">
+            <td></td>
+            {{if nombre}} <td>{{:nombre}}</td> {{else}} <td>TODAS</td> {{/if}}
+            <td>{{:~permiso(campoID)}}</td>
+            <td><div data-target="{{:metaID}}" data-click="0" data-activa="{{:valor}}" class="toggle toggle-success"></div></td>
+        {{/if}}
+    </tr>
+</script>

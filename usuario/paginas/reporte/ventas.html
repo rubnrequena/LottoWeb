@@ -1,0 +1,138 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-money"></i> Reporte Ventas</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="reporte">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Fecha</label>
+                <div class="col-sm-6">
+                    <input class="date now form-control" onfocus="blur()" id="reporte-fecha" name="fecha">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Banca</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" id="bancas"></select>
+                    <span class="help-block" id="hb-banca"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Taquilla</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="taquillaID" id="taquillas"></select>
+                    <span class="help-block" id="hb-taquilla"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="panel panel-success panel-stat">
+            <div class="panel-heading">
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">Balance</small>
+                            <h2 class="es-reset" id="mnt-balance">--</h2>
+                        </div>
+                    </div><!-- row -->
+                    <div class="mb15"></div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <small class="stat-label">Jugado</small>
+                            <button class="btn btn-sm btn-primary" id="rpt-vjugado"><h4 class="es-reset" id="mnt-jugado">--</h4></button>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Premios</small>
+                            <button class="btn btn-sm btn-darkblue" id="rpt-vpremio"><h4 class="es-reset" id="mnt-premios">--</h4></button>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Pagos</small>
+                            <button class="btn btn-sm btn-darkblue" id="rpt-vpagos"><h4 class="es-reset" id="mnt-pagos">--</h4></button>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+    <div class="col-sm-6">
+        <div class="panel panel-dark panel-stat">
+            <div class="panel-heading">
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">Premios Pendientes</small>
+                            <button class="btn btn-xs btn-darkblue" id="rpt-vpend"><h2 class="es-reset" id="mnt-pendiente">--</h2></button>
+                        </div>
+                    </div><!-- row -->
+                    <div class="mb15"></div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <small class="stat-label">Pagados</small>
+                            <h4><span class="es-reset" id="mnt-ppagos">--</span> %</h4>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Tickets Anulados</small>
+                            <h4><span class="es-reset" id="mnt-tanulados">--</span></h4>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Monto Anulado</small>
+                            <button class="btn btn-xs btn-danger" id="rpt-vanulado"><h4><span class="es-reset" id="mnt-anulados">--</span></h4></button>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <div class="hidden-print pull-left">
+            LEYENDA:
+            <label class="label label-success">PAGADO</label>
+            <label class="label label-warning">POR PAGAR</label>
+            <label class="label label-danger">ANULADO</label>
+        </div>
+        <div class="hidden-print pull-right">
+            <div class="btn-group" id="nav-table"></div>
+        </div>
+        <div class="table-responsive">
+            <table id="tb" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>TICKET</th>
+                    <th>MONTO</th>
+                    <th>PREMIO</th>
+                    <th>PAGADO</th>
+                </tr>
+                </thead>
+                <tbody id="reporte-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-reporte-diario">
+    {{if pg>0}}
+    <tr class="success">
+        {{else pr>0}}
+    <tr class="warning">
+        {{else a==1}}
+    <tr class="danger">
+        {{else}}
+    <tr>
+        {{/if}}
+        <td><button class="btn btn-primary btn-xs fticket" data-codigo="{{:c}}" data-id="{{:id}}"><i class="fa fa-search"></i> {{:id}}</button><label class="label label-default">{{:c}}</td>
+        <td>{{:~formatNumber(m)}}</td>
+        <td>{{:~formatNumber(pr)}}</td>
+        <td>{{:~formatNumber(pg)}}</td>
+    </tr>
+</script>

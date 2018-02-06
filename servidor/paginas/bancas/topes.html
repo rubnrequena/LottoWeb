@@ -1,0 +1,88 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-area-chart"></i> Topes</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="topes-form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Banca</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control s2banca" name="bancaID"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-6">
+                    <button class="btn btn-darkblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>TAQUILLA</th>
+                    <th>SORTEO</th>
+                    <th>ELEMENTO</th>
+                    <th>MONTO</th>
+                </tr>
+            </thead>
+            <tbody id="topes-body"></tbody>
+        </table>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="tope-nuevo">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Banca</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control s2banca" name="bancaID" id="banca"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Taquilla</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="taquillaID" id="taquilla">
+                        <option value="0">TODAS</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Elemento</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="elemento" id="elemento"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Sorteo</label>
+                <div class="col-sm-6">
+                    <input type="number" name="sorteoID" class="form-control" value="0" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Monto</label>
+                <div class="col-sm-6">
+                    <input type="number" name="monto" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-6">
+                    <button TYPE="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> GUARDAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-topes-row">
+    <tr>
+        <th><a href="#"><i class="fa fa-remove"></i></a></th>
+        <td>{{:taquilla}}</td>
+        <td>{{:~srt(sorteoID)}}</td>
+        <td>{{:~elm(elemento)}}</td>
+        <td>{{:monto}}</td>
+    </tr>
+</script>

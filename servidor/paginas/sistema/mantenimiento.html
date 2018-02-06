@@ -1,0 +1,37 @@
+<div class="pageheader">
+    <h2><i class="fa fa-hospital-o"></i> Mantenimiento</h2>
+</div>
+<div class="row">
+    <div class="panel">
+        <div class="panel-heading hidden-xs">
+            <div class="panel-title">BASE DATOS</div>
+        </div>
+        <div class="panel-body">
+            <div class="col-sm-9 col-sm-offset-2">
+                <form class="form-horizontal" id="sys-mant-run">
+                    <div class="form-group">
+                        <label class="mt10 col-sm-3 text-right">Desde</label>
+                        <div class="col-sm-6">
+                            <input name="fecha" class="date now form-control" onfocus="blur()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <button type="submit" class="btn btn-darkblue btn-block"> Confirmar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-mant-ok">
+    EXITOSAMENTE
+    <div>
+        <span>Tiempo: {{:tiempo}}</span><br/>
+        <span>Tickets: {{:tickets}}</span><br/>
+        <span>Ventas: {{:ventas}}</span><br/>
+        <span>Anulados: {{:anulados}}</span><br/>
+        <span>Pagos: {{:pagos}}</span><br/>
+    </div>
+</script>
