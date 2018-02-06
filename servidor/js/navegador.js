@@ -427,6 +427,7 @@ function bancasUsuarios_nav() {
         $('.btgl').on("toggle", function (e,act) {
             var id = $(e.target).data('target');
             var usuario = findBy("usuarioID",id,$usuarios);
+            act = act==1?3:act; //full activo
             socket.sendMessage("usuario-editar",{usuarioID:usuario.usuarioID,activo:act}, function (e, d) {
                 if (d.code==1) usuario.activo = act;
                 else {
