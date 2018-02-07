@@ -33,8 +33,8 @@ function socket_login(e,d) {
         $elementos = d.el;
         $sorteos = d.st;
 		$('.mn-usuario').html($usuario.usuario);
-        nav.navUrl();
     }
+    nav.navUrl();
 }
 $('.logout').click(function (e) {
     e.preventDefault(e);
