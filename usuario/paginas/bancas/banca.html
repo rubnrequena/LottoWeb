@@ -122,6 +122,7 @@
                 <table class="table table-condensed table-hover">
                     <thead>
                     <tr>
+                        <th></th>
                         <th>FP</th>
                         <th>Nombre</th>
                         <th>Comision</th>
@@ -143,6 +144,12 @@
     {{else}}
         <tr>
     {{/if}}
+
+        <td>
+            {{if papelera==0}} <a class="bn-remove-req" taqID="{{:taquillaID}}" href="#rem-{{:taquillaID}}"><i class="fa fa-remove text-danger"></i></a>
+            {{else}} <a class="bn-remove-res" taqID="{{:taquillaID}}" href="#res-{{:taquillaID}}"><i class="fa fa-refresh text-success"></i></a>
+            {{/if}}
+        </td>
         {{if fingerprint}}
         <td><a class="fingerclear" id="fp-btn" val="{{:taquillaID}}" href="#{{:fingerprint}}"><i class="fa fa-shield text-success"></i></a> </td>
         {{else}}

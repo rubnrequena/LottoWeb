@@ -686,6 +686,37 @@ function bancasBanca_nav(p,args) {
                     }
                 })
             });
+
+            $('.bn-remove-req').click(function (e) {
+                e.preventDefault(e);
+                var tID = $(this).attr("taqID");
+                var r = confirm('Seguro desea eliminar esta taquilla?');
+                if (r===true) {
+                    socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:1}, function (e, d) {
+                        if (d.code==1) {
+                            var taquilla = findBy("taquillaID", tID, taquillas);
+                            taquilla.papelera = 1;
+                            updateTaquillas();
+                        }
+                    })
+                }
+                return false;
+            });
+            $('.bn-remove-res').click(function (e) {
+                e.preventDefault(e);
+                var tID = $(this).attr("taqID");
+                var r = confirm('Seguro desea restaurar esta taquilla?');
+                if (r===true) {
+                    socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:0}, function (e, d) {
+                        if (d.code==1) {
+                            var taquilla = findBy("taquillaID", tID, taquillas);
+                            taquilla.papelera = 0;
+                            updateTaquillas();
+                        }
+                    })
+                }
+                return false;
+            });
         }
     } else {
         nav.nav("406");
@@ -867,7 +898,7 @@ function bancasTaquilla_nav(p,args) {
         rm.click(function () {
             rm.prop("disabled",true);
             rm.html('<i class="fa fa-spinner fa-spin"></i> ESPERE, ESTO PUEDE TOMAR UN MOMENTO...');
-            socket.sendMessage("taquilla-remover",{taquillaID:taquilla.taquillaID}, function (e, d) {
+            socket.sendMessage("taquilla-remover",{taquillaID:taquilla.taquillaID,papelera:1}, function (e, d) {
                 if (d.code==5) {
                     notificacion("ACCION RECHAZADA", "<p>MOTIVO: Se ha detectado que esta taquilla no tiene mas de 10 dias de inactividad.</p><p>Inactividad: "+msToString(d.t)+"</p>", "growl-danger");
                     rm.prop("disabled",false);
