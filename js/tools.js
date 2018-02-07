@@ -323,6 +323,13 @@ String.prototype.collapse = function () {
     return collapseString(this);
 };
 
+Array.prototype.exploreBy = function (campo,valor) {
+    return exploreBy(campo,valor,this);
+};
+Array.prototype.findBy = function (campo,valor) {
+    return findBy(campo,valor,this);
+};
+
 // ESCAPE HTML
 function escapeHtml(unsafe) {
     return unsafe
