@@ -705,19 +705,43 @@ function bancasBanca_nav(p,args) {
             $('.bn-remove-res').click(function (e) {
                 e.preventDefault(e);
                 var tID = $(this).attr("taqID");
-                var r = confirm('Seguro desea restaurar esta taquilla?');
-                if (r===true) {
-                    socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:0}, function (e, d) {
-                        if (d.code==1) {
-                            var taquilla = findBy("taquillaID", tID, taquillas);
-                            taquilla.papelera = 0;
-                            updateTaquillas();
-                        }
-                    })
-                }
+                socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:0}, function (e, d) {
+                    if (d.code==1) {
+                        var taquilla = findBy("taquillaID", tID, taquillas);
+                        taquilla.papelera = 0;
+                        updateTaquillas();
+                    }
+                });
                 return false;
             });
         }
+        var remTaqI = $('#rem-taqinactivas');
+        remTaqI.click(function () {
+            var i=0;
+            var taqs = taquillas.exploreBy("activa",0).exploreBy("papelera",0);
+            if (taqs.length==0) return;
+            remTaqI.prop('disabled',1);
+            var taq, cont = $('#rem-tqinc');
+
+            var r = confirm('Confirma desea remover todas las taquillas inactivas?');
+            if (r===true) removerTaquilla(taqs[i].taquillaID);
+
+            function removerTaquilla (id) {
+                cont.html(i+'/'+taqs.length);
+                socket.sendMessage('taquilla-remover',{taquillaID:id,papelera:1}, function (e,d) {
+                    if (d.code==1) {
+                        taq = findBy("taquillaID", id, taquillas);
+                        taq.papelera = 1;
+                        if (++i<taqs.length) removerTaquilla(taqs[i].taquillaID);
+                        else {
+                            updateTaquillas();
+                            cont.html('');
+                            remTaqI.prop('disabled',0);
+                        }
+                    }
+                });
+            }
+        });
     } else {
         nav.nav("406");
     }
