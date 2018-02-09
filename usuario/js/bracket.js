@@ -240,7 +240,7 @@ function notificacion (titulo,texto,className,permanente) {
 
 function formLock (form,lock) {
     var submit = $(form).find(":submit");
-    submit.prop("disabled",lock==undefined);
+    submit.prop("disabled",lock==undefined?true:lock);
     //TODO: Asignar icono de espera mientras esta bloqueado
     return form;
 }

@@ -12,7 +12,7 @@ nav.paginas.addListener(Navegador.ENTER, function (p,a) {
         dateFormat:'yy-mm-dd'
     });
 
-    $('.now').datepicker('setDate',new Date());;
+    $('.now').datepicker('setDate',new Date());
 
     $('.s2-elementos').html(jsrender($('#rd-elemento-option'),$elementos));
     $('.s2-bancas').html(jsrender($('#rd-banca-option'),$bancas));
