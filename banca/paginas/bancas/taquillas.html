@@ -47,15 +47,17 @@
 </div>
 <div class="panel">
     <div class="panel-body">
-        <div class="ckbox ckbox-primary pull-right">
+        <div class="ckbox ckbox-primary pull-right" style="margin-top: 3px; margin-left: 5px;">
             <input type="checkbox" value="0" id="papelera" />
             <label for="papelera">Mostrar Papelera</label>
         </div>
+        <button class="btn btn-danger btn-xs pull-right" id="rem-taqinactivas">Remover Inactivas <span id="rem-tqinc"></span></button>
         <i class="fa fa-shield text-success"></i> Huella registrada | <i class="fa fa-shield"></i> Huella sin registrar.
         <div class="table-responsive">
             <table class="table table-condensed table-hover">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>FP</th>
                         <th>Nombre</th>
                         <th>Comision</th>
@@ -76,13 +78,19 @@
     {{else}}
         <tr>
     {{/if}}
+
+        <td>
+            {{if papelera==0}} <a class="bn-remove-req" taqID="{{:taquillaID}}" href="#rem-{{:taquillaID}}"><i class="fa fa-remove text-danger"></i></a>
+            {{else}} <a class="bn-remove-res" taqID="{{:taquillaID}}" href="#res-{{:taquillaID}}"><i class="fa fa-refresh text-success"></i></a>
+            {{/if}}
+        </td>
         {{if fingerprint}}
-            <td><a class="fingerclear" id="fp-btn" val="{{:taquillaID}}" href="#{{:fingerprint}}"><i class="fa fa-shield text-success"></i></a> </td>
+        <td><a class="fingerclear" id="fp-btn" val="{{:taquillaID}}" href="#{{:fingerprint}}"><i class="fa fa-shield text-success"></i></a> </td>
         {{else}}
-            <td><i class="fa fa-shield"></i></td>
+        <td><i class="fa fa-shield"></i></td>
         {{/if}}
         <td>
-            <a href="#bancas/taquilla|{{:taquillaID}}">{{if papelera==1}}<span class="label label-default">Papelera</span> {{/if}}<i class="fa fa-pencil"></i> {{:nombre}}</a>
+            <a href="#bancas/taquilla|{{:taquillaID}}">{{if papelera==1}}<span class="label label-default"><i class="fa fa-trash" title="Papelera"></i></span>{{/if}} <i class="fa fa-pencil"></i> {{:nombre}}</a>
             <!--<a href="#remover" data-target="{{:taquillaID}}" class="taq-rem"><i class="fa fa-remove"></i></a>-->
         </td>
         <td>{{:comision}}%</td>

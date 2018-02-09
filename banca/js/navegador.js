@@ -380,6 +380,33 @@ function bancasTaquillas_nav(p,args) {
         taqActivar.prop("disabled",true);
         taqActivar.val(taqActiva);
     }
+    var remTaqI = $('#rem-taqinactivas');
+    remTaqI.click(function () {
+        var i=0;
+        var taqs = $taquillas.exploreBy("activa",0).exploreBy("papelera",0);
+        if (taqs.length==0) return;
+        remTaqI.prop('disabled',1);
+        var taq, cont = $('#rem-tqinc');
+
+        var r = confirm('Confirma desea remover todas las taquillas inactivas?');
+        if (r===true) removerTaquilla(taqs[i].taquillaID);
+
+        function removerTaquilla (id) {
+            cont.html(i+'/'+taqs.length);
+            socket.sendMessage('taquilla-remover',{taquillaID:id,papelera:1}, function (e,d) {
+                if (d.code==1) {
+                    taq = findBy("taquillaID", id, $taquillas);
+                    taq.papelera = 1;
+                    if (++i<taqs.length) removerTaquilla(taqs[i].taquillaID);
+                    else {
+                        updateView();
+                        cont.html('');
+                        remTaqI.prop('disabled',0);
+                    }
+                }
+            });
+        }
+    });
 
     function updateView () {
         var _papelera = papelera.prop("checked");
@@ -461,11 +488,41 @@ function bancasTaquillas_nav(p,args) {
             })
         });
 
+        $('.bn-remove-req').click(function (e) {
+            e.preventDefault(e);
+            var tID = $(this).attr("taqID");
+            var r = confirm('Seguro desea eliminar esta taquilla?');
+            if (r===true) {
+                socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:1}, function (e, d) {
+                    if (d.code==1) {
+                        var taquilla = findBy("taquillaID", tID, $taquillas);
+                        taquilla.papelera = 1;
+                        updateView();
+                    }
+                })
+            }
+            return false;
+        });
+        $('.bn-remove-res').click(function (e) {
+            e.preventDefault(e);
+            var tID = $(this).attr("taqID");
+            socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:0}, function (e, d) {
+                if (d.code==1) {
+                    var taquilla = findBy("taquillaID", tID, $taquillas);
+                    taquilla.papelera = 0;
+                    updateView();
+                }
+            });
+            return false;
+        });
+
     }
+
+
     if ($taquillas) updateView();
     else {
         socket.sendMessage("taquillas",null, function (e, d) {
-            $taquillas = d;
+            $taquillas = d || [];
             updateView();
         });
     }
