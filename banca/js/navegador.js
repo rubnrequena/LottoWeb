@@ -477,10 +477,13 @@ function bancasTaquillas_nav(p,args) {
         socket.sendMessage("taquilla-nueva",data, function (e, d) {
             if (d.hasOwnProperty("code")) {
                 formLock(f,false);
-                notificacion("DISCULPE: USUARIO NO DISPONIBLE","","growl-danger");
+                notificacion("DISCULPE: USUARIO NO DISPONIBLE","El usuario que esta asignando a la taquilla, ya esta en uso intente con uno distinto.","growl-danger");
             } else {
                 formReset(f);
                 taqActivar.val(taqActiva);
+                d.papelera = 0;
+                d.fingerlock = true;
+                d.fingerprint = null;
                 $taquillas.push(d);
                 updateView();
             }
