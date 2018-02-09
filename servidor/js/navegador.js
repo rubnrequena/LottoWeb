@@ -99,18 +99,39 @@ function inicio_nav(p,arg) {
 }
 
 function sorteoMonitor_nav(e,arg) {
+    var fecha = $('#sfecha');
     var d = new Date();
+    var data;
     listarSorteos(d.format());
 
-    $('#sfecha').on("change", function (e) {
+    $('#ord-num-num').click(function (e) {
+        e.preventDefault(e);
+        $('.order-num').removeClass('btn btn-primary btn-sm');
+        $(this).addClass('btn btn-primary btn-sm');
+        data.n.sort(function (a,b) {
+            return a.numero- b.numero;
+        });
+        $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
+    });
+    $('#ord-num-jg').click(function (e) {
+        e.preventDefault(e);
+        $('.order-num').removeClass('btn btn-primary btn-sm');
+        $(this).addClass('btn btn-primary btn-sm');
+        data.n.sort(function (a,b) {
+            return b.jugada- a.jugada;
+        });
+        $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
+    });
+    fecha.on("change", function (e) {
         listarSorteos(e.target.value);
     });
     $('#monitor-form').submit(function (e) {
         e.preventDefault(e);
-        var data = formControls(this);
+        var dataForm = formControls(this);
         var f = formLock(this);
-        socket.sendMessage("monitor",data, function (e, d) {
+        socket.sendMessage("monitor",dataForm, function (e, d) {
             formLock(f,false);
+            data = d || [];
             var now = new Date();
             $("#ultact").html(now.format('dd/mm/yy hh:MM:ss TT'));
 
@@ -128,7 +149,6 @@ function sorteoMonitor_nav(e,arg) {
             ld = d.n[0];
             d.n.forEach(function (item) {
                 item.pcj = item.jugada*100/jg;
-                console.log(item.jugada*100/jg,item.jugada,jg);
                 if (item.jugada>ld.jugada) ld = item;
             });
             $("#numLider").html(ld.desc);
@@ -145,6 +165,12 @@ function sorteoMonitor_nav(e,arg) {
             sorteo.html(jsrender($('#rd-sorteo-option'),d));
             sorteo.select2("val", "");
         })
+    }
+
+    if (arg && arg.length>0) {
+        var a = arg[0].split("-");
+        fecha.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        fecha.trigger('change');
     }
 }
 nav.paginas.addListener("sorteos/monitor",sorteoMonitor_nav);
