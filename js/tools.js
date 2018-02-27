@@ -412,5 +412,6 @@ function validateMail (m) {
     return _emailRegex.test(m);
 }
 function validatePhone (n) {
-    return n.length==11 && _tlfRegex.test(n);
+    return true;
+    //return n.length==11 && _tlfRegex.test(n);
 }

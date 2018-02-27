@@ -3,7 +3,7 @@ var init = function () {
     var storage = localStorage;
 // SOCKET
     var host = $.cookie("taquilla") || location.hostname+":4022";
-    //host = "192.111.37.107:4022";
+    //host = "104.129.171.16:5002";
     var socket;
 //CONFIG
     var config = {
@@ -299,7 +299,7 @@ var init = function () {
             }
             var valid=0;
             if (validateMail(data.valor)) valid++;
-            if (parseInt(data.valor) && data.valor.length==11) valid++;
+            if (parseInt(data.valor)) valid++;
             if (valid>0) {
                 srqag_data.push({n:data.nombre,v:data.valor});
                 srqag_data.sort(function (a,b) {
@@ -327,7 +327,22 @@ var init = function () {
             srqag_s2.select2("val","");
         });
         // METHODS
-        $('#md-enviar-ok').click(function () {
+        $('#md-enviar-ok').click(validateEmailPhone);
+
+        function srqag_handler (e) {
+            if (e.which==parseInt(config.imprimirTecla)) {
+                e.preventDefault(e);
+                setTimeout(function () {
+                    validateEmailPhone();
+                },100);
+            }
+            if (e.which==107) {
+                e.preventDefault(e);
+                $('#srqag-nombre').focus();
+            }
+        }
+
+        function validateEmailPhone() {
             var v = $('#srag-input').val();
             if (formatoImpresion==1) {
                 if (validateMail(v)) { cesto_realizarVenta({mail:v}); srqag.modal("hide"); }
@@ -336,36 +351,13 @@ var init = function () {
             if (formatoImpresion==2) {
                 alert("ESTIMADOS USUARIOS, SRQ NOTIFICA QUE LAMENTABLEMENTE HEMOS SUSPENDIDO TEMPORALMENTE EL SERVICIO DE MENSAJERIA POR PROBLEMAS CON LA OPERADORA, ESPERAMOS PRONTO SOLUCIONAR EL INCONVENIENTE.");
                 /*if (validatePhone(v)) { cesto_realizarVenta({sms:v}); srqag.modal("hide"); }
-                else alert('TELEFONO INVALIDO');*/
+                 else alert('TELEFONO INVALIDO');*/
             }
             if (formatoImpresion==3) {
+                v = parseFloat(v).toString();
+                if (v.length==10) v = "58"+v;
                 if (validatePhone(v)) { cesto_realizarVenta({ws:v}); srqag.modal("hide"); }
                 else alert('TELEFONO INVALIDO');
-            }
-        });
-        function srqag_handler (e) {
-            if (e.which==parseInt(config.imprimirTecla)) {
-                e.preventDefault(e);
-                setTimeout(function () {
-                    var v = $('#srag-input').val();
-                    if (formatoImpresion==1) {
-                        if (validateMail(v)) { cesto_realizarVenta({mail:v}); srqag.modal("hide"); }
-                        else alert('CORREO INVALIDO');
-                    }
-                    if (formatoImpresion==2) {
-                        alert("ESTIMADOS USUARIOS, SRQ NOTIFICA QUE LAMENTABLEMENTE HEMOS SUSPENDIDO TEMPORALMENTE EL SERVICIO DE MENSAJERIA POR PROBLEMAS CON LA OPERADORA, ESPERAMOS PRONTO SOLUCIONAR EL INCONVENIENTE.");
-                        /*if (validatePhone(v)) { cesto_realizarVenta({sms:v}); srqag.modal("hide"); }
-                         else alert('TELEFONO INVALIDO');*/
-                    }
-                    if (formatoImpresion==3) {
-                        if (validatePhone(v)) { cesto_realizarVenta({ws:v}); srqag.modal("hide"); }
-                        else alert('TELEFONO INVALIDO');
-                    }
-                },100);
-            }
-            if (e.which==107) {
-                e.preventDefault(e);
-                $('#srqag-nombre').focus();
             }
         }
 
@@ -421,11 +413,7 @@ var init = function () {
                     return;
                 }
                 if (d.format=="print") cesto_imprimir(d);
-                else if (d.format=="ws") {
-                    window.open('https://api.whatsapp.com/send?phone=58'+d.ws+'&text='+encodeURI(d.wsb),'WhatsApp');
-                } else {
-                    cesto_enviado(d);
-                }
+                else cesto_enviado(d);
                 cesto_reiniciar();
             })
         }
@@ -448,6 +436,27 @@ var init = function () {
 
         function cesto_enviado (d) {
             notificacion("VENTA CONFIRMADA","TICKET: #"+ d.tk.ticketID+"<br/><small>CODIGO: "+ d.tk.codigo+"</small>");
+            try {
+                if (d.vt.length != cesto.length) {
+                    alert("ALERTA: VERIFICAR TICKET, PUEDEN HABER CAMBIOS REALIZADOS POR EL SERVIDOR");
+                }
+                for (var idx = 0; idx < d.vt.length; idx++) {
+                    d.vt[idx].sorteo = getSorteo(d.vt[idx].sorteoID).descripcion;
+                }
+
+                ultimoTicket({
+                    ticket: d.tk,
+                    ventas: d.vt
+                });
+            } catch (err) {
+                alert("SRQ HA DETECTADO UN ERROR, Por favor notificar a su administrador. ERROR: "+err.message);
+                console.log("ERROR:",d);
+                console.log("USUARIO",$usuario);
+                console.log("SORTEOS",$sorteos);
+                console.log("ELEMENTOS",$elementos);
+                console.log("FP",_fingerprint);
+                $('#vnt-ultimo').trigger("click");
+            }
         }
         function cesto_imprimir (d) {
             notificacion("VENTA CONFIRMADA","TICKET: #"+ d.tk.ticketID+"<br/><small>CODIGO: "+ d.tk.codigo+"</small>");
