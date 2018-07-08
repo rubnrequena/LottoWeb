@@ -273,15 +273,23 @@ nav.paginas.addListener("sorteos/buscar",sorteoBuscar_nav);
 
 function sorteoNuevo_nav(p,arg) {
     var sorteos;
+    var sorteo = $('#sorteos');
     getScript('../theme/js/bootstrap-timepicker.min.js', function () {
         $('.time').timepicker();
     });
 
+    sorteo.change(function () {
+        updSorteos();
+    });
+
+
     socket.sendMessage("lsorteos",null,function (e,d) {
-        $('#sorteos').html(jsrender($('#rd-sorteo'),d));
+        sorteo.html(jsrender($('#rd-sorteo'),d));
 
         socket.sendMessage('presorteos',null, function (e, d) {
             sorteos = d || [];
+
+            sorteo.select2("val", "");
             updSorteos();
         });
     });
@@ -300,13 +308,18 @@ function sorteoNuevo_nav(p,arg) {
     });
 
     function updSorteos () {
-        $('#presorteo-body').html(jsrender($('#rd-presorteo-row'),sorteos));
+        var id = parseInt(sorteo.val());
+        console.log(id);
+        var s = sorteos.filter(function (item) {
+            return item.sorteo==id;
+        });
+        $('#presorteo-body').html(jsrender($('#rd-presorteo-row'),s));
         $('.sorteo-rem').click(function (e) {
             e.preventDefault(e);
             var id = parseInt($(this).attr('sorteo'));
             socket.sendMessage("presorteo-remover",{sorteoID:id}, function (e, d) {
-                var index = findIndex("sorteoID",id,sorteos);
-                sorteos.splice(index,1);
+                var index = findIndex("sorteoID",id,s);
+                s.splice(index,1);
                 $('#prs-'+id).remove();
             });
         });
@@ -331,9 +344,15 @@ nav.paginas.addListener("sorteos/registrar",sorteoRegistrar_nav);
 
 function sorteoFrutas_nav (p,arg) {
     var sorteos;
+    var sorteo = $('#sorteos');
     socket.sendMessage("lsorteos",null,function (e,d) {
         sorteos = d;
         $('#sorteos').html(jsrender($('#rd-sorteo'),sorteos));
+        sorteo.select2("val","");
+    });
+
+    sorteo.change(function () {
+       elementos();
     });
 
     $('#elemento-form').submit(function (e) {
@@ -349,7 +368,11 @@ function sorteoFrutas_nav (p,arg) {
     });
 
     function elementos() {
-        $('#elementos-body').html(jsrender($('#elemento-row'),$elementos));
+        var id = sorteo.val();
+        var el = $elementos.filter(function (item) {
+            return item.sorteo==id;
+        });
+        $('#elementos-body').html(jsrender($('#elemento-row'),el));
     }
     elementos();
 }
@@ -467,10 +490,12 @@ function bancasUsuarios_nav() {
         e.preventDefault(e);
         var pswg = $('#psw-grupo'); pswg.removeClass("has-error");
         var data = formControls(this);
+        data.comision = 0;
+        data.participacion = 0;
         var form = formLock(this);
         socket.sendMessage("usuario-nuevo",data, function (e, d) {
+            formReset(form);
             if (d>0) {
-                formReset(form);
                 data.usuarioID = d;
                 $usuarios.push(data);
                 updateView();
@@ -1176,7 +1201,7 @@ function sysMant_nav (p, args) {
                     ventas: d.meta[2],
                     anulados: d.meta[3],
                     pagos: d.meta[4]
-                }));
+                }),null,true);
             }
             else notificacion("MANTENIMIENTO FINALIZADO","FALLIDA");
         })

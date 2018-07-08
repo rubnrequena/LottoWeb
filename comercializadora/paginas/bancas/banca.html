@@ -1,5 +1,5 @@
 <div class="pageheader hidden-xs">
-    <h2><i class="fa fa-home"></i> Grupo</h2>
+    <h2><i class="fa fa-home"></i> Banca</h2>
 </div>
 <div class="panel">
     <div class="panel-body">
@@ -14,33 +14,51 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Usuario</label>
                     <div class="col-sm-6">
-                        <input class="form-control" name="usuario" required>
+                        <input class="form-control toLower" name="usuario" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Clave</label>
+                    <div class="col-sm-6">
+                        <input class="form-control toLower" name="clave" autocomplete="off" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Comision</label>
                     <div class="col-sm-6">
-                        <div class="rdio rdio-default">
-                            <input class="rdo-com" type="radio" name="radio" value="0" id="radioNormal" checked="checked" />
-                            <label for="radioNormal">Normal</label>
-                        </div>
-                        <div class="rdio rdio-success">
-                            <input class="rdo-com" type="radio" name="radio" value="0.01" id="radioRecogedor" />
-                            <label for="radioRecogedor">Recogedor</label>
-                        </div>
-                        <div class="rdio rdio-primary">
-                            <input class="rdo-com" type="radio" name="radio" value="-0.01" id="radioReventa" />
-                            <label for="radioReventa">Reventa</label>
-                        </div>
                         <div class="input-group">
-                            <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required disabled="disabled">
+                            <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required>
                             <span class="input-group-addon">%</span>
+                        </div>
+                        <div class="help-block">
+                            <span>Indique porcentaje de comision sobre la venta bruta</span>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-sm-3 control-label">Participacion</label>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <input id="bn-participacion" type="number" min="0" step="any" max="100" class="form-control" name="participacion" value="0" required>
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        <div class="help-block">
+                            <span>Indique porcentaje de participacion en ganacia/perdida</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Activa</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" name="activo">
+                            <option value="1">SI</option>
+                            <option value="0">NO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-sm-6 col-sm-offset-3">
-                        <button class="btn btn-darkblue btn-block"><i class="fa fa-check"></i> Confirmar</button>
+                        <button class="btn btn-darkblue btn-block"><i class="fa fa-check"></i> Registrar</button>
                     </div>
                 </div>
             </form>
@@ -123,36 +141,46 @@
                 <table class="table table-condensed table-hover">
                     <thead>
                     <tr>
-                        <th>FP</th>
-                        <th>Nombre</th>
-                        <th>Comision</th>
-                        <th>Usuario</th>
-                        <th>Clave</th>
-                        <th>Activa</th>
-                        <th>Huella</th>
+                        <th></th>
+                        <th>NOMBRE</th>
+                        <th>USUARIO</th>
+                        <th>RENTA</th>
+                        <th>COMISION</th>
+                        <th>CLAVE</th>
+                        <th>ACTIVA</th>
                     </tr>
                     </thead>
-                    <tbody id="taquillas-body"></tbody>
+                    <tbody id="grupos-body"></tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
-<script type="text/x-jsrender" id="rd-taquilla-row">
-    <tr>
-        {{if fingerprint}}
-        <td><a href="#fp"><i class="fa fa-shield text-success"></i></a> </td>
+<script type="text/x-jsrender" id="rd-grupo-row">
+    {{if papelera==1}}
+    <tr class="danger">
         {{else}}
-        <td><i class="fa fa-shield"></i></td>
+    <tr>
         {{/if}}
         <td>
-            <a href="#bancas/taquilla|{{:taquillaID}}"><i class="fa fa-pencil"></i> {{:nombre}}</a>
-            <!--<a href="#remover" data-target="{{:taquillaID}}" class="taq-rem"><i class="fa fa-remove"></i></a>-->
+            {{if papelera==0}} <a class="bn-remove-req" bancaID="{{:bancaID}}" href="#rem-{{:bancaID}}"><i class="fa fa-remove text-danger"></i></a>
+            {{else}} <a class="bn-remove-res" bancaID="{{:bancaID}}" href="#res-{{:bancaID}}"><i class="fa fa-refresh text-success"></i></a>
+            {{/if}}
         </td>
-        <td>{{:comision}}%</td>
+        <td><a href="#bancas/taquillas|{{:bancaID}}">{{if papelera==1}} <span class="label label-default"><i class="fa fa-trash"></i></span> {{/if}}{{:nombre}}</a></td>
         <td>{{:usuario}}</td>
+        <td>{{:~formatNumber(renta*100,1)}}%</td>
+        {{if comision>0 }}
+        <td>{{:~formatNumber(comision*100,1)}}%
+            <i class="fa fa-shopping-bag" title="Recogedor"></i>
+            {{else comision<0}}
+        <td>{{:~formatNumber(comision*-100,1)}}%
+            <i class="fa fa-shopping-cart" title="Reventa"></i>
+            {{else}}
+        <td>0%</td>
+        {{/if}}
+        </td>
         <td class="password" data-clave="{{:clave}}">***</td>
-        <td><div data-target="{{:taquillaID}}" data-activa="{{:activa}}" class="toggle activart toggle-success"></div></td>
-        <td><div data-target="{{:taquillaID}}" data-activa="{{:fingerlock}}" class="toggle fingerlock toggle-success"></div></td>
+        <td><div data-target="{{:bancaID}}" data-activa="{{:activa}}" class="toggle toggle-success btgl"></div></td>
     </tr>
 </script>

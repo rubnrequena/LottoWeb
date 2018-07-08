@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="../theme/css/bootstrap-wysihtml5.css" />
+<div class="pageheader">
+    <h2><i class="fa fa-envelope"></i> Nuevo mensaje</h2>
+    </div>
+</div>
+
+<div class="contentpanel panel-email">
+
+    <div class="row">
+        <div class="col-sm-3 col-lg-2">
+            <a href="#sms/nuevo" class="btn btn-success btn-block btn-compose-email">Nuevo Mensaje</a>
+
+            <ul class="nav nav-pills nav-stacked nav-email">
+                <li class="active">
+                    <a href="#mensajes">
+                        <span class="badge pull-right">0</span>
+                        <i class="glyphicon glyphicon-inbox"></i> Bandeja
+                    </a>
+                </li>
+                <li><a href="#sms/favoritos"><i class="glyphicon glyphicon-star"></i> Favoritos</a></li>
+                <li><a href="#sms/enviados"><i class="glyphicon glyphicon-send"></i> Enviados</a></li>
+                <li><a href="#sms/papelera"><i class="glyphicon glyphicon-trash"></i> Papelera</a></li>
+            </ul>
+
+        </div><!-- col-sm-3 -->
+
+        <div class="col-sm-9 col-lg-10">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <form id="sms-form">
+                        <div class="form-group mb5">
+                            <label>Para:</label>
+                            <select class="s2 form-control" id="destino" multiple="multiple" name="destino" required> </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="titulo" placeholder="Titulo..." class="form-control" />
+                        </div>
+
+                        <div id="wys">
+
+                        </div>
+                    </form>
+
+                </div><!-- panel-body -->
+                <div class="panel-footer">
+                    <div class="col-lg-4 col-lg-offset-4">
+                        <button form="sms-form" type="submit" id="sms-send" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Enviar</button>
+                    </div>
+                </div>
+            </div><!-- panel -->
+
+        </div><!-- col-sm-9 -->
+
+    </div><!-- row -->
+
+</div>
+
+</div><!-- mainpanel -->

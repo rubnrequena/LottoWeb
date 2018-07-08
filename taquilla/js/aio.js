@@ -55,6 +55,13 @@ var init = function () {
     var $sorteos;
     var $numeros;
     var $servidor = {};
+    var publicip;
+
+    $.ajax({
+        url:'http://srq.com.ve/ip'
+    }).done(function (data) {
+        publicip = data;
+    });
 
 //ACTIVIDADES
     var $actividad = {
@@ -545,17 +552,6 @@ var init = function () {
             return -1;
         }
 
-        //SOCKET HANDLERS
-        /*socket.addListener("sorteos-update", function (e, d) {
-            notificacion("SORTEOS ACTUALIZADOS");
-            cesto_reiniciar();
-            sorteos_updateView();
-            sorteos.select2("val","");
-            sorteos.select2("focus");
-            num.select2("val","");
-            monto.val("");
-        });*/
-
         //UI HANDLERES
         $('#vnt-clr').click(cesto_reiniciar);
         btnImprimir.click(function () {
@@ -799,8 +795,8 @@ var init = function () {
                 {type:"linea",text:ticket.hora,align:"center"},
                 {type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"}
             ];
-            if (copia) _lineas.push({type:"linea",text:"COPIA TICKET",align:"center"});
-            else _lineas.push({type:"linea",text:"TICKET",align:"center"});
+            if (copia) _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
+            else _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
 
             cesto.sort(function (a,b) {
                 var s1 = a.sorteoID, s2 = b.sorteoID;
@@ -819,7 +815,7 @@ var init = function () {
             }
 
             _lineas.push({type:"linea",text:"T:"+ticket.monto.format()+" AG"+_fingerprint,align:"left"});
-            _lineas.push({type:"linea",text:"CADUCA EN 3 DIAS",align:"center"});
+            //_lineas.push({type:"linea",text:"CADUCA EN 3 DIAS",align:"center"});
             _lineas.push({type:"linea",text:" ",align:"left"});
 
             print.sendMessage("print",{data:_lineas,printer:1});
@@ -831,8 +827,8 @@ var init = function () {
                 {type:"linea",text:ticket.hora,align:"center"},
                 {type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"}
             ];
-            if (copia) _lineas.push({type:"linea",text:"COPIA TICKET",align:"center"});
-            else _lineas.push({type:"linea",text:"TICKET",align:"center"});
+            if (copia) _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
+            else _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
 
             cesto.sort(function (a,b) {
                 var s1 = a.sorteoID, s2 = b.sorteoID;
@@ -872,7 +868,6 @@ var init = function () {
             _lineas.push({type:"tabla",header:false,columns:hdata[hi++],data:ldata[li++]});
 
             _lineas.push({type:"linea",text:"T:"+ticket.monto.format()+" AG"+_fingerprint,align:"left"});
-            _lineas.push({type:"linea",text:"CADUCA EN 3 DIAS",align:"center"});
             _lineas.push({type:"linea",text:" ",align:"left"});
 
             print.sendMessage("print",{data:_lineas,printer:1});
@@ -884,8 +879,8 @@ var init = function () {
                 {type:"linea",text:ticket.hora,align:"center"},
                 {type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"}
             ];
-            if (copia) _lineas.push({type:"linea",text:"COPIA TICKET",align:"center"});
-            else _lineas.push({type:"linea",text:"TICKET",align:"center"});
+            if (copia) _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
+            else _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
 
             cesto.sort(function (a,b) {
                 var s1 = a.sorteoID, s2 = b.sorteoID;
@@ -934,7 +929,7 @@ var init = function () {
             _lineas.push({type:"tabla",header:false,columns:hdata[hi++],data:ldata[li++]});
 
             _lineas.push({type:"linea",text:"T:"+ticket.monto.format()+" AG"+_fingerprint,align:"left"});
-            _lineas.push({type:"linea",text:"CADUCA EN 3 DIAS",align:"center"});
+            //_lineas.push({type:"linea",text:"CADUCA EN 3 DIAS",align:"center"});
             _lineas.push({type:"linea",text:" ",align:"left"});
 
            print.sendMessage("print",{data:_lineas,printer:1});
@@ -1553,7 +1548,6 @@ var init = function () {
         var indice = ['#ayuda-venta','#ayuda-pago','#ayuda-anular'];
         if (args.length>0) {
             var index = args[0];
-
             $('html, body').animate({scrollTop: $(indice[index]).offset().top}, 1000);
         }
     }
@@ -1661,14 +1655,6 @@ var init = function () {
             }
             return;
         }
-
-        /*if (d.taq.usuarioID == 7) {
-         var r = confirm("SU BANQUERO A SIDO MOVIDO DE SERVIDOR, DESEA SER TRASLADADO AUTOMATICAMENTE");
-         if (r == true) {
-         txt = window.location = "http://srq.com.ve/animalitos/taquilla";
-         }
-         }*/
-
         $usuario = d.taq;
         $('.username').html($usuario.nombre);
         $elementos = d.elementos;

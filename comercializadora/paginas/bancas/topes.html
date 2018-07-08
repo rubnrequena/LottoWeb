@@ -2,6 +2,40 @@
     <h2><i class="fa fa-area-chart"></i> Topes</h2>
 </div>
 <div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize">&minus;</a>
+        </div><!-- panel-btns -->
+        <h3 class="panel-title">TOPES</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label class="mt10 col-sm-3 text-right">Grupo</label>
+            <div class="col-sm-6">
+                <select class="s2 form-control" id="bancas"></select>
+            </div>
+        </div>
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th>TAQUILLA</th>
+                    <th>SORTEO</th>
+                    <th>PLENO</th>
+                    <th>TOPE</th>
+                    <th>GENERAL</th>
+                </tr>
+            </thead>
+            <tbody id="topes-body"></tbody>
+        </table>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize">&minus;</a>
+        </div><!-- panel-btns -->
+        <h3 class="panel-title">NUEVO TOPE</h3>
+    </div>
     <div class="panel-body">
         <form class="form-horizontal" id="tope-nuevo">
             <div class="form-group">
@@ -41,10 +75,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">General</label>
+                <label class="col-sm-3 control-label">General/Compartido</label>
                 <div class="col-sm-6">
-                    <select class="s2 form-control" name="compartido" id="tp-compartido">
-
+                    <select class="s2 form-control" name="compartido">
+                        <option value="0">NO</option>
+                        <option value="1">SI - BANCA</option>
+                        <option value="2">SI - USUARIO</option>
                     </select>
                     <span class="text-danger"><i class="fa fa-warning"></i> IMPORTANTE: Al asignar el tope como compartido, el campo taquillas deber&aacute; ser para <strong>TODAS</strong>, de lo contrario el tope no funcionara como se espera.</span>
                 </div>
@@ -57,29 +93,15 @@
         </form>
     </div>
 </div>
-<div class="panel">
-    <div class="panel-body">
-        <table class="table table-hover table-condensed">
-            <thead>
-                <tr>
-                    <th>TAQUILLA</th>
-                    <th>SORTEO</th>
-                    <th>PLENO</th>
-                    <th>TOPE</th>
-                    <th>GENERAL</th>
-                </tr>
-            </thead>
-            <tbody id="topes-body"></tbody>
-        </table>
-    </div>
-</div>
 <script type="text/x-jsrender" id="rd-topes-row">
     <tr id="tope{{:topeID}}">
-        {{if usuarioID>0 && ~eliminar(compartido)}}
-            <td><a class="tope-rem" title="Click para remover tope" topeID="{{:topeID}}" bancaID="{{:bancaID}}" taquillaID="{{:taquillaID}}" href="#{{:topeID}}"><i style="color:maroon;" class="fa fa-remove"></i> {{if taquilla}} {{:taquilla}} {{else}} TODOS {{/if}}</a></th>
+        {{if usuarioID>0}}
+        <td><a class="tope-rem" title="Click para remover tope" style="color:maroon;" topeID="{{:topeID}}" bancaID="{{:bancaID}}" taquillaID="{{:taquillaID}}" href="#{{:topeID}}"><i class="fa fa-remove"></i> {{if taquilla}} {{:taquilla}} {{else}} TODOS {{/if}}</a></th>
         {{else}}
-            <td>{{if taquilla}} {{:taquilla}} {{else}} TODOS {{/if}}</td>
+        <td>{{if taquilla}} {{:taquilla}} {{else}} TODOS {{/if}}</td>
         {{/if}}
+        {{if taquilla}} <td>{{:taquilla}}</td>
+        {{else}} <td>TODOS</td> {{/if}}
         {{if sorteoID>0}} <td>#{{:sorteoID}} {{:descripcion}}</td>
         {{else sorteo>0}} <td>{{:nsorteo}}</td>
         {{else}} <td>TODOS</td> {{/if}}
@@ -91,7 +113,4 @@
         <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> NO</td>
         {{/if}}
     </tr>
-</script>
-<script type="text/x-jsrender" id="rd-topes-comp">
-    <option value="{{:val}}">{{:desc}}</option>
 </script>

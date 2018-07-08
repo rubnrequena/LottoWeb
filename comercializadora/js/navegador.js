@@ -1,7 +1,3 @@
-function soloActivas_taq (a) {
-    return a.activa&& a.papelera==0;
-}
-
 nav.paginas.addListener(Navegador.ENTER, function (p,a) {
     console.log(p,a);
 
@@ -322,8 +318,8 @@ function sorteoPublicar_nav(p,args) {
     function updateTaquillas (e,d) {
         htaq.html('');
         taquillas = d || [];
-        taquillas.unshift({taquillaID:0,nombre:"TODAS",activa:true,papelera:0});
-        taqs.html(jsrender($('#rd-taquilla-option'),taquillas.filter(soloActivas_taq)));
+        taquillas.unshift({taquillaID:0,nombre:"TODAS"});
+        taqs.html(jsrender($('#rd-taquilla-option'),taquillas));
 
         socket.sendMessage("sorteos-publicos",{bancaID:bancas.val()}, sorteos_publicos);
     }
@@ -385,29 +381,23 @@ function sorteoPremiar_nav(p,args){
 nav.paginas.addListener("sorteos/premiar",sorteoPremiar_nav);
 
 function bancasBancas_nav(p,args) {
-    var multiplo = 0;
     var papelera = $('#papelera');
 
     papelera.change(function () {
         updateBancas();
     });
 
-    $('.rdo-com').change(function () {
-        multiplo = this.value;
-        $('#bn-comision').prop("disabled",this.value==0);
-    });
     $('#banca-nueva').submit(function (e) {
         e.preventDefault(e);
         var data = formControls(this);
-        data.usuarioID = $usuario.usuarioID;
-        data.renta = $usuario.renta;
-        data.comision = data.comision * multiplo;
+        data.comision = data.comision / 100;
+        data.participacion = data.participacion / 100;
         var form = formLock(this);
-        socket.sendMessage("banca-nueva",data, function (e, d) {
+        socket.sendMessage("usuario-nuevo",data, function (e, d) {
             if (d>0) {
                 formReset(form);
                 data.bancaID = d;
-                data.papelera = 0;
+                data.renta = $usuario.renta;
                 $bancas.push(data);
                 updateBancas();
                 notificacion("BANCA NUEVA", "Banca registrada exitosamente");
@@ -420,7 +410,7 @@ function bancasBancas_nav(p,args) {
     updateBancas();
 
     function updateBancas() {
-        var _papelera = papelera.prop('checked');
+        /*var _papelera = papelera.prop('checked');
 
         $bancas = $bancas.sort(function (a,b) {
             if (a.papelera< b.papelera) return -1;
@@ -437,11 +427,14 @@ function bancasBancas_nav(p,args) {
         $('#bancas-body').html(jsrender($('#rd-banca-row'),$bancas.filter(function (a) {
             return a.papelera==_papelera;
         })));
+         */
+        $('#bancas-body').html(jsrender($('#rd-banca-row'),$bancas));
 
 
         var toggles = $('.toggle');
         toggles.each(function (index) {
             var me = $(this);
+            console.log(me.data('target'),me.data('activa'));
             me.toggles({
                 text:{
                     on:"SI",
@@ -453,10 +446,10 @@ function bancasBancas_nav(p,args) {
         });
         $('.btgl').on("toggle", function (e,act) {
             var id = $(e.target).data('target');
-            var banca = findBy("bancaID",id,$bancas);
-            socket.sendMessage("banca-editar",{bancaID:banca.bancaID,activa:act}, function (e, d) {
+            var banca = findBy("usuarioID",id,$bancas);
+            socket.sendMessage("usuario-editar",{usuarioID:banca.usuarioID,activo:act}, function (e, d) {
                 if (d.code==1) {
-                    if (d.hasOwnProperty("activa")) banca.activa = d.activa;
+                    if (d.hasOwnProperty("activa")) banca.activo = d.activo;
                     if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
                     if (d.hasOwnProperty("clave")) banca.clave = d.clave;
                 }
@@ -509,6 +502,215 @@ function bancasBancas_nav(p,args) {
 nav.paginas.addListener("bancas/bancas",bancasBancas_nav);
 
 function bancasBanca_nav(p,args) {
+    if (args && args.length==1) {
+        var editar = $('#banca-nueva');
+        var clave = $('#banca-psw');
+        var renta = $('#banca-renta');
+        var banca, grupos;
+        var multiplo=0;
+
+        var papelera = $('#papelera');
+        papelera.change(function () {
+            updateGrupos();
+        });
+
+        editar.submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            data.bancaID = banca.bancaID;
+            data.comision = data.comision*multiplo;
+            //if (data.comision<$usuario.renta) { notificacion("ERROR","LA COMISION DE ALQUILER NO PUEDE SER MENOR A LA ASIGNADA POR EL ADMINISTRADOR"); return; }
+            formLock(this);
+            socket.sendMessage("banca-editar",data, function (e, d) {
+                formLock(editar[0],false);
+                if (d.code==1) {
+                    notificacion("Cambios guardados con exito");
+                    if (d.hasOwnProperty("activa")) banca.activa = d.activa;
+                    if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
+                    if (d.hasOwnProperty("comision")) banca.comision = d.comision;
+                    if (d.hasOwnProperty("usuario")) banca.usuario = d.usuario;
+                }
+                else notificacion('Error al realizar cambios','','growl-danger');
+            });
+        });
+        renta.submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            data.bancaID = banca.bancaID;
+            data.renta = data.renta/100;
+            formLock(this);
+            socket.sendMessage("banca-editar",data, function (e, d) {
+                formLock(renta[0],false);
+                if (d==1) notificacion("Cambios guardados con exito");
+                else notificacion('Error al realizar cambios','','growl-danger');
+            });
+        });
+        clave.submit(function (e) {
+            e.preventDefault(e);
+            formLock(this);
+            var data = formControls(this);
+            data.bancaID = banca.bancaID;
+            socket.sendMessage("banca-editar",data, function (e, d) {
+                formReset(clave[0]);
+                if (d.code==1) {
+                    notificacion("Cambio de clave exitoso");
+                    if (d.hasOwnProperty("clave")) banca.clave = d.clave;
+                }
+                else notificacion('Cambio de clave fallido','','growl-danger');
+            });
+        });
+        $('.rdo-com').change(function () {
+            multiplo = this.value;
+            $('#bn-comision').prop("disabled",this.value==0);
+        });
+
+        banca = findBy("usuarioID",args[0],$bancas);
+        formSet(editar,banca,function (val,field) {
+            if (field=="comision" || field=="participacion") return Math.abs(val*100);
+            if (val===false) return 0;
+            else if (val===true) return 1;
+            else return val;
+        });
+
+        socket.sendMessage("usuario-grupos",{usuarioID:banca.usuarioID}, function (e, d) {
+            grupos = d || [];
+            updateGrupos();
+        });
+
+        function updateGrupos() {
+            var _papelera = papelera.prop("checked");
+            grupos.sort(function (a,b) {
+                if (a.papelera< b.papelera) return -1;
+                else if (a.papelera> b.papelera) return 1;
+                else {
+                    if (a.activa< b.activa) {
+                        return 1;
+                    } else if (a.activa> b.activa) {
+                        return -1;
+                    } else return a.taquillaID- b.taquillaID;
+                }
+            });
+
+            $('#grupos-body').html(jsrender($('#rd-grupo-row'),grupos.filter(function (a) {
+                return _papelera== a.papelera;
+            })));
+
+            var psw = $('.password');
+            psw.on('mouseover', function (e) {
+                $(e.target).html($(e.target).data('clave'));
+            });
+            psw.on('mouseout', function (e) {
+                $(e.target).html("***");
+            });
+
+            var toggles = $('.toggle');
+            toggles.each(function (index) {
+                var me = $(this);
+                me.toggles({
+                    text:{
+                        on:"SI",
+                        off:"NO"
+                    },
+                    on:me.data('activa'),
+                    click:true
+                });
+            });
+            $('.btgl').on("toggle", function (e,act) {
+                var id = $(e.target).data('target');
+                var banca = findBy("bancaID",id,$bancas);
+                socket.sendMessage("banca-editar",{bancaID:banca.bancaID,activa:act}, function (e, d) {
+                    if (d.code==1) {
+                        if (d.hasOwnProperty("activa")) banca.activa = d.activa;
+                        if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
+                        if (d.hasOwnProperty("clave")) banca.clave = d.clave;
+                    }
+                    else {
+                        alert("ERROR AL MODIFICAR ESTADO ACTIVO DE BANCA")
+                    }
+                })
+            });
+        }
+    } else {
+        nav.nav("406");
+    }
+}
+nav.paginas.addListener("bancas/banca",bancasBanca_nav);
+
+function bancasPermisos_nav (p,args) {
+    var _permisos;
+    var lpermisos = ["PUBLICAR SORTEOS","ACCEDER A TAQUILLAS","ACTIVAR TAQUILLAS","ACCEDER A TOPES","TAQUILLAS ACTIVADAS","TOPE GRUPO"];
+    var hlp = {
+        permiso: function (p) {
+            return lpermisos[p-1];
+        }
+    };
+
+    var _bancas = $bancas.slice();
+    _bancas.unshift(
+        {bancaID:0,nombre:"TODAS"}
+    );
+    $('#bancas').html(jsrender($('#rd-banca-option'),_bancas));
+
+    $('#permisos').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        if (data.hasOwnProperty("permisos")) {
+            socket.sendMessage("permiso-nuevo", data, function (e, d) {
+                $('#permisos-table').html('');
+                socket.sendMessage("permisos", null, function (e, d) {
+                    _permisos = d || [];
+                    updateView();
+                });
+            })
+        } else {
+            notificacion("SELECCIONE AL MENOS UN PERMISO","","growl-danger");
+        }
+    });
+
+    socket.sendMessage("permisos",null, function (e, d) {
+        _permisos = d || [];
+        updateView();
+    });
+
+    function updateView () {
+        $('#permisos-table').html(jsrender($('#rd-permiso-row'),_permisos,hlp));
+        $('.permiso-remover').click(function (e) {
+            e.preventDefault(e);
+            var id = $(this).attr('metaID');
+            socket.sendMessage("permiso-remove", {meta: id}, function (e, d) {
+                if (d>0) {
+                    var idx = findIndex("metaID",id,_permisos);
+                    _permisos.splice(idx,1);
+                    updateView();
+                    notificacion("PERMISO REMOVIDO EXITOSO","","growl-success");
+                }
+                else notificacion("ERROR AL REMOVER PERMISO","","growl-danger");
+            });
+        });
+        var toggles = $('.toggle');
+        toggles.each(function (index) {
+            var me = $(this);
+            me.toggles({
+                text: {
+                    on: "SI",
+                    off: "NO"
+                },
+                on: me.data('activa'),
+                click: me.data('click')
+            });
+        });
+        toggles.on("toggle", function (e, act) {
+            var id = $(e.target).data('target');
+            socket.sendMessage("permiso-update", {meta: id, valor: act}, function (e, d) {
+                if (d>0) notificacion("CAMBIO DE PERMISO EXITOSO","","growl-success");
+                else notificacion("ERROR AL CAMBIAR PERMISO","","growl-danger");
+            })
+        });
+    }
+}
+nav.paginas.addListener("bancas/permisos",bancasPermisos_nav);
+
+function bancasTaquillas_nav(p,args) {
     if (args && args.length==1) {
         var editar = $('#banca-nueva');
         var clave = $('#banca-psw');
@@ -571,20 +773,22 @@ function bancasBanca_nav(p,args) {
             $('#bn-comision').prop("disabled",this.value==0);
         });
 
-        banca = findBy("bancaID",args[0],$bancas);
-        formSet(editar,banca,function (val,field) {
-            if (field=="comision") return Math.abs(val*100);
-            if (val===false) return 0;
-            else if (val===true) return 1;
-            else return val;
-        });
-        if (banca.comision==0) $('#radioNormal').prop('checked',true);
-        else if (banca.comision>0) $('#radioRecogedor').trigger('click');
-        else if (banca.comision<0) $('#radioReventa').trigger('click');
+        socket.sendMessage("banca-grupo",{bancaID:args[0]}, function (e, d) {
+            banca = d;
+            formSet(editar,banca,function (val,field) {
+                if (field=="comision") return Math.abs(val*100);
+                if (val===false) return 0;
+                else if (val===true) return 1;
+                else return val;
+            });
+            if (banca.comision==0) $('#radioNormal').prop('checked',true);
+            else if (banca.comision>0) $('#radioRecogedor').trigger('click');
+            else if (banca.comision<0) $('#radioReventa').trigger('click');
 
-        socket.sendMessage("taquillas",{bancaID:banca.bancaID}, function (e, d) {
-            taquillas = d || [];
-            updateTaquillas();
+            socket.sendMessage("taquillas",{bancaID:banca.bancaID,usuarioID:banca.usuarioID}, function (e, d) {
+                taquillas = d || [];
+                updateTaquillas();
+            });
         });
 
         $('#taquilla-nueva').submit(function (e) {
@@ -674,12 +878,7 @@ function bancasBanca_nav(p,args) {
                 var id = $(e.target).data('target');
                 var taquilla = findBy("taquillaID", id, taquillas);
                 socket.sendMessage("taquilla-flock", {taquillaID: taquilla.taquillaID, activa: act}, function (e, d) {
-                    if (d.ok===1) {
-                        taquilla.fingerlock = act;
-                        if (act==false) {
-                            alert('ADVERTENCIA: Al desactivar el sistema de proteccion por huella, SRQ no podra, ni se hara responsable por posibles fraudes por ventas no autorizadas por parte de la agencia.');
-                        }
-                    }
+                    if (d.ok===1) taquilla.fingerlock = act;
                     else {
                         alert("ERROR AL MODIFICAR VALIDACION DE HUELLA")
                     }
@@ -759,134 +958,6 @@ function bancasBanca_nav(p,args) {
         nav.nav("406");
     }
 }
-nav.paginas.addListener("bancas/banca",bancasBanca_nav);
-
-function bancasPermisos_nav (p,args) {
-    var _permisos;
-    var lpermisos = ["PUBLICAR SORTEOS","ACCEDER A TAQUILLAS","ACTIVAR TAQUILLAS","ACCEDER A TOPES","TAQUILLAS ACTIVADAS","TOPE GRUPO"];
-    var hlp = {
-        permiso: function (p) {
-            return lpermisos[p-1];
-        }
-    };
-
-    var _bancas = $bancas.slice();
-    _bancas.unshift(
-        {bancaID:0,nombre:"TODAS"}
-    );
-    $('#bancas').html(jsrender($('#rd-banca-option'),_bancas));
-
-    $('#permisos').submit(function (e) {
-        e.preventDefault(e);
-        var data = formControls(this);
-        if (data.hasOwnProperty("permisos")) {
-            socket.sendMessage("permiso-nuevo", data, function (e, d) {
-                $('#permisos-table').html('');
-                socket.sendMessage("permisos", null, function (e, d) {
-                    _permisos = d || [];
-                    updateView();
-                });
-            })
-        } else {
-            notificacion("SELECCIONE AL MENOS UN PERMISO","","growl-danger");
-        }
-    });
-
-    socket.sendMessage("permisos",null, function (e, d) {
-        _permisos = d || [];
-        updateView();
-    });
-
-    function updateView () {
-        $('#permisos-table').html(jsrender($('#rd-permiso-row'),_permisos,hlp));
-        $('.permiso-remover').click(function (e) {
-            e.preventDefault(e);
-            var id = $(this).attr('metaID');
-            socket.sendMessage("permiso-remove", {meta: id}, function (e, d) {
-                if (d>0) {
-                    var idx = findIndex("metaID",id,_permisos);
-                    _permisos.splice(idx,1);
-                    updateView();
-                    notificacion("PERMISO REMOVIDO EXITOSO","","growl-success");
-                }
-                else notificacion("ERROR AL REMOVER PERMISO","","growl-danger");
-            });
-        });
-        var toggles = $('.toggle');
-        toggles.each(function (index) {
-            var me = $(this);
-            me.toggles({
-                text: {
-                    on: "SI",
-                    off: "NO"
-                },
-                on: me.data('activa'),
-                click: me.data('click')
-            });
-        });
-        toggles.on("toggle", function (e, act) {
-            var id = $(e.target).data('target');
-            socket.sendMessage("permiso-update", {meta: id, valor: act}, function (e, d) {
-                if (d>0) notificacion("CAMBIO DE PERMISO EXITOSO","","growl-success");
-                else notificacion("ERROR AL CAMBIAR PERMISO","","growl-danger");
-            })
-        });
-    }
-}
-nav.paginas.addListener("bancas/permisos",bancasPermisos_nav);
-
-function bancasTaquillas_nav(p,args) {
-    function updateView () {
-        $('#taquillas-body').html(jsrender($('#rd-taquilla-row'),$taquillas));
-        var psw = $('.password');
-        psw.on('mouseover', function (e) {
-            $(e.target).html($(e.target).data('clave'));
-        });
-        psw.on('mouseout', function (e) {
-            $(e.target).html("***");
-        });
-        var toggles = $('.toggle');
-        toggles.each(function (index) {
-            var me = $(this);
-           me.toggles({
-               text:{
-                   on:"SI",
-                   off:"NO"
-               },
-               on:me.data('activa'),
-               click:true
-           });
-        });
-        toggles.on("toggle", function (e,act) {
-            var id = $(e.target).data('target');
-            var taquilla = findBy("taquillaID",id,$taquillas);
-            socket.sendMessage("taquilla-activa",{taquillaID:taquilla.taquillaID,activa:act}, function (e, d) {
-                if (d.ok) taquilla.activa = act;
-                else {
-                    alert("ERROR AL MODIFICAR ESTADO ACTIVO DE TAQUILLA")
-                }
-            })
-        });
-    }
-    if ($taquillas) updateView();
-    else {
-        socket.sendMessage("taquillas",null, function (e, d) {
-            $taquillas = d;
-            updateView();
-        });
-    }
-
-    $('#taquilla-nueva').submit(function (e) {
-        e.preventDefault(e);
-        var data = formControls(this);
-        var f = formLock(this);
-        socket.sendMessage("taquilla-nueva",data, function (e, d) {
-            formReset(f);
-            $taquillas.push(d);
-            updateView();
-        })
-    });
-}
 nav.paginas.addListener("bancas/taquillas",bancasTaquillas_nav);
 
 function bancasTaquilla_nav(p,args) {
@@ -935,18 +1006,13 @@ function bancasTaquilla_nav(p,args) {
         rm.click(function () {
             rm.prop("disabled",true);
             rm.html('<i class="fa fa-spinner fa-spin"></i> ESPERE, ESTO PUEDE TOMAR UN MOMENTO...');
-            socket.sendMessage("taquilla-remover",{taquillaID:taquilla.taquillaID,papelera:1}, function (e, d) {
-                if (d.code==5) {
-                    notificacion("ACCION RECHAZADA", "<p>MOTIVO: Se ha detectado que esta taquilla no tiene mas de 10 dias de inactividad.</p><p>Inactividad: "+msToString(d.t)+"</p>", "growl-danger");
-                    rm.prop("disabled",false);
-                    rm.html('<i class="fa fa-trash"></i> ENVIAR A PAPELERA');
-                }else {
-                    if ($taquillas && $taquillas.length>0) {
-                        var i = findIndex("taquillaID", taquilla.taquillaID, $taquillas);
-                        $taquillas.splice(i, 1);
-                    }
-                    nav.back();
+
+            socket.sendMessage("taquilla-remover",{taquillaID:taquilla.taquillaID,usuarioID:taquilla.usuarioID,papelera:1}, function (e, d) {
+                if ($taquillas && $taquillas.length>0) {
+                    var i = findIndex("taquillaID", taquilla.taquillaID, $taquillas);
+                    $taquillas.splice(i, 1);
                 }
+                nav.back();
             })
         });
     }
@@ -997,7 +1063,6 @@ function bancasTopes_nav (p,args) {
     bancas.on("change", function () {
         socket.sendMessage("taquillas", {bancaID:bancas.val()}, function (e, d) {
             d = d || [];
-            d = d.filter(soloActivas_taq);
             d.unshift({taquillaID:0,nombre:"TODAS"});
             taqs.html(jsrender($('#rd-taquilla-option'),d));
             taqs.select2('val',0);
@@ -1007,8 +1072,6 @@ function bancasTopes_nav (p,args) {
             }, dsp_topes);
         });
     });
-
-
 
     var srt = $sorteos.slice();
     srt.unshift({sorteoID:0,nombre:"TODOS"});
@@ -1024,7 +1087,6 @@ function bancasTopes_nav (p,args) {
     });
     sorteo.select2("val",0);
     sorteo.trigger("change");
-
 
     var help = {
         elm: function (n) {
@@ -1120,7 +1182,7 @@ function reporteGeneral_nav (p,args) {
         fdata = formControls(this);
         var f = formLock(this);
         $('#pheader').html(jsrender($('#rd-prtaq'),fdata,hlp));
-        socket.sendMessage("reporte-usuario",{s:fdata,g:grp.val()}, function (e, d) {
+        socket.sendMessage("reporte-general",{s:fdata,g:grp.val()}, function (e, d) {
             formLock(f,false);
             rpt = d || [];
             updateView();
@@ -1132,17 +1194,13 @@ function reporteGeneral_nav (p,args) {
         if (rpt.length==0) return;
         var j=0, pr=0, pg=0, cm=0, rn= 0, b=0;
         rpt.forEach(function (item) {
-            if (item.cmb>=0) {
-                item.balance = item.jugada - item.premio - (item.cmb||item.comision);
-            } else {
-                item.balance = item.cmb * -1;
-            }
+            item.balance = item.jg - item.pr - item.cm - item.prt;
+            item.rango = f1[0].value+'|'+f2[0].value;
             b+=item.balance;
-            j+=item.jugada;
-            pr+= item.premio;
-            pg+= item.pago;
-            cm+= item.cmb==0?item.comision:item.cmb;
-            rn+= item.renta;
+            j+=item.jg;
+            pr+= item.pr;
+            cm+= item.cm;
+            rn+= item.rt;
         });
 
         var total = {
@@ -1163,11 +1221,11 @@ function reporteGeneral_nav (p,args) {
         //top jugado
         rank = rpt.slice();
         rank.sort(function (a, b) {
-            return b.jugada- a.jugada;
+            return b.jg- a.jg;
         });
         bnc = rank[0];
         $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jugada.format(0));
+        $('#tj-jugada').html(bnc.jg.format(0));
         $('#tj-balance').html(bnc.balance.format(0));
 
         //top ganancia
@@ -1177,11 +1235,10 @@ function reporteGeneral_nav (p,args) {
         });
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jugada.format(0));
+        $('#tg-jugada').html(bnc.jg.format(0));
         $('#tg-balance').html(bnc.balance.format(0));
 
-        if (premios.val()==0) $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
-        else $('#reporte-body').html(jsrender($('#rd-reporte2'),rpt));
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
 
         prepareDownload();
     }
@@ -1217,6 +1274,216 @@ function reporteGeneral_nav (p,args) {
 }
 nav.paginas.addListener("reporte/general",reporteGeneral_nav);
 
+function reporteBanca_nav (p,args) {
+    var f1 = $('#reporte-fecha1');
+    var f2 = $('#reporte-fecha2');
+    var fdata;
+    var reporte = $('#reporte');
+    var premios = $('#prm-select'), grp = $('#rp-agrupar');
+    var rpt; var hlp = {bn:function () { return $usuario.nombre;  }};
+    $('#reporte').submit(function (e) {
+        e.preventDefault(e);
+        fdata = formControls(this);
+        fdata.usuarioID = args[0];
+        var f = formLock(this);
+        $('#pheader').html(jsrender($('#rd-prtaq'),fdata,hlp));
+        socket.sendMessage("reporte-banca",{s:fdata,g:grp.val()}, function (e, d) {
+            formLock(f,false);
+            rpt = d || [];
+            updateView();
+        })
+    });
+    premios.change(updateView);
+
+    function updateView () {
+        if (rpt.length==0) return;
+        var j=0, pr=0, pg=0, cm=0, rn= 0, b=0;
+        rpt.forEach(function (item) {
+            item.balance = item.jg - item.pr - (item.cm || item.cmt) - item.prt;
+            item.rango = f1[0].value+'|'+f2[0].value;
+            b+=item.balance;
+            j+=item.jg;
+            pr+= item.pr;
+            cm+= item.cm || item.cmt;
+            rn+= item.rt;
+        });
+
+        var total = {
+            j: j.format(0), pr: pr.format(0), b:(b-rn).format(0),cm:cm.format(0), r:rn.format(0)
+        };
+        $('#bheader').html(jsrender($('#rd-total'),total));
+
+        $('#mnt-jugado').html(j.format(0));
+        $('#mnt-premios').html(pr.format(0));
+        $('#mnt-pagos').html(pg.format(0));
+        $('#mnt-balance').html((b-rn).format(0));
+
+        $('#tg-descuento').html((cm+rn).format(0));
+        $('#tg-comision').html(cm.format(0));
+        $('#tg-renta').html(rn.format(0));
+
+        var rank, bnc;
+        //top jugado
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.jg- a.jg;
+        });
+        bnc = rank[0];
+        $('#tj-banca').html(bnc.desc);
+        $('#tj-jugada').html(bnc.jg.format(0));
+        $('#tj-balance').html(bnc.balance.format(0));
+
+        //top ganancia
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.balance- a.balance;
+        });
+        bnc = rank[0];
+        $('#tg-banca').html(bnc.desc);
+        $('#tg-jugada').html(bnc.jg.format(0));
+        $('#tg-balance').html(bnc.balance.format(0));
+
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
+
+        prepareDownload();
+    }
+
+    var formato = $('#formato');
+    formato.change(prepareDownload);
+    function prepareDownload() {
+        var a = document.getElementById("exportar");
+        a.href = "#reporte/general";
+        var name = name = "SRQ - REPORTE "+fdata.inicio+"-"+fdata.fin+"."+formato.val();
+        if (formato.val()=="json") {
+            download("exportar",JSON.stringify(rpt,null,2),name,"text/plain");
+        } else if (formato.val()=="csv") {
+            notificacion("FORMATO NO DISPONIBLE");
+        } else {
+            html2canvas($("#print-img"), {
+                onrendered: function (canvas) {
+                    var myImage = canvas.toDataURL("image/png");
+                    a.href = myImage;
+                    a.download = name;
+                }
+            });
+        }
+    }
+
+    if (args && args.length>1) {
+        a = args[1].split("-");
+        b = args[2].split("-");
+        f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.trigger("submit");
+    }
+}
+nav.paginas.addListener("reporte/banca",reporteBanca_nav);
+
+function reporteRecogedor_nav (p,args) {
+    var f1 = $('#reporte-fecha1');
+    var f2 = $('#reporte-fecha2');
+    var fdata;
+    var reporte = $('#reporte');
+    var premios = $('#prm-select'), grp = $('#rp-agrupar');
+    var rpt; var hlp = {bn:function () { return $usuario.nombre;  }};
+    $('#reporte').submit(function (e) {
+        e.preventDefault(e);
+        fdata = formControls(this);
+        fdata.bancaID = args[0];
+        var f = formLock(this);
+        $('#pheader').html(jsrender($('#rd-prtaq'),fdata,hlp));
+        socket.sendMessage("reporte-recogedor",{s:fdata,g:grp.val()}, function (e, d) {
+            formLock(f,false);
+            rpt = d || [];
+            updateView();
+        })
+    });
+    premios.change(updateView);
+
+    function updateView () {
+        if (rpt.length==0) return;
+        var j=0, pr=0, pg=0, cm=0, rn= 0, b=0;
+        rpt.forEach(function (item) {
+            item.balance = item.jg - item.pr - item.cmt;
+            item.rango = f1[0].value+'|'+f2[0].value;
+            b+=item.balance;
+            j+=item.jg;
+            pr+= item.pr;
+            cm+= item.cmt;
+            rn+= item.rt;
+        });
+
+        var total = {
+            j: j.format(0), pr: pr.format(0), b:b.format(0),cm:cm.format(0), r:rn.format(0)
+        };
+        $('#bheader').html(jsrender($('#rd-total'),total));
+
+        $('#mnt-jugado').html(j.format(0));
+        $('#mnt-premios').html(pr.format(0));
+        $('#mnt-pagos').html(pg.format(0));
+        $('#mnt-balance').html((b).format(0));
+
+        $('#tg-descuento').html((cm+rn).format(0));
+        $('#tg-comision').html(cm.format(0));
+        $('#tg-renta').html(rn.format(0));
+
+        var rank, bnc;
+        //top jugado
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.jg- a.jg;
+        });
+        bnc = rank[0];
+        $('#tj-banca').html(bnc.desc);
+        $('#tj-jugada').html(bnc.jg.format(0));
+        $('#tj-balance').html(bnc.balance.format(0));
+
+        //top ganancia
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.balance- a.balance;
+        });
+        bnc = rank[0];
+        $('#tg-banca').html(bnc.desc);
+        $('#tg-jugada').html(bnc.jg.format(0));
+        $('#tg-balance').html(bnc.balance.format(0));
+
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
+
+        prepareDownload();
+    }
+
+    var formato = $('#formato');
+    formato.change(prepareDownload);
+    function prepareDownload() {
+        var a = document.getElementById("exportar");
+        a.href = "#reporte/general";
+        var name = name = "SRQ - REPORTE "+fdata.inicio+"-"+fdata.fin+"."+formato.val();
+        if (formato.val()=="json") {
+            download("exportar",JSON.stringify(rpt,null,2),name,"text/plain");
+        } else if (formato.val()=="csv") {
+            notificacion("FORMATO NO DISPONIBLE");
+        } else {
+            html2canvas($("#print-img"), {
+                onrendered: function (canvas) {
+                    var myImage = canvas.toDataURL("image/png");
+                    a.href = myImage;
+                    a.download = name;
+                }
+            });
+        }
+    }
+
+    if (args && args.length>1) {
+        a = args[1].split("-");
+        b = args[2].split("-");
+        f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.trigger("submit");
+    }
+}
+nav.paginas.addListener("reporte/recogedor",reporteRecogedor_nav);
+
 function reporteTaquilla_nav (p,args) {
     var f1 = $('#reporte-fecha1');
     var f2 = $('#reporte-fecha2');
@@ -1230,7 +1497,7 @@ function reporteTaquilla_nav (p,args) {
     bancas.on("change", function () {
         hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...');
         socket.sendMessage("taquillas", {bancaID:bancas.val()}, function (e, d) {
-            $('#taquillas').html(jsrender($('#rd-taquilla-option'), d.filter(soloActivas_taq)));
+            $('#taquillas').html(jsrender($('#rd-taquilla-option'),d));
             hbtaq.remove();
         });
     });
@@ -1406,7 +1673,7 @@ function reporteVentas_nav (p,args) {
     socket.sendMessage("taquillas", {bancaID:bancas.val()}, updateTaquillas);
     function updateTaquillas (e,d) {
         hbtaq.html('');
-        taqs.html(jsrender($('#rd-taquilla-option'),d.filter(soloActivas_taq)));
+        taqs.html(jsrender($('#rd-taquilla-option'),d));
     }
 
     var rpt;
@@ -1665,21 +1932,3 @@ function conexiones_nav (p,args) {
     }
 }
 nav.paginas.addListener('conexiones',conexiones_nav);
-
-function bancasRelacionPremio_nav (p,args) {
-    var bancas = $('#bancas'), sorteo = $('#sorteo'), relacion = $('#relacion');
-    bancas.html(jsrender($('#rd-banca-option'),$bancas));
-
-    sorteo.html(jsrender($('#rd-sorteos-option'),$sorteos));
-
-    relacion.submit(function (e) {
-        e.preventDefault(e);
-        var data = formControls(this);
-        formLock(relacion);
-        socket.sendMessage('banca-relacion',data, function (e,d) {
-            formLock(relacion,false);
-            if (d>0) notificacion('RELACION PROCESADA CON EXITO');
-        })
-    })
-}
-nav.paginas.addListener('bancas/relacionpremio',bancasRelacionPremio_nav);

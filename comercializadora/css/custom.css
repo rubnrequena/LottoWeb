@@ -1,0 +1,22 @@
+a:hover, a:focus {
+    text-decoration: none;
+}
+.stat > a {
+    color: white;
+}
+.s2 {
+    padding: 2px;!important;
+}
+thead {
+    text-transform: uppercase;
+}
+.select2-choice {
+    min-height: 41px;
+}
+.text-x {
+    font-size: 16px;
+}
+.reporte>tbody>tr:last-child {
+    font-weight: bold;
+    font-size: 16px;
+}

@@ -1,3 +1,6 @@
+function soloActivas (a) {
+    return a.activa&& a.papelera==0;
+}
 /*
 Version 17.02.09
 */
@@ -218,7 +221,7 @@ function sorteoPublicar_nav(p,args) {
     var hlp = {
         taq: function (id) {
             if (id>0) {
-                var tqq = findBy("taquillaID",id,$taquillas);
+                var tqq = findBy("taquillaID",id,$taquillas.filter(soloActivas));
                 return tqq?tqq.nombre:"<span class='label label-danger'>TAQUILLA NO EXISTE</span>";
             } else return "TODAS"; },
         srt: function (id) {
@@ -227,7 +230,7 @@ function sorteoPublicar_nav(p,args) {
     };
 
     if ($taquillas) {
-        $('#taquillas').html(jsrender($('#rd-taquilla-option'),$taquillas));
+        $('#taquillas').html(jsrender($('#rd-taquilla-option'),$taquillas.filter(soloActivas)));
         listSorteos();
     } else {
         var hbtaq = $('#hb-taquilla');
@@ -239,6 +242,8 @@ function sorteoPublicar_nav(p,args) {
             listSorteos();
         });
     }
+
+
 
     function listSorteos (){
         $('#sorteos').html(jsrender($('#rd-sorteos-option'),$sorteos));
@@ -472,8 +477,12 @@ function bancasTaquillas_nav(p,args) {
             var id = $(e.target).data('target');
             var taquilla = findBy("taquillaID", id, $taquillas);
             socket.sendMessage("taquilla-flock", {taquillaID: taquilla.taquillaID, activa: act}, function (e, d) {
-                if (d.ok===1) taquilla.fingerlock = act;
-                else alert("ERROR AL MODIFICAR VALIDACION DE HUELLA")
+                if (d.ok===1) {
+                    taquilla.fingerlock = act;
+                    if (act==false) {
+                        alert('ADVERTENCIA: Al desactivar el sistema de proteccion por huella, SRQ no podra, ni se hara responsable por posibles fraudes por ventas no autorizadas por parte de la agencia.');
+                    }
+                } else alert("ERROR AL MODIFICAR VALIDACION DE HUELLA")
             })
         });
 
@@ -638,9 +647,10 @@ function bancasTopes_nav (p,args) {
         dsp_topes(e,d);
         socket.sendMessage("taquillas",null, function (e, d) {
             d = d || [];
+            d = d.filter(soloActivas);
             d.unshift({taquillaID:0,nombre:"TODAS"});
 
-            taqs.html(jsrender($('#rd-taquilla-option'),d));
+            taqs.html(jsrender($('#rd-taquilla-option'), d));
             taqs.select2('val',0);
 
             var lsorteos = $sorteos.slice();
@@ -659,6 +669,10 @@ function bancasTopes_nav (p,args) {
 
             sfecha.trigger('change');
         });
+
+        function soloActivas (a) {
+            return a.activa&& a.papelera==0;
+        }
     }
     function dsp_topes (e,d) {
         d.forEach(function (item) {
@@ -856,13 +870,13 @@ function reporteTaquilla_nav (p,args) {
         return findBy("taquillaID",id,$taquillas).nombre;
     }};
     if ($taquillas) {
-        $('#taquillas').html(jsrender($('#rd-taquilla-option'),$taquillas));
+        $('#taquillas').html(jsrender($('#rd-taquilla-option'),$taquillas.filter(soloActivas)));
     } else {
         var hbtaq = $('#hb-taquilla');
         hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...');
         socket.sendMessage("taquillas", null, function (e, d) {
             $taquillas = d;
-            $('#taquillas').html(jsrender($('#rd-taquilla-option'),d));
+            $('#taquillas').html(jsrender($('#rd-taquilla-option'),d.filter(soloActivas)));
             hbtaq.remove();
         });
     }
@@ -935,6 +949,13 @@ function reporteTaquilla_nav (p,args) {
 
         $('#bheader').html(jsrender($('#rd-total'),total));
     }
+
+    $('#btn-imprimir').click(function () {
+        if (!$('body').hasClass('leftpanel-collapsed')) {
+            $('.menutoggle').trigger("click");
+        }
+        window.print();
+    })
 }
 nav.paginas.addListener("reporte/taquilla",reporteTaquilla_nav);
 
@@ -1033,13 +1054,13 @@ function reporteVentas_nav (p,args) {
         return findBy("taquillaID",id,$taquillas).nombre;
     }};
     if ($taquillas) {
-        $('#taquillas').html(jsrender($('#rd-taquilla-option'),$taquillas));
+        $('#taquillas').html(jsrender($('#rd-taquilla-option'),$taquillas.filter(soloActivas)));
     } else {
         var hbtaq = $('#hb-taquilla');
         hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...');
         socket.sendMessage("taquillas", null, function (e, d) {
             $taquillas = d;
-            $('#taquillas').html(jsrender($('#rd-taquilla-option'),d));
+            $('#taquillas').html(jsrender($('#rd-taquilla-option'),d.filter(soloActivas)));
             hbtaq.remove();
         });
     }
