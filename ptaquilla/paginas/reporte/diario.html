@@ -1,0 +1,104 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-area-chart"></i> Reporte Diario</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <form class="form-horizontal" id="reporte">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Fecha</label>
+                <div class="col-sm-6">
+                    <input class="date now form-control" onfocus="blur()" id="reporte-fecha" name="fecha">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="panel panel-success panel-stat">
+            <div class="panel-heading">
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">Balance</small>
+                            <h2 id="mnt-balance">--</h2>
+                        </div>
+                    </div><!-- row -->
+                    <div class="mb15"></div>
+                    <div class="row">
+						<div class="col-xs-4">
+                            <small class="stat-label">Jugado</small>
+                            <h4 id="mnt-jugado">--</h4>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Premios</small>
+                            <h4 id="mnt-premios">--</h4>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Pagos</small>
+                            <h4 id="mnt-pagos">--</h4>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+	<div class="col-sm-6">
+        <div class="panel panel-dark panel-stat">
+            <div class="panel-heading">
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">Premios Pendientes</small>
+                            <h1 id="mnt-pendiente">--</h1>
+                        </div>
+                    </div><!-- row -->
+                    <div class="mb15"></div>
+					<div class="row">
+						<div class="col-xs-6">
+                            <small class="stat-label">Pagados</small>
+                            <h4><span id="mnt-ppagos">--</span> %</h4>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+</div>
+<div class="row">
+    <div class="panel">
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table id="tb" class="table table-hover table-condensed">
+                    <thead>
+                    <tr>
+                        <th>SORTEO</th>
+                        <th>JUGADO</th>
+                        <th>PREMIO</th>
+                        <th>BALANCE</th>
+                    </tr>
+                    </thead>
+                    <tbody id="reporte-body"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-lightblue" id="print-reporte"><i class="fa fa-print"></i> IMPRIMIR</button>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-reporte-diario">
+    <tr>
+        <td>{{:~sorteo(sorteo)}}</td>
+        <td>{{:~format(jugado,0)}}</td>
+        <td>{{:~format(pago,0)}} de {{:~format(premio,0)}} </td>
+        <td>{{:~format(jugado-pago,0)}}</td>
+    </tr>
+</script>

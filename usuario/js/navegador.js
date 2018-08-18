@@ -609,7 +609,6 @@ function bancasBanca_nav(p,args) {
             });
         });
 
-
         function updateTaquillas() {
             var _papelera = papelera.prop("checked");
             taquillas.sort(function (a,b) {
@@ -893,10 +892,14 @@ function bancasTaquilla_nav(p,args) {
     var taquilla;
     var rm = $('#remover');
     if (args && args.length==1) {
-        socket.sendMessage("taquillas",{id:args[0]}, function (e, d) {
+        socket.sendMessage("taquilla",{id:args[0]}, function (e, d) {
             if (d) {
-                taquilla = d[0];
+                taquilla = d;
                 formSet($('#taquilla-nueva'), taquilla);
+
+                for (var m in d.meta) {
+                    $('#'+m).val(d.meta[m]);
+                }
             } else {
                 nav.nav("406");
             }
@@ -932,21 +935,31 @@ function bancasTaquilla_nav(p,args) {
                 }
             });
         });
+
+        $('#meta').submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            formLock(this);
+            for (var m in data) {
+                if (data[m]==taquilla.meta[m]) delete data[m];
+            }
+            socket.sendMessage("taquilla-metas",{taq:taquilla.taquillaID,meta:data}, function (e, d) {
+                formLock($('#meta'),false);
+                for (var m in d) {
+                    taquilla.meta[m] = d[m];
+                }
+                notificacion("DATOS GUARDADOS");
+            });
+        });
         rm.click(function () {
             rm.prop("disabled",true);
             rm.html('<i class="fa fa-spinner fa-spin"></i> ESPERE, ESTO PUEDE TOMAR UN MOMENTO...');
-            socket.sendMessage("taquilla-remover",{taquillaID:taquilla.taquillaID,papelera:1}, function (e, d) {
-                if (d.code==5) {
-                    notificacion("ACCION RECHAZADA", "<p>MOTIVO: Se ha detectado que esta taquilla no tiene mas de 10 dias de inactividad.</p><p>Inactividad: "+msToString(d.t)+"</p>", "growl-danger");
-                    rm.prop("disabled",false);
-                    rm.html('<i class="fa fa-trash"></i> ENVIAR A PAPELERA');
-                }else {
-                    if ($taquillas && $taquillas.length>0) {
-                        var i = findIndex("taquillaID", taquilla.taquillaID, $taquillas);
-                        $taquillas.splice(i, 1);
-                    }
-                    nav.back();
+            socket.sendMessage("taquilla-remover",{taquillaID:taquilla.taquillaID}, function (e, d) {
+                if ($taquillas && $taquillas.length>0) {
+                    var i = findIndex("taquillaID", taquilla.taquillaID, $taquillas);
+                    $taquillas[i].papelera = 1;
                 }
+                nav.back();
             })
         });
     }

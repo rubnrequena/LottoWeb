@@ -20,7 +20,19 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Clave</label>
                     <div class="col-sm-6">
-                        <input class="form-control toLower" name="clave" autocomplete="off" required>
+                        <input type="password" class="form-control" name="clave" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Renta</label>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <input id="bn-renta" type="number" min="0" step="any" max="100" class="form-control" name="renta" value="0" required>
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        <div class="help-block">
+                            <span>Renta del sistema sobre la venta bruta</span>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -47,18 +59,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Activa</label>
-                    <div class="col-sm-6">
-                        <select class="form-control" name="activo">
-                            <option value="1">SI</option>
-                            <option value="0">NO</option>
-                        </select>
-                    </div>
-                </div>
+
                 <div class="form-group">
                     <div class="col-sm-6 col-sm-offset-3">
-                        <button class="btn btn-darkblue btn-block"><i class="fa fa-check"></i> Registrar</button>
+                        <button class="btn btn-darkblue btn-block"><i class="fa fa-check"></i> Confirmar</button>
                     </div>
                 </div>
             </form>

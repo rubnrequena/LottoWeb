@@ -559,14 +559,17 @@ function bancasTaquillas_nav(p,args) {
 nav.paginas.addListener("bancas/taquillas",bancasTaquillas_nav);
 
 function bancasTaquilla_nav(p,args) {
-
     var taquilla;
     var rm = $('#remover');
     if (args && args.length==1) {
         socket.sendMessage("taquilla",{id:args[0]}, function (e, d) {
             if (d) {
-                taquilla = d[0];
+                taquilla = d;
                 formSet($('#taquilla-nueva'), taquilla);
+
+                for (var m in d.meta) {
+                    $('#'+m).val(d.meta[m]);
+                }
             } else {
                 nav.nav("406");
             }
@@ -602,6 +605,22 @@ function bancasTaquilla_nav(p,args) {
                 }
 			});
 		});
+
+        $('#meta').submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            formLock(this);
+            for (var m in data) {
+                if (data[m]==taquilla.meta[m]) delete data[m];
+            }
+            socket.sendMessage("taquilla-metas",{taq:taquilla.taquillaID,meta:data}, function (e, d) {
+                formLock($('#meta'),false);
+                for (var m in d) {
+                    taquilla.meta[m] = d[m];
+                }
+                notificacion("DATOS GUARDADOS");
+            });
+        });
         rm.click(function () {
             rm.prop("disabled",true);
             rm.html('<i class="fa fa-spinner fa-spin"></i> ESPERE, ESTO PUEDE TOMAR UN MOMENTO...');

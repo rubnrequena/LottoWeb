@@ -56,13 +56,6 @@ var init = function () {
     var $numeros;
     var $servidor = {};
     var $meta = {};
-    var publicip;
-
-    $.ajax({
-        url:'http://srq.com.ve/ip'
-    }).done(function (data) {
-        publicip = data;
-    });
 
 //ACTIVIDADES
     var $actividad = {
@@ -1570,7 +1563,6 @@ var init = function () {
     nav.paginas.addListener("ayuda",ayuda_nav);
 
 // MAIN //
-    var ntfbuttonidx=0;
     function main_initSocket() {
         socket = new Net("ws://"+host,false);
         socket.addListener(NetEvent.SOCKET_OPEN,socket_OPEN);
@@ -1597,21 +1589,10 @@ var init = function () {
         });
         socket.addListener('srt-premio', function (e, d) {
             var sorteo = findBy('sorteoID', d.sorteoID, $sorteos);
-            var elemento = findBy('id', d.ganador, $elementos);
-            var bname = 'notificar-error-'+ d.sorteoID;
+            var elemento = findBy('id', d.numero, $elementos);
             if (sorteo) notificacion("PREMIOS RECIBIDOS","SORTEO: "+sorteo.descripcion+"</br>#"+ elemento.n+" "+elemento.d+
-                '</br><button id="'+bname+'" class="btn btn-primary btn-sm"><i class="fa fa-warning"></i> Notificar Error</button>',
-                null,false, function () {
-                    $('#'+bname).unbind("click",notificar_clickHandler);
-                });
-
-            $('#'+bname).click(notificar_clickHandler);
-
-            function notificar_clickHandler () {
-                $(this).unbind("click",arguments.callee);
-                $(this).html('<i class="fa fa-thumbs-up"></i> Gracias, su aporte es valioso.').switchClass('btn-primary','btn-success');
-                socket.sendMessage('notificar',{code:1,"sorteo":sorteo});
-            }
+            '</br><button class="btn btn-default">Notificar Error</button>');
+            //else notificacion("PREMIOS RECIBIDOS","SORTEO: #"+ d.sorteoID+"</br>#"+ elemento.numero+" "+elemento.descripcion);
         });
         socket.addListener('metas', function (e, d) {
             $meta = d;

@@ -507,7 +507,6 @@ function bancasBanca_nav(p,args) {
         var clave = $('#banca-psw');
         var renta = $('#banca-renta');
         var banca, grupos;
-        var multiplo=0;
 
         var papelera = $('#papelera');
         papelera.change(function () {
@@ -517,9 +516,10 @@ function bancasBanca_nav(p,args) {
         editar.submit(function (e) {
             e.preventDefault(e);
             var data = formControls(this);
-            data.bancaID = banca.bancaID;
-            data.comision = data.comision*multiplo;
-            //if (data.comision<$usuario.renta) { notificacion("ERROR","LA COMISION DE ALQUILER NO PUEDE SER MENOR A LA ASIGNADA POR EL ADMINISTRADOR"); return; }
+            data.usuarioID = banca.usuarioID;
+            data.comision = data.comision/100;
+            data.participacion = data.participacion/100;
+            data.renta = data.renta/100;
             formLock(this);
             socket.sendMessage("banca-editar",data, function (e, d) {
                 formLock(editar[0],false);
@@ -566,7 +566,7 @@ function bancasBanca_nav(p,args) {
 
         banca = findBy("usuarioID",args[0],$bancas);
         formSet(editar,banca,function (val,field) {
-            if (field=="comision" || field=="participacion") return Math.abs(val*100);
+            if (field=="comision" || field=="participacion" || field =="renta") return Math.abs(val*100);
             if (val===false) return 0;
             else if (val===true) return 1;
             else return val;

@@ -328,16 +328,37 @@ function sorteoNuevo_nav(p,arg) {
 nav.paginas.addListener("sorteos/nuevo",sorteoNuevo_nav);
 
 function sorteoRegistrar_nav(p,arg) {
+    var desde = $('#desde'), hasta = $('#hasta');
+    var ct;
     $('#sorteos').html(jsrender($('#rd-lsorteo-option'),$sorteos));
 
     $('#sorteo-registrar').submit(function (e) {
         e.preventDefault(e);
         var data = formControls(this);
         var form = formLock(this);
-        socket.sendMessage("sorteo-registrar",data, function (e, d) {
-            formLock(form,false);
-            notificacion("SORTEO(S) REGISTRADO(S)", d.length + " sorteos registrados");
-        })
+        data.fecha = desde.val();
+
+        var dt = desde.val().split('-');
+        ct = new Date(dt[0],dt[1]-1,dt[2]);
+
+        socket.addListener("sorteo-registrar",sorteo_registrar_handler);
+        socket.sendMessage("sorteo-registrar",data);
+
+        function sorteo_registrar_handler (e,d) {
+            notificacion("SORTEO(S) REGISTRADO(S)", "<p>Fecha: "+ data.fecha+"</p><p>"+d.length + " sorteos registrados</p>");
+
+            var h = hasta.val();
+            if (data.fecha<h) {
+                ct.setDate(ct.getDate()+1);
+                data.fecha = ct.format('yyyy-mm-dd');
+                setTimeout(function () {
+                    socket.sendMessage("sorteo-registrar",data);
+                },500);
+            } else {
+                socket.removeListener("sorteo-registrar",sorteo_registrar_handler);
+                formLock(form,false);
+            }
+        }
     })
 }
 nav.paginas.addListener("sorteos/registrar",sorteoRegistrar_nav);
@@ -564,11 +585,6 @@ function bancasUsuario_nav(p,args) {
             socket.sendMessage('bancas', {usuario:usuario.usuarioID}, function (e, d) {
                 bancas = d || [];
                 updateBancas();
-
-                /*socket.sendMessage('taquillas',{usuario:usuario.usuarioID}, function (e, d) {
-                    taquillas = d || [];
-                    updateTaquillas();
-                });*/
             });
         });
 
@@ -598,25 +614,153 @@ function bancasUsuario_nav(p,args) {
 }
 nav.paginas.addListener("bancas/usuario",bancasUsuario_nav);
 
+function bancasComercial_nav (p,args) {
+    var usuario, bancas, taquillas,usuarios = $('#usuarios');
+
+    usuarios.html(jsrender($('#rd-usuario-option'),$usuarios));
+    $('#usuario-editar').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        data.usuarioID = usuario.usuarioID;
+        data.participacion = 0;
+        data.comision = 0;
+        var f = formLock(this);
+        socket.sendMessage("usuario-editar",data, function (e, d) {
+            formLock(f,false);
+            console.log(e,d);
+        })
+    });
+
+    function updateBancas() {
+        $('#bancas-body').html(jsrender($('#rd-banca-row'),bancas));
+
+        var psw = $('.password');
+        psw.on('mouseover', function (e) {
+            $(e.target).html($(e.target).data('clave'));
+        });
+        psw.on('mouseout', function (e) {
+            $(e.target).html("***");
+        });
+        var toggles = $('.toggle');
+        toggles.each(function (index) {
+            var me = $(this);
+            me.toggles({
+                text:{
+                    on:"SI",
+                    off:"NO"
+                },
+                on:me.data('activa'),
+                click:true
+            });
+        });
+        $('.btgl').on("toggle", function (e,act) {
+            var id = $(e.target).data('target');
+            var banca = findBy("bancaID",id,bancas);
+            socket.sendMessage("banca-editar",{bancaID:banca.bancaID,activa:act}, function (e, d) {
+                if (d==1) banca.activa = act;
+                else {
+                    alert("ERROR AL MODIFICAR ESTADO ACTIVO DE BANCA")
+                }
+            })
+        });
+    }
+
+    if (args && args.length==1) {
+        socket.sendMessage("usuarios",{id:args[0]}, function (e, d) {
+            usuario = d[0];
+            formSet($('#usuario-editar'),usuario);
+
+            socket.sendMessage('usuarios', {comercial:usuario.usuarioID}, function (e, d) {
+                bancas = d || [];
+                updateBancas();
+
+                if ($usuarios) updateView();
+                else socket.sendMessage('usuarios', null, function (e, d) { $usuarios = d || []; updateView(); });
+            });
+        });
+
+        $('#banca-nueva').submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            data.comision = data.comision / 100;
+            data.participacion = data.participacion / 100;
+            data.tipo = 1;
+            data.renta = usuario.renta;
+            data.cid = usuario.usuarioID;
+            var form = formLock(this);
+            socket.sendMessage("usuario-nuevo",data, function (e, d) {
+                if (d>0) {
+                    formReset(form);
+                    data.usuarioID = d;
+                    bancas.push(data);
+                    updateBancas();
+                    notificacion("BANCA NUEVA", "Banca registrada exitosamente");
+                } else {
+                    formLock(form,false);
+                    notificacion("ERROR", "Banca no registrada, usuario duplicado",'growl-danger');
+                }
+            })
+        });
+        $('#banca-asignar').submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            data.cid = usuario.usuarioID;
+            var f = formLock(this);
+            socket.sendMessage("usuario-asignar",data, function (e, d) {
+                formLock(f,false);
+                if (d>0) {
+                    notificacion('ASIGNACION EXITOSA');
+                    socket.sendMessage('usuarios', {comercial:usuario.usuarioID}, function (e, d) {
+                        bancas = d || [];
+                        updateBancas();
+                    });
+                }
+                else notificacion('ASIGNACION FALLIDA');
+            })
+        });
+        function updateView() {
+            usuarios.html(jsrender($('#rd-usuario-option'),$usuarios));
+            usuarios.select2("val",0);
+        }
+    } else {
+        nav.nav("406");
+    }
+}
+nav.paginas.addListener("bancas/comercial",bancasComercial_nav);
+
 function bancasBanca_nav(p,args) {
     if (args && args.length==1) {
         var editar = $('#banca-nueva');
         var clave = $('#banca-psw');
         var renta = $('#banca-renta');
-        var banca, taquillas;
+        var banca, grupos;
+
+        var papelera = $('#papelera');
+        papelera.change(function () {
+            updateGrupos();
+        });
 
         editar.submit(function (e) {
             e.preventDefault(e);
             var data = formControls(this);
-            data.bancaID = banca.bancaID;
+            data.usuarioID = banca.usuarioID;
+            data.renta = data.renta/100;
+            data.comision = data.comision/100;
+            data.participacion = data.participacion/100;
             formLock(this);
-            socket.sendMessage("banca-editar",data, function (e, d) {
-               formLock(editar[0],false);
-                if (d==1) notificacion("Cambios guardados con exito");
+            socket.sendMessage("usuario-editar",data, function (e, d) {
+                formLock(editar[0],false);
+                if (d.code==1) {
+                    notificacion("Cambios guardados con exito");
+                    if (d.hasOwnProperty("activa")) banca.activa = d.activa;
+                    if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
+                    if (d.hasOwnProperty("comision")) banca.comision = d.comision;
+                    if (d.hasOwnProperty("usuario")) banca.usuario = d.usuario;
+                }
                 else notificacion('Error al realizar cambios','','growl-danger');
             });
         });
-        renta.submit(function (e) {
+        /*renta.submit(function (e) {
             e.preventDefault(e);
             var data = formControls(this);
             data.bancaID = banca.bancaID;
@@ -627,35 +771,7 @@ function bancasBanca_nav(p,args) {
                 if (d==1) notificacion("Cambios guardados con exito");
                 else notificacion('Error al realizar cambios','','growl-danger');
             });
-        });
-        socket.sendMessage("bancas",{id:args[0]}, function (e, d) {
-            banca = d[0];
-            formSet(editar,banca);
-            $('#renta').val(banca.renta*100);
-
-            socket.sendMessage("taquillas",{banca:banca.bancaID}, function (e, d) {
-                taquillas = d || [];
-                updateTaquillas();
-            });
-        });
-
-        $('#taquilla-nueva').submit(function (e) {
-            e.preventDefault(e);
-            var data = formControls(this);
-            data.bancaID = banca.bancaID;
-            data.usuarioID = banca.usuarioID;
-            var form = formLock(this);
-            socket.sendMessage("taquilla-nueva", data, function (e, d) {
-                if (d.hasOwnProperty("code")) {
-                    notificacion("DISCULPE: USUARIO NO DISPONIBLE","","growl-danger");
-                } else {
-                    formReset(form);
-                    data.taquillaID = d;
-                    taquillas.push(data);
-                    updateTaquillas();
-                }
-            });
-        });
+        });*/
         clave.submit(function (e) {
             e.preventDefault(e);
             formLock(this);
@@ -663,13 +779,51 @@ function bancasBanca_nav(p,args) {
             data.bancaID = banca.bancaID;
             socket.sendMessage("banca-editar",data, function (e, d) {
                 formReset(clave[0]);
-                if (d==1) notificacion("Cambio de clave exitoso");
+                if (d.code==1) {
+                    notificacion("Cambio de clave exitoso");
+                    if (d.hasOwnProperty("clave")) banca.clave = d.clave;
+                }
                 else notificacion('Cambio de clave fallido','','growl-danger');
             });
         });
+        $('.rdo-com').change(function () {
+            multiplo = this.value;
+            $('#bn-comision').prop("disabled",this.value==0);
+        });
 
-        function updateTaquillas() {
-            $('#taquillas-body').html(jsrender($('#rd-taquilla-row'),taquillas));
+        socket.sendMessage("usuarios",{id:args[0]}, function (e,d) {
+            banca = d[0] || null;
+            formSet(editar,banca,function (val,field) {
+                if (field=="comision" || field=="participacion" || field=="renta") return Math.abs(val*100);
+                if (val===false) return 0;
+                else if (val===true) return 1;
+                else return val;
+            });
+
+            socket.sendMessage("bancas",{usuario:banca.usuarioID}, function (e, d) {
+                grupos = d || [];
+                updateGrupos();
+            });
+        });
+
+        function updateGrupos() {
+            var _papelera = papelera.prop("checked");
+            grupos.sort(function (a,b) {
+                if (a.papelera< b.papelera) return -1;
+                else if (a.papelera> b.papelera) return 1;
+                else {
+                    if (a.activa< b.activa) {
+                        return 1;
+                    } else if (a.activa> b.activa) {
+                        return -1;
+                    } else return a.taquillaID- b.taquillaID;
+                }
+            });
+
+            $('#grupos-body').html(jsrender($('#rd-grupo-row'),grupos.filter(function (a) {
+                return _papelera== a.papelera;
+            })));
+
             var psw = $('.password');
             psw.on('mouseover', function (e) {
                 $(e.target).html($(e.target).data('clave'));
@@ -677,6 +831,7 @@ function bancasBanca_nav(p,args) {
             psw.on('mouseout', function (e) {
                 $(e.target).html("***");
             });
+
             var toggles = $('.toggle');
             toggles.each(function (index) {
                 var me = $(this);
@@ -689,13 +844,17 @@ function bancasBanca_nav(p,args) {
                     click:true
                 });
             });
-            toggles.on("toggle", function (e,act) {
+            $('.btgl').on("toggle", function (e,act) {
                 var id = $(e.target).data('target');
-                var taquilla = findBy("taquillaID",id,taquillas);
-                socket.sendMessage("taquilla-editar",{taquillaID:taquilla.taquillaID,activa:act}, function (e, d) {
-                    if (d==1) taquilla.activa = act;
+                var banca = findBy("bancaID",id,$bancas);
+                socket.sendMessage("banca-editar",{bancaID:banca.bancaID,activa:act}, function (e, d) {
+                    if (d.code==1) {
+                        if (d.hasOwnProperty("activa")) banca.activa = d.activa;
+                        if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
+                        if (d.hasOwnProperty("clave")) banca.clave = d.clave;
+                    }
                     else {
-                        alert("ERROR AL MODIFICAR ESTADO ACTIVO DE TAQUILLA")
+                        alert("ERROR AL MODIFICAR ESTADO ACTIVO DE BANCA")
                     }
                 })
             });
@@ -1208,3 +1367,36 @@ function sysMant_nav (p, args) {
     });
 }
 nav.paginas.addListener("sistema/mantenimiento",sysMant_nav);
+
+function bancasRelacionPremio_nav (p,args) {
+    var bancas = $('#bancas'), sorteo = $('#sorteo'), relacion = $('#relacion'), usuarios = $('#usuarios');
+    bancas.html(jsrender($('#rd-banca-option'),$bancas));
+
+    sorteo.html(jsrender($('#rd-lsorteo-option'),$sorteos));
+
+    relacion.submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        formLock(relacion);
+        socket.sendMessage('banca-relacion',data, function (e,d) {
+            formLock(relacion,false);
+            if (d>0) notificacion('RELACION PROCESADA CON EXITO');
+        })
+    });
+
+    if ($usuarios) updateView();
+    else socket.sendMessage('usuarios', null, function (e, d) { $usuarios = d || []; updateView(); });
+
+    function updateView() {
+        usuarios.html(jsrender($('#rd-usuario-option'),$usuarios));
+        usuarios.select2("val",0);
+        usuarios.change(function () {
+            bancas.html('<option disabled>CARGANDO...</option>');
+            bancas.select2("val",0);
+            socket.sendMessage('bancas', {usuario:usuarios.val()}, function (e, d) {
+                bancas.html(jsrender($('#rd-banca-option'),d));
+            });
+        });
+    }
+}
+nav.paginas.addListener('bancas/relacionpremio',bancasRelacionPremio_nav);

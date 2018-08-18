@@ -8,7 +8,7 @@
 
     <meta http-equiv="Cache-Control" content="no-store" />
 
-    <title>SRQ Taquilla</title>
+    <title>SRQ Bilheteria</title>
 
     <link href="../theme/css/style.default.css" rel="stylesheet">
     <link href="../theme/css/jquery.gritter.css" rel="stylesheet">
@@ -30,7 +30,7 @@
 </div>
 <div class="preloader" id="preloader">
     <div class="status">
-        <span>Cargando</span>
+        <span>Carregando</span>
         <i class="fa fa-spinner fa-spin"></i>
     </div>
 </div>
@@ -39,9 +39,10 @@
 
         <div class="logopanel">
             <a id="logolink" href="#" title="Click para forzar actualizaci&oacute;n.">
-                <h1><span>[</span> Taquilla <span>]</span></h1>
-                <span class="label label-default"> v180724 </span></a>
+                <h1><span>[</span> Bilheteria <span>]</span></h1>
+                <span class="label label-default"> v180712 </span></a>
             <span class="label label-success"><span id="main-bin">0</span> / <span id="main-bout">0</span> </span></a>
+            <div id="google_translate_element"></div>
         </div><!-- logopanel -->
 
         <div class="leftpanelinner">
@@ -58,39 +59,39 @@
                 <h5 class="sidebartitle actitle">Cuenta</h5>
                 <ul class="nav nav-pills nav-stacked nav-bracket mb30">
                     <li><a href="#taquilla"><i class="fa fa-user"></i> <span>Usuario</span></a></li>
-                    <li><a href="#preferencias"><i class="fa fa-cog"></i> <span>Preferencias</span></a></li>
+                    <li><a href="#preferencias"><i class="fa fa-cog"></i> <span>Preferências</span></a></li>
                     <li><a href="#ayuda"><i class="fa fa-question-circle"></i> <span>Ayuda</span></a></li>
-                    <li><a class="logout" href="#cerrar"><i class="fa fa-sign-out"></i> <span>Cerrar Sesi&oacute;n</span></a></li>
+                    <li><a class="logout" href="#cerrar"><i class="fa fa-sign-out"></i> <span>Fechar Sessão</span></a></li>
                 </ul>
             </div>
 
             <h5 class="sidebartitle">NAVEGADOR</h5>
             <ul class="nav nav-pills nav-stacked nav-bracket">
-                <li class="active"><a href="#"><i class="fa fa-dashboard"></i> <span>Panel de Control</span></a></li>
-                <li class="nav-parent"><a href=""><i class="fa fa-usd"></i> <span>Ventas</span></a>
+                <li class="active"><a href="#"><i class="fa fa-dashboard"></i> <span>Painel de controle</span></a></li>
+                <li class="nav-parent"><a href=""><i class="fa fa-usd"></i> <span>Vendas</span></a>
                     <ul class="children">
-                        <li><a href="#venta"><i class="fa fa-usd"></i> <span>Venta</span></a></li>
-                        <li><a href="#ventamax"><i class="fa fa-usd"></i> <span>VentaMAX<i class="fa fa-trademark"></i></span></a></li>
+                        <li><a href="#venta"><i class="fa fa-usd"></i> <span>Venda</span></a></li>
+                        <li><a href="#ventamax"><i class="fa fa-usd"></i> <span>VendaMAX<i class="fa fa-trademark"></i></span></a></li>
                     </ul>
                 </li>
-                <li class="nav-parent"><a href=""><i class="fa fa-money"></i> <span>Tickets</span></a>
+                <li class="nav-parent"><a href=""><i class="fa fa-money"></i> <span>Bilhetes</span></a>
                     <ul class="children">
-                        <li><a href="#ticket-buscar" data-target="#md-ticket" data-toggle="modal"><i class="fa fa-search"></i> <span>Buscar</span></a></li>
-                        <li><a href="#ticket-anular" data-target="#md-anularTicket" data-toggle="modal"><i class="fa fa-remove"></i> <span>Eliminar</span></a></li>
+                        <li><a href="#ticket-buscar" data-target="#md-ticket" data-toggle="modal"><i class="fa fa-search"></i> <span>Pesquisar</span></a></li>
+                        <li><a href="#ticket-anular" data-target="#md-anularTicket" data-toggle="modal"><i class="fa fa-remove"></i> <span>Excluir</span></a></li>
                     </ul>
                 </li>
-                <li><a href="#sorteos/buscar"><i class="fa fa-list-ul"></i> <span>Sorteos</span></a></li>
-                <li class="nav-parent"><a href=""><i class="fa fa-bar-chart"></i> <span>Reportes</span></a>
+                <li><a href="#sorteos/buscar"><i class="fa fa-list-ul"></i> <span>Desenha</span></a></li>
+                <li class="nav-parent"><a href=""><i class="fa fa-bar-chart"></i> <span>Relatórios</span></a>
                     <ul class="children">
-                        <li><a href="#reporte/general"><i class="fa fa-area-chart"></i> <span>General</span></a></li>
+                        <li><a href="#reporte/general"><i class="fa fa-area-chart"></i> <span>Geral</span></a></li>
                         <li><a href="#reporte/diario"><i class="fa fa-calendar"></i> <span>Diario</span></a></li>
-                        <li><a href="#reporte/sorteo"><i class="fa fa-sticky-note"></i> <span>Sorteo</span></a></li>
-                        <li><a href="#reporte/ventas"><i class="fa fa-ticket"></i> <span>Ventas</span></a></li>
+                        <li><a href="#reporte/sorteo"><i class="fa fa-sticky-note"></i> <span>Desenha</span></a></li>
+                        <li><a href="#reporte/ventas"><i class="fa fa-ticket"></i> <span>Vendas</span></a></li>
                     </ul>
                 </li>
                 <li><a href="#preferencias">
                     <!--<span class="pull-right badge badge-success">NUEVO</span>-->
-                    <i class="fa fa-desktop"></i> <span>Preferencias</span></a></li>
+                    <i class="fa fa-desktop"></i> <span>Preferências</span></a></li>
             </ul>
         </div><!-- leftpanelinner -->
     </div><!-- leftpanel -->
@@ -157,9 +158,9 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
-                                <li><a href="#preferencias"><i class="fa fa-cog"></i> <span>Preferencias</span></a></li>
-                                <li><a href="#ayuda"><i class="fa fa-question-circle"></i> <span>Ayuda</span></a></li>
-                                <li><a class="logout" href="#salir"><i class="fa fa-sign-out"></i> <span>Cerrar Sesi&oacute;n</span></a></li>
+                                <li><a href="#preferencias"><i class="fa fa-cog"></i> <span>Preferências</span></a></li>
+                                <li><a href="#ayuda"><i class="fa fa-question-circle"></i> <span>Ajuda</span></a></li>
+                                <li><a class="logout" href="#salir"><i class="fa fa-sign-out"></i> <span>Fechar Sessão</span></a></li>
                             </ul>
                         </div>
                     </li>
@@ -233,13 +234,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                <h4 class="modal-title">Anular Ticket</h4>
+                <h4 class="modal-title">Cancelar Ingresso</h4>
             </div>
             <div class="modal-body">
                 <form id="vnt-anular">
                     <div class="form-group">
                         <div class="col-sm-7">
-                            <label>TICKET</label>
+                            <label>BILHETE</label>
                             <input type="number" min="1" max="999999999" step="any" name="ticketID" class="form-control" id="md-anular-ticket" required>
                         </div>
                         <div class="col-sm-5">
@@ -263,14 +264,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                <h4 class="modal-title">Buscar Ticket</h4>
+                <h4 class="modal-title">Bilhete de Pesquisa</h4>
             </div>
             <div class="modal-body">
                 <a href="#ayuda|1" class="pull-right"><i class="fa fa-info-circle"></i> Como procesar el pago de tickets.</a>
                 <form id="vnt-pagar">
                     <div class="row">
                         <div class="col-sm-6">
-                            <label>TICKET</label>
+                            <label>Bilhete</label>
                         </div>
                         <div class="col-sm-2">
                             <label>COD. SEG.</label>
@@ -284,7 +285,7 @@
                             <input type="number" min="0" max="9999" step="any" class="form-control" id="md-pagar-codigo">
                         </div>
                         <div class="col-sm-4">
-                            <button type="submit" class="btn btn-lightblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+                            <button type="submit" class="btn btn-lightblue btn-block"><i class="fa fa-search"></i> ACHAR</button>
                         </div>
                     </div>
                 </form>
@@ -298,10 +299,10 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>sorteo</th>
-                            <th>monto</th>
-                            <th>premio</th>
-                            <th>pago</th>
+                            <th>sorteio</th>
+                            <th>quantidade</th>
+                            <th>prêmio</th>
+                            <th>pagamento</th>
                         </tr>
                         </thead>
                         <tbody id="md-pagar-prms"></tbody>
@@ -326,7 +327,7 @@
 <script src="../theme/js/modernizr.min.js"></script>
 <script src="../theme/js/retina.min.js"></script>
 -->
-<script>var vrs = "18.07.240";</script>
+<script>var vrs = "18.07.120";</script>
 <script src="../js/client.min.js"></script>
 <script src="../js/md5.js"></script>
 <script src="../js/jsrender.min.js"></script>
@@ -338,5 +339,11 @@
 <script src="js/compressed.js?180712"></script>
 <script src="js/keymap.js"></script>
 
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'es', includedLanguages: 'pt,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

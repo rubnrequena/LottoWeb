@@ -226,7 +226,7 @@ jQuery(document).ready(function () {
     });
 });
 
-function notificacion (titulo,texto,className,permanente,after) {
+function notificacion (titulo,texto,className,permanente) {
     className = className || '';
     permanente = permanente || false;
     return jQuery.gritter.add({
@@ -234,8 +234,7 @@ function notificacion (titulo,texto,className,permanente,after) {
         text: texto,
         class_name: className,
         sticky: permanente,
-        time: '',
-        after_close:after
+        time: ''
     });
 }
 

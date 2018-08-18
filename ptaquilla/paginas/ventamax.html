@@ -1,0 +1,225 @@
+<!--<style>-->
+    <!--.cesto-indice {-->
+        <!--font-size: 11px;-->
+    <!--}-->
+<!--</style>-->
+<div class="pageheader hidden-xs">
+    <h2 class="text-uppercase" id="taq-nombre"></h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <div class="row taq-top-menu">
+            <div class="col-md-3 col-sm-6">
+                <button class="btn btn-default btn-block" id="vnt-ultimo" ><i class="fa fa-print"></i> ULTIMO BILHETE
+                    [<span id="tk-last"><i class="fa fa-cloud-download"></i></span>]
+                </button>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <button class="btn btn-lightblue btn-block" data-target="#md-ticket" data-toggle="modal"><i
+                        class="fa fa-search"></i> BILHETE
+                </button>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <button class="btn btn-default btn-block" id="vnt-dia"><i class="fa fa-bar-chart"></i> VENDAS DO DIA
+                </button>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <button class="btn btn-maroon btn-block" data-target="#md-anularTicket" data-toggle="modal"><i
+                        class="fa fa-remove"></i> APAGAR VENDA
+                </button>
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <div class="panel">
+                <div class="panel-body">
+                    <form id="vnt-venta" class="mb15">
+                        <div class="form-group">
+                            <label>Sorteios</label>
+                            <select class="s2a form-control" id="vnt-sorteos" multiple="multiple" name="sorteos"
+                                    required></select>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <label>Numero</label>
+                                    <input class="form-control" name="numero" id="vnt-numeros" autocomplete="off"
+                                           required onkeypress="return restrictCharacters(this,event,ventaOnly);">
+                                </div>
+                                <div class="col-sm-offset-2 col-sm-5">
+                                    <label>Quantidade</label>
+                                    <input class="form-control" id="vnt-monto" name="monto" type="number" min="100"
+                                           max="999999999" step="any" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-darkblue btn-block"><i class="fa fa-plus"></i> ADICIONAR</button>
+                        </div>
+                    </form>
+                    <form id="repetir">
+                        <div class="input-group">
+						  <span class="input-group-btn">
+							<button type="submit" class="btn btn-info"><i class="fa fa-refresh"></i> REPETIR JOGAR
+                            </button>
+						  </span>
+                            <input type="text" name="ticketID" class="form-control" required autocomplete="off"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-7">
+            <div class="btn-group btn-group-justified mt10">
+                <div class="btn-group" id="print-group">
+                    <button id="vnt-btn" class="btn btn-success"><span id="printbtn"><i class="fa fa-print"></i> Impressão</span> <strong class="text-x">[<span id="vnt-total">0.00</span> Bs]</strong></button>
+                </div>
+                <div class="btn-group">
+                    <button id="vnt-clr" class="btn btn-danger"><i class="fa fa-trash"></i> CANCELAR</button>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <thead class="hidden-xs">
+                            <tr>
+                                <th></th>
+                                <th>Numero</th>
+                                <th>Quantidade</th>
+                                <th>Sorteio</th>
+                            </tr>
+                            </thead>
+                            <tbody id="vnt-cesta"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!--panel-->
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true"
+     id="md-repetir">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                <h4 class="modal-title">Repetição</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <select class="s2 form-control" id="md-msorteos" name="sorteos" required></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3"><strong>NUMERO</strong></div>
+                    <div class="col-sm-6"><strong>SORTEO</strong></div>
+                    <div class="col-sm-3"><strong>Quantidade</strong></div>
+                </div>
+                <form id="vnt-repetir">
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button form="vnt-repetir" class="btn btn-darkblue">CONFIRME</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<span id="bot"></span>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="sendModalLabel" aria-hidden="true" id="md-srqag">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                <h4 class="modal-title">Agenda</h4>
+            </div>
+            <div class="modal-body">
+                <select class="s2 form-control" id="srag-input">
+                    <option value=""></option>
+                </select>
+                <a class="text-danger pull-right mt-5" href="#rem" id="srqag-rem"><i class="fa fa-trash"></i> Remover</a>
+                <p class="help-block"><i>Presione la tecla de impresion para confirmar</i></p>
+                <p class="help-block"><i>Presione + para saltar a registrar nuevo cliente.</i></p>
+                <hr/>
+                <form class="form-inline" id="srqag-nuevo">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Nombre o apodo" name="nombre" id="srqag-nombre" required>
+                    </div>
+                    <div class="form-group" id="srqag-mailg">
+                        <input type="text" class="form-control" placeholder="Mail" name="valor" required>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Novo </button>
+                    </div>
+                    <div class="form-group col-sm-offset-4 hidden srqag-ferror" id="srqag-to">
+                        <p class="text-danger">Mail/telefone inválido</p>
+                    </div>
+                    <div class="form-group col-sm-offset-4 hidden srqag-ferror" id="srqag-existeh">
+                        <p class="text-danger">Mail/Telefono ya esta registrado</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-darkblue" id="md-enviar-ok"><i class="fa fa-check"></i> Confirmar</button>
+                <button class="btn btn-danger" aria-hidden="true" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/x-jsrender" id="rd-sorteo-check">
+    <div class="ckbox ckbox-default">
+        <input type="checkbox" value="1" id="checkboxDefault1">
+        <label for="checkboxDefault1"><span class="text-primary"><strong>{{:#index}}</strong></span> <span
+                class="text-success">{{:~formatDate(cierra,'h:MM TT')}}</span></label>
+    </div>
+</script>
+<script type="text/x-jsrender" id="rd-sorteo-option">
+    <option value="{{:sorteoID}}">{{:#index}} {{:descripcion}}</option>
+</script>
+<script type="text/x-jsrender" id="rd-cesta-row">
+    <tr>
+        <td><span class="cesto-indice">{{:#index+1}}</span> <a class="rem-cesto" href="#remover" indice="{{:#index}}"><i class="fa fa-trash"></i> </a></td>
+        <td>{{:~pleno(numero)}}</td>
+        {{if tpte}}
+        <td><span class="label label-warning"><i class="fa fa-warning"></i> {{:monto}}</span></td>
+        {{else}}
+        <td>{{:monto}}</td>
+        {{/if}}
+        <td>{{:~sorteo(sorteoID)}}</td>
+    </tr>
+</script>
+<script type="text/x-jsrender" id="rd-repetir">
+    <div class="form-group">
+        <div class="col-sm-3">
+            <div class="input-group">
+                <span class="input-group-addon">#</span>
+                <input class="form-control" name="numero" value="{{:~num(numero)}}" readonly>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <select class="s2b form-control s2sorteos rptsorteo srt{{:sorteoID}}" name="sorteo" required></select>
+        </div>
+        <div class="col-sm-3">
+            <input class="form-control" name="monto" type="number" min="100" max="99999" step="any" value="{{:monto}}">
+        </div>
+    </div>
+</script>
+<script type="text/x-jsrender" id="print-select">
+    <div class="btn-group" style="margin-top:10px; width: 100%;">
+        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" id="printbtn">
+            <span id="print-label">Escolha</span> <strong class="text-x">[<span id="vnt-total">0.00</span> Bs]</strong> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a id="print-paper" href="#imprimir"><i class="fa fa-print"></i> Impressão</a></li>
+            <li><a id="print-mail" href="#correo"><i class="fa fa-envelope"></i> Mail</a></li>
+            <li><a id="print-sms" href="#sms"><i class="fa fa-mobile-phone"></i> SMS</a></li>
+            <li><a id="print-ws" href="#ws"><i class="fa fa-whatsapp"></i> Whatsapp</a></li>
+        </ul>
+    </div>
+</script>
