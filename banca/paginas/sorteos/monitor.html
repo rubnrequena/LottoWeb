@@ -117,7 +117,6 @@
 							<tr>
                                 <th><a class="order-num btn btn-primary btn-sm" id="ord-num-num" href="#num">Numero</a></th>
                                 <th><a class="order-num" id="ord-num-jg" href="#jbanca">Jugado</a></th>
-                                <th><a class="order-num" id="ord-num-gb" href="#jglobal">Global</a></th>
 							</tr>
 						</thead>
 						<tbody id="numeros-body"></tbody>
@@ -141,7 +140,7 @@
 				</ul>
 			</div>
 		</td>
-		<td>{{:~formatNumber(jugada,0)}}</td>
+		<td>{{:~formatNumber(jugada,2)}}</td>
 	</tr>
 </script>
 <script type="text/x-jsrender" id="rd-vtnum-row">
@@ -149,21 +148,10 @@
 		<td>#{{:numero}} {{:desc}}</td>
 		<td>
             {{if pcj<10}}
-                <span class="label label-default">{{:~formatNumber(pcj,0)}}%</span>
+                <span class="label label-default">{{:~formatNumber(pcj,2)}}%</span>
             {{else}}
-                <span class="label label-danger">{{:~formatNumber(pcj,0)}}%</span>
+                <span class="label label-danger">{{:~formatNumber(pcj,2)}}%</span>
             {{/if}}
-            {{:~formatNumber(jugada,0)}}
-        </td>
-        <td>
-            {{if (jugada*100/glb)>30}}
-            <span class="label label-danger">{{:~formatNumber(jugada*100/glb,0)}}%</span>
-            {{else (jugada*100/glb)<10}}
-            <span class="label label-success">{{:~formatNumber(jugada*100/glb,0)}}%</span>
-            {{else}}
-            <span class="label label-default">{{:~formatNumber(jugada*100/glb,0)}}%</span>
-            {{/if}}
-            {{:~formatNumber(glb,0)}}
         </td>
 	</tr>
 </script>

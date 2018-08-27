@@ -193,15 +193,15 @@
     <table class="table text-x">
         <tbody>
         <tr>
-            <td>JUGADO: {{:j}}</td>
-            <td>PREMIOS: {{:pr}}</td>
+            <td>JUGADO: {{:~formatNumber(j,2)}}</td>
+            <td>PREMIOS: {{:~formatNumber(pr,2)}}</td>
         </tr>
         <tr>
-            <td>COMISIONES: {{:cm}}</td>
-            <td>RENTA: {{:r}}</td>
+            <td>COMISIONES: {{:~formatNumber(cm,2)}}</td>
+            <td>RENTA: {{:~formatNumber(r,2)}}</td>
         </tr>
         <tr>
-            <td colspan="2">BALANCE: {{:b}}</td>
+            <td colspan="2">BALANCE: {{:~formatNumber(b,2)}}</td>
         </tr>
         </tbody>
     </table>
@@ -209,19 +209,19 @@
 <script type="text/x-jsrender" id="rd-reporte">
     <tr>
         <td class="text-uppercase">{{:desc}}</td>
-        <td>{{:~formatNumber(jugada,0)}}</td>
+        <td>{{:~formatNumber(jugada,2)}}</td>
         {{if cmb!=0}}
-        <td title="Agencias: {{:~formatNumber(comision,0)}}">{{:~formatNumber(cmb,0)}} </td>
+        <td title="Agencias: {{:~formatNumber(comision,0)}}">{{:~formatNumber(cmb,2)}} </td>
         {{else}}
-        <td>{{:~formatNumber(comision,0)}}</td>
+        <td>{{:~formatNumber(comision,2)}}</td>
         {{/if}}
-        <td>{{:~formatNumber(pago,0)}}</td>
+        <td>{{:~formatNumber(pago,2)}}</td>
         {{if cmb>0}}
-        <td>{{:~formatNumber(jugada-pago-cmb,0)}}</td>
+        <td>{{:~formatNumber(jugada-pago-cmb,2)}}</td>
         {{else cmb<0}}
-        <td>{{:~formatNumber(jugada-pago-comision+cmb,0)}}</td>
+        <td>{{:~formatNumber(jugada-pago-comision+cmb,2)}}</td>
         {{else}}
-        <td>{{:~formatNumber(jugada-pago-comision,0)}}</td>
+        <td>{{:~formatNumber(jugada-pago-comision,2)}}</td>
         {{/if}}
     </tr>
 </script>
@@ -229,19 +229,19 @@
 <script type="text/x-jsrender" id="rd-reporte2">
     <tr>
         <td class="text-uppercase">{{:desc}}</td>
-        <td>{{:~formatNumber(jugada,0)}}</td>
+        <td>{{:~formatNumber(jugada,2)}}</td>
         {{if cmb!=0}}
-            <td title="Agencias: {{:~formatNumber(comision,0)}}">{{:~formatNumber(cmb,0)}} </td>
+            <td title="Agencias: {{:~formatNumber(comision,0)}}">{{:~formatNumber(cmb,2)}} </td>
         {{else}}
-        <td>{{:~formatNumber(comision,0)}}</td>
+        <td>{{:~formatNumber(comision,2)}}</td>
         {{/if}}
-        <td>{{:~formatNumber(premio,0)}}</td>
+        <td>{{:~formatNumber(premio,2)}}</td>
         {{if cmb>0}}
-            <td>{{:~formatNumber(jugada-premio-cmb,0)}}</td>
+            <td>{{:~formatNumber(jugada-premio-cmb,2)}}</td>
         {{else cmb<0}}
-            <td>{{:~formatNumber(jugada-premio-comision+cmb,0)}}</td>
+            <td>{{:~formatNumber(jugada-premio-comision+cmb,2)}}</td>
         {{else}}
-            <td>{{:~formatNumber(jugada-premio-comision,0)}}</td>
+            <td>{{:~formatNumber(jugada-premio-comision,2)}}</td>
         {{/if}}
     </tr>
 </script>

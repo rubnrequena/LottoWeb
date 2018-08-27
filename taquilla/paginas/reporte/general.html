@@ -82,18 +82,18 @@
 <script type="text/x-jsrender" id="rd-reporte-diario">
     <tr>
         <td>{{:descripcion}}</td>
-        <td>{{:~formatNumber(jugada,0)}}</td>
-        <td>{{:~formatNumber(comision,0)}}</td>
-        <td>{{:~formatNumber(pago,0)}}</td>
-        <td>{{:~formatNumber(jugada-pago-comision,0)}}</td>
+        <td class="rcono">{{:~formatNumber(jugada,2)}}</td>
+        <td class="rcono">{{:~formatNumber(comision,2)}}</td>
+        <td class="rcono">{{:~formatNumber(pago,2)}}</td>
+        <td class="rcono">{{:~formatNumber(jugada-pago-comision,2)}}</td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-reporte-diario2">
     <tr>
-        <td>{{:descripcion}}</td>
-        <td>{{:~formatNumber(jugada,0)}}</td>
-        <td>{{:~formatNumber(comision,0)}}</td>
-        <td>{{:~formatNumber(premio,0)}}</td>
-        <td>{{:~formatNumber(jugada-premio-comision,0)}}</td>
+        <td class="rcono">{{:descripcion}}</td>
+        <td class="rcono">{{:~formatNumber(jugada,2)}}</td>
+        <td class="rcono">{{:~formatNumber(comision,2)}}</td>
+        <td class="rcono">{{:~formatNumber(premio,2)}}</td>
+        <td class="rcono">{{:~formatNumber(jugada-premio-comision,2)}}</td>
     </tr>
 </script>

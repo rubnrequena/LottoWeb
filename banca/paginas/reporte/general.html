@@ -187,15 +187,15 @@
     <table class="table text-x">
         <tbody>
         <tr>
-            <td>JUGADO: {{:j}}</td>
-            <td>PREMIOS: {{:pr}}</td>
+            <td>JUGADO: {{:~formatNumber(j,2)}}</td>
+            <td>PREMIOS: {{:~formatNumber(pr,2)}}</td>
         </tr>
         <tr>
-            <td>COMISION AGENCIA: {{:cm}}</td>
-            <td>COMISION GRUPO: {{:cmb}}</td>
+            <td>COMISION AGENCIA: {{:~formatNumber(cm,2)}}</td>
+            <td>COMISION GRUPO: {{:~formatNumber(cmb,2)}}</td>
         </tr>
         <tr>
-            <td colspan="2">BALANCE: {{:b}}</td>
+            <td colspan="2">BALANCE: {{:~formatNumber(b,2)}}</td>
         </tr>
         </tbody>
     </table>
@@ -203,19 +203,19 @@
 <script type="text/x-jsrender" id="rd-reporte">
     <tr>
         <td class="text-uppercase">{{:desc}}</td>
-        <td>{{:~formatNumber(jugada,0)}}</td>
-        <td>{{:~formatNumber(comision,0)}}</td>
-        <td>{{:~formatNumber(pago,0)}}</td>
-        <td>{{:~formatNumber(jugada-pago-comision,0)}}</td>
+        <td>{{:~formatNumber(jugada,2)}}</td>
+        <td>{{:~formatNumber(comision,2)}}</td>
+        <td>{{:~formatNumber(pago,2)}}</td>
+        <td>{{:~formatNumber(jugada-pago-comision,2)}}</td>
     </tr>
 </script>
 
 <script type="text/x-jsrender" id="rd-reporte2">
     <tr>
         <td class="text-uppercase">{{:desc}}</td>
-        <td>{{:~formatNumber(jugada,0)}}</td>
-        <td>{{:~formatNumber(comision,0)}}</td>
-        <td>{{:~formatNumber(premio,0)}}</td>
-        <td>{{:~formatNumber(jugada-premio-comision,0)}}</td>
+        <td>{{:~formatNumber(jugada,2)}}</td>
+        <td>{{:~formatNumber(comision,2)}}</td>
+        <td>{{:~formatNumber(premio,2)}}</td>
+        <td>{{:~formatNumber(jugada-premio-comision,2)}}</td>
     </tr>
 </script>

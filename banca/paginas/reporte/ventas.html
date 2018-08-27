@@ -124,8 +124,8 @@
     <tr>
         {{/if}}
         <td><button class="btn btn-primary btn-xs fticket" data-codigo="{{:c}}" data-id="{{:id}}"><i class="fa fa-search"></i> {{:id}}</button><label class="label label-default">{{:c}}</td>
-        <td>{{:m}}</td>
-        <td>{{:pr}}</td>
-        <td>{{:pg}}</td>
+        <td>{{:~formatNumber(m,2)}}</td>
+        <td>{{:~formatNumber(pr,2)}}</td>
+        <td>{{:~formatNumber(pg,2)}}</td>
     </tr>
 </script>

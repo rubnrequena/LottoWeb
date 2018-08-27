@@ -170,9 +170,9 @@ function sorteoMonitor_nav() {
                 if (item.jugada>ld.jugada) ld = item;
             });
 
-            $("#jugada").html(jg.format(0));
+            $("#jugada").html(jg.format(2));
             $("#bnLider").html(ld.banca);
-            $("#bnLider-jg").html(ld.jugada.format(0));
+            $("#bnLider-jg").html(ld.jugada.format(2));
 
             ld = data.n[0];
             data.n.forEach(function (item) {
@@ -180,7 +180,7 @@ function sorteoMonitor_nav() {
                 if (item.jugada>ld.jugada) ld = item;
             });
             $("#numLider").html(ld.desc);
-            $("#numLider-jg").html(ld.jugada.format(0));
+            $("#numLider-jg").html(ld.jugada.format(2));
 
             $("#ventas-body").html(jsrender($('#rd-ventas-row'),data.t));
             $("#numeros-body").html(jsrender($('#rd-vtnum-row'),data.n));
@@ -807,22 +807,22 @@ function reporteGeneral_nav (p,args) {
         if (rv) cmb = Math.abs(cmb);
 
         var total = {
-            j: j.format(0), pr: pr.format(0),cm:cm.format(0),cmb:cmb.format(0)
+            j: j.format(2), pr: pr.format(2),cm:cm.format(2),cmb:cmb.format(2)
         };
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
         if (rv) {
-            total.b=(b-cmb-cm).format(0);
-            $('#mnt-balance').html((b-cmb-cm).format(0));
-            $('#tg-descuento').html((Math.abs(cmb+cm)).format(0));
+            total.b=(b-cmb-cm).format(2);
+            $('#mnt-balance').html((b-cmb-cm).format(2));
+            $('#tg-descuento').html((Math.abs(cmb+cm)).format(2));
         } else {
-            total.b = (b-(cmb||cm)).format(0);
-            $('#mnt-balance').html((b-(cmb||cm)).format(0));
-            $('#tg-descuento').html((Math.abs(cmb-cm)).format(0));
+            total.b = (b-(cmb||cm)).format(2);
+            $('#mnt-balance').html((b-(cmb||cm)).format(2));
+            $('#tg-descuento').html((Math.abs(cmb-cm)).format(2));
         }
-        $('#tg-comision').html(cm.format(0));
-        $('#tg-renta').html(cmb.format(0));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-renta').html(cmb.format(2));
 
         $('#bheader').html(jsrender($('#rd-total'),total));
 
@@ -834,8 +834,8 @@ function reporteGeneral_nav (p,args) {
         });
         bnc = rank[0];
         $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jugada.format(0));
-        $('#tj-balance').html(bnc.balance.format(0));
+        $('#tj-jugada').html(bnc.jugada.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
 
         //top ganancia
         rank = rpt.slice();
@@ -844,8 +844,8 @@ function reporteGeneral_nav (p,args) {
         });
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jugada.format(0));
-        $('#tg-balance').html(bnc.balance.format(0));
+        $('#tg-jugada').html(bnc.jugada.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
 
         if (premios.val()==0) $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
         else $('#reporte-body').html(jsrender($('#rd-reporte2'),rpt));
@@ -918,8 +918,8 @@ function reporteTaquilla_nav (p,args) {
             });
             bnc = rank[0];
             $('#tj-banca').html(bnc.fecha);
-            $('#tj-jugada').html(bnc.jugada.format(0));
-            $('#tj-balance').html(bnc.balance.format(0));
+            $('#tj-jugada').html(bnc.jugada.format(2));
+            $('#tj-balance').html(bnc.balance.format(2));
 
             //top ganancia
             rank = d.slice();
@@ -928,8 +928,8 @@ function reporteTaquilla_nav (p,args) {
             });
             bnc = rank[0];
             $('#tg-banca').html(bnc.fecha);
-            $('#tg-jugada').html(bnc.jugada.format(0));
-            $('#tg-balance').html(bnc.balance.format(0));
+            $('#tg-jugada').html(bnc.jugada.format(2));
+            $('#tg-balance').html(bnc.balance.format(2));
         })
     });
     premios.change(updateView);
@@ -948,23 +948,23 @@ function reporteTaquilla_nav (p,args) {
             cm+=item.comision;
         });
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
         if (premios.val()==0) {
-            $('#mnt-balance').html((j-pg-cm).format(0));
+            $('#mnt-balance').html((j-pg-cm).format(2));
             total = {
-                j: j.format(0), pr: pr.format(0), b:(j-pg-cm).format(0),cm:cm.format(0)
+                j: j.format(2), pr: pr.format(2), b:(j-pg-cm).format(2),cm:cm.format(2)
             };
         }  else {
-            $('#mnt-balance').html((j-pr-cm).format(0));
+            $('#mnt-balance').html((j-pr-cm).format(2));
             total = {
-                j: j.format(0), pr: pr.format(0), b:(j-pr-cm).format(0),cm:cm.format(0)
+                j: j.format(2), pr: pr.format(2), b:(j-pr-cm).format(2),cm:cm.format(2)
             };
         }
 
-        $('#tg-descuento').html((cm).format(0));
-        $('#tg-comision').html(cm.format(0));
+        $('#tg-descuento').html((cm).format(2));
+        $('#tg-comision').html(cm.format(2));
 
         $('#bheader').html(jsrender($('#rd-total'),total));
     }
@@ -1199,15 +1199,15 @@ function reporteVentas_nav (p,args) {
             }
         });
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
-        $('#mnt-balance').html((j-pr).format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((j-pr).format(2));
 
-        $('#mnt-pendiente').html((pr-pg).format(0));
-        $('#mnt-ppagos').html(((pg/pr)*100).format(0));
-        $('#mnt-tanulados').html(an.format(0));
-        $('#mnt-anulados').html(anm.format(0));
+        $('#mnt-pendiente').html((pr-pg).format(2));
+        $('#mnt-ppagos').html(((pg/pr)*100).format(2));
+        $('#mnt-tanulados').html(an.format(2));
+        $('#mnt-anulados').html(anm.format(2));
     }
 
     $('#print-reporte').click(function () {
@@ -1219,11 +1219,11 @@ function reporteVentas_nav (p,args) {
             {type:"linea",text:"REPORTE TICKETS",align:"center"}
         ];
 
-        _lineas.push({type:"linea",text:"JUGADO: "+j.format(0),align:"left"});
-        _lineas.push({type:"linea",text:"PREMIOS: "+pr.format(0),align:"left"});
-        _lineas.push({type:"linea",text:"PAGOS: "+pg.format(0),align:"left"});
-        _lineas.push({type:"linea",text:"PENDIENTE: "+(pr-pg).format(0),align:"left"});
-        _lineas.push({type:"linea",text:"BALANCE: "+(j-pg).format(0),align:"left"});
+        _lineas.push({type:"linea",text:"JUGADO: "+j.format(2),align:"left"});
+        _lineas.push({type:"linea",text:"PREMIOS: "+pr.format(2),align:"left"});
+        _lineas.push({type:"linea",text:"PAGOS: "+pg.format(2),align:"left"});
+        _lineas.push({type:"linea",text:"PENDIENTE: "+(pr-pg).format(2),align:"left"});
+        _lineas.push({type:"linea",text:"BALANCE: "+(j-pg).format(2),align:"left"});
         _lineas.push({type:"linea",text:" ",align:"left"});
 
         print.sendMessage("print",{data:_lineas,printer:1});
@@ -1269,17 +1269,17 @@ function reporteDiario_nav (p,args) {
         });
 
         var total = {
-            j: j.format(0), pr: pr.format(0),cm:cm.format(0),cmb:cmb.format(0)
+            j: j.format(2), pr: pr.format(2),cm:cm.format(2),cmb:cmb.format(2)
         };
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
 
-        $('#mnt-balance').html((b-cm).format(0));
-        $('#tg-descuento').html(cm.format(0));
+        $('#mnt-balance').html((b-cm).format(2));
+        $('#tg-descuento').html(cm.format(2));
 
-        $('#tg-comision').html(cm.format(0));
-        $('#tg-renta').html(cmb.format(0));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-renta').html(cmb.format(2));
 
         $('#bheader').html(jsrender($('#rd-total'),total));
 
@@ -1291,8 +1291,8 @@ function reporteDiario_nav (p,args) {
         });
         bnc = rank[0];
         $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jugado.format(0));
-        $('#tj-balance').html(bnc.balance.format(0));
+        $('#tj-jugada').html(bnc.jugado.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
 
         //top ganancia
         rank = rpt.slice();
@@ -1301,8 +1301,8 @@ function reporteDiario_nav (p,args) {
         });
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jugado.format(0));
-        $('#tg-balance').html(bnc.balance.format(0));
+        $('#tg-jugada').html(bnc.jugado.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
 
         if (premios.val()==0) $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
         else $('#reporte-body').html(jsrender($('#rd-reporte2'),rpt));

@@ -7,6 +7,19 @@
     <h2 class="text-uppercase" id="taq-nombre"></h2>
 </div>
 <div class="panel">
+    <div class="panel-heading hidden-xs">
+        <span class="panel-title"><i class="fa fa-newspaper-o"></i>SRQ RECONVERSION 2018</span>
+    </div>
+    <div class="panel-body panel-body-nopadding">
+        <div class="table-responsive">
+            <h4>
+                <p>Porque SRQ se las pone faciliiiiito.. a partir de hoy (6/11) le traemos la libreria de video tutoriales, donde podran aprender a dominar el sistema desde lo mas basico hasta los aspectos mas avanzados.</p>
+                <p>Para empezar a disfrutar solo necesita ingresar en la seccion de <a href="#ayuda"><i class="fa fa-question"></i> Ayuda</a>.</p>
+            </h4>
+        </div>&lt;!&ndash; table-responsive &ndash;&gt;
+    </div>
+</div>
+<div class="panel">
     <div class="panel-body">
         <div class="row taq-top-menu">
             <div class="col-md-3 col-sm-6">
@@ -47,8 +60,7 @@
                                 </div>
                                 <div class="col-sm-offset-2 col-sm-5">
                                     <label>Monto</label>
-                                    <input class="form-control" id="vnt-monto" name="monto" type="number" min="100"
-                                           max="999999999" step="any" autocomplete="off">
+                                    <input class="form-control" id="vnt-monto" name="monto" type="number" min="0.01" step="any" autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -71,7 +83,7 @@
         <div class="col-sm-7">
             <div class="btn-group btn-group-justified mt10">
                 <div class="btn-group" id="print-group">
-                    <button id="vnt-btn" class="btn btn-success"><span id="printbtn"><i class="fa fa-print"></i> IMPRIMIR</span> <strong class="text-x">[<span id="vnt-total">0.00</span> Bs]</strong></button>
+                    <button id="vnt-btn" class="btn btn-success"><span id="printbtn"><i class="fa fa-print"></i> IMPRIMIR</span> <strong class="text-x">[<span id="vnt-total">0.00</span>]</strong></button>
                 </div>
                 <div class="btn-group">
                     <button id="vnt-clr" class="btn btn-danger"><i class="fa fa-trash"></i> CANCELAR</button>
@@ -189,7 +201,7 @@
         {{if tpte}}
         <td><span class="label label-warning"><i class="fa fa-warning"></i> {{:monto}}</span></td>
         {{else}}
-        <td>{{:monto}}</td>
+        <td><label class="label label-success ncono" datan="{{:~formatn(monto,2,'.','')}}">{{:~formatn(monto,2)}}</label></td>
         {{/if}}
         <td>{{:~sorteo(sorteoID)}}</td>
     </tr>
@@ -206,19 +218,18 @@
             <select class="s2b form-control s2sorteos rptsorteo srt{{:sorteoID}}" name="sorteo" required></select>
         </div>
         <div class="col-sm-3">
-            <input class="form-control" name="monto" type="number" min="100" max="99999" step="any" value="{{:monto}}">
+            <input class="form-control" name="monto" type="number" min="0.1" step="any" value="{{:monto}}">
         </div>
     </div>
 </script>
 <script type="text/x-jsrender" id="print-select">
     <div class="btn-group" style="margin-top:10px; width: 100%;">
         <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" id="printbtn">
-            <span id="print-label">Elegir</span> <strong class="text-x">[<span id="vnt-total">0.00</span> Bs]</strong> <span class="caret"></span>
+            <span id="print-label">Elegir</span> <strong class="text-x">[<span class="ncono" datan="{{:~formatNumber(0,2,'.','t')}}" id="vnt-total">0.00</span> Bs]</strong> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
             <li><a id="print-paper" href="#imprimir"><i class="fa fa-print"></i> Imprimir</a></li>
             <li><a id="print-mail" href="#correo"><i class="fa fa-envelope"></i> Correo</a></li>
-            <li><a id="print-sms" href="#sms"><i class="fa fa-mobile-phone"></i> SMS</a></li>
             <li><a id="print-ws" href="#ws"><i class="fa fa-whatsapp"></i> Whatsapp</a></li>
         </ul>
     </div>

@@ -20,3 +20,4 @@ var $usuario;
 var $elementos;
 var $bancas;
 var $usuarios;
+var $sorteos;

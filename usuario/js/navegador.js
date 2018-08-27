@@ -186,9 +186,9 @@ function sorteoMonitor_nav() {
                     if (item.jugada > ld.jugada) ld = item;
                 });
 
-                $("#jugada").html(jg.format(0));
+                $("#jugada").html(jg.format(2));
                 $("#bnLider").html(ld.banca);
-                $("#bnLider-jg").html(ld.jugada.format(0));
+                $("#bnLider-jg").html(ld.jugada.format(2));
 
                 ld = data.n[0];
                 data.n.forEach(function (item) {
@@ -200,7 +200,7 @@ function sorteoMonitor_nav() {
                     if (item.jugada > ld.jugada) ld = item;
                 });
                 $("#numLider").html(ld.desc);
-                $("#numLider-jg").html(ld.jugada.format(0));
+                $("#numLider-jg").html(ld.jugada.format(2));
 
                 $("#ventas-body").html(jsrender($('#rd-ventas-row'), data.t));
                 $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
@@ -438,7 +438,6 @@ function bancasBancas_nav(p,args) {
             return a.papelera==_papelera;
         })));
 
-
         var toggles = $('.toggle');
         toggles.each(function (index) {
             var me = $(this);
@@ -509,254 +508,254 @@ function bancasBancas_nav(p,args) {
 nav.paginas.addListener("bancas/bancas",bancasBancas_nav);
 
 function bancasBanca_nav(p,args) {
-    if (args && args.length==1) {
-        var editar = $('#banca-nueva');
-        var clave = $('#banca-psw');
-        var renta = $('#banca-renta');
-        var banca, taquillas;
-        var multiplo=0;
+        if (args && args.length==1) {
+            var editar = $('#banca-nueva');
+            var clave = $('#banca-psw');
+            var renta = $('#banca-renta');
+            var banca, taquillas;
+            var multiplo=0;
 
-        var papelera = $('#papelera');
-        papelera.change(function () {
-            updateTaquillas();
-        });
-
-        editar.submit(function (e) {
-            e.preventDefault(e);
-            var data = formControls(this);
-            data.bancaID = banca.bancaID;
-            data.comision = data.comision*multiplo;
-            //if (data.comision<$usuario.renta) { notificacion("ERROR","LA COMISION DE ALQUILER NO PUEDE SER MENOR A LA ASIGNADA POR EL ADMINISTRADOR"); return; }
-            formLock(this);
-            socket.sendMessage("banca-editar",data, function (e, d) {
-                formLock(editar[0],false);
-                if (d.code==1) {
-                    notificacion("Cambios guardados con exito");
-                    if (d.hasOwnProperty("activa")) banca.activa = d.activa;
-                    if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
-                    if (d.hasOwnProperty("comision")) banca.comision = d.comision;
-                    if (d.hasOwnProperty("usuario")) banca.usuario = d.usuario;
-                }
-                else notificacion('Error al realizar cambios','','growl-danger');
-            });
-        });
-        renta.submit(function (e) {
-            e.preventDefault(e);
-            var data = formControls(this);
-            data.bancaID = banca.bancaID;
-            data.renta = data.renta/100;
-            formLock(this);
-            socket.sendMessage("banca-editar",data, function (e, d) {
-                formLock(renta[0],false);
-                if (d==1) notificacion("Cambios guardados con exito");
-                else notificacion('Error al realizar cambios','','growl-danger');
-            });
-        });
-        clave.submit(function (e) {
-            e.preventDefault(e);
-            formLock(this);
-            var data = formControls(this);
-            data.bancaID = banca.bancaID;
-            socket.sendMessage("banca-editar",data, function (e, d) {
-                formReset(clave[0]);
-                if (d.code==1) {
-                    notificacion("Cambio de clave exitoso");
-                    if (d.hasOwnProperty("clave")) banca.clave = d.clave;
-                }
-                else notificacion('Cambio de clave fallido','','growl-danger');
-            });
-        });
-        $('.rdo-com').change(function () {
-            multiplo = this.value;
-            $('#bn-comision').prop("disabled",this.value==0);
-        });
-
-        banca = findBy("bancaID",args[0],$bancas);
-        formSet(editar,banca,function (val,field) {
-            if (field=="comision") return Math.abs(val*100);
-            if (val===false) return 0;
-            else if (val===true) return 1;
-            else return val;
-        });
-        if (banca.comision==0) $('#radioNormal').prop('checked',true);
-        else if (banca.comision>0) $('#radioRecogedor').trigger('click');
-        else if (banca.comision<0) $('#radioReventa').trigger('click');
-
-        socket.sendMessage("taquillas",{bancaID:banca.bancaID}, function (e, d) {
-            taquillas = d || [];
-            updateTaquillas();
-        });
-
-        $('#taquilla-nueva').submit(function (e) {
-            e.preventDefault(e);
-            var data = formControls(this);
-            data.bancaID = banca.bancaID;
-            data.usuarioID = banca.usuarioID;
-            var form = formLock(this);
-            socket.sendMessage("taquilla-nueva", data, function (e, d) {
-                if (d.hasOwnProperty("code")) {
-                    formLock(form,false);
-                    notificacion("DISCULPE: USUARIO NO DISPONIBLE","El usuario que esta asignando a la taquilla, ya esta en uso intente con uno distinto.","growl-danger");
-                } else {
-                    formReset(form);
-                    data.taquillaID = d;
-                    data.papelera = 0;
-                    data.fingerlock = true;
-                    data.fingerprint = null;
-                    taquillas.push(data);
-                    updateTaquillas();
-                }
-            });
-        });
-
-        function updateTaquillas() {
-            var _papelera = papelera.prop("checked");
-            taquillas.sort(function (a,b) {
-                if (a.papelera< b.papelera) return -1;
-                else if (a.papelera> b.papelera) return 1;
-                else {
-                    if (a.activa< b.activa) {
-                        return 1;
-                    } else if (a.activa> b.activa) {
-                        return -1;
-                    } else return a.taquillaID- b.taquillaID;
-                }
+            var papelera = $('#papelera');
+            papelera.change(function () {
+                updateTaquillas();
             });
 
-            $('#taquillas-body').html(jsrender($('#rd-taquilla-row'),taquillas.filter(function (a) {
-                return _papelera== a.papelera;
-            })));
-            var psw = $('.password');
-            psw.on('mouseover', function (e) {
-                $(e.target).html($(e.target).data('clave'));
-            });
-            psw.on('mouseout', function (e) {
-                $(e.target).html("***");
-            });
-
-            var toggles = $('.activart');
-            toggles.each(function (index) {
-                var me = $(this);
-                me.toggles({
-                    text: {
-                        on: "SI",
-                        off: "NO"
-                    },
-                    on: me.data('activa'),
-                    click: 1
-                });
-            });
-            toggles.on("toggle", function (e, act) {
-                var id = $(e.target).data('target');
-                var taquilla = findBy("taquillaID", id, taquillas);
-                socket.sendMessage("taquilla-editar", {taquillaID: taquilla.taquillaID, activa: act}, function (e, d) {
-                    if (d===1) taquilla.activa = act;
-                    else {
-                        alert("ERROR AL MODIFICAR ESTADO ACTIVO DE TAQUILLA")
-                    }
-                })
-            });
-            //fingerlock
-            var fingerlock = $('.fingerlock');
-            fingerlock.each(function (index) {
-                var me = $(this);
-                me.toggles({
-                    text: {
-                        on: "SI",
-                        off: "NO"
-                    },
-                    on: me.data('activa'),
-                    click: true
-                });
-            });
-            fingerlock.on("toggle", function (e, act) {
-                var id = $(e.target).data('target');
-                var taquilla = findBy("taquillaID", id, taquillas);
-                socket.sendMessage("taquilla-flock", {taquillaID: taquilla.taquillaID, activa: act}, function (e, d) {
-                    if (d.ok===1) {
-                        taquilla.fingerlock = act;
-                        if (act==false) {
-                            alert('ADVERTENCIA: Al desactivar el sistema de proteccion por huella, SRQ no podra, ni se hara responsable por posibles fraudes por ventas no autorizadas por parte de la agencia.');
-                        }
-                    }
-                    else {
-                        alert("ERROR AL MODIFICAR VALIDACION DE HUELLA")
-                    }
-                })
-            });
-
-            //fingerclear
-            $('.fingerclear').click(function (e) {
+            editar.submit(function (e) {
                 e.preventDefault(e);
-                var b = $(e.currentTarget);
-                var id = parseInt(b.attr('val'));
-                socket.sendMessage("taquilla-fpclear", {taquillaID:id}, function (e, d) {
-                    if (d.ok===1) {
-                        b.parent().html('<i class="fa fa-shield"></i>');
-                    } else {
-                        alert("ERROR AL MODIFICAR HUELLA DEL TAQUILLA")
-                    }
-                })
-            });
-
-            $('.bn-remove-req').click(function (e) {
-                e.preventDefault(e);
-                var tID = $(this).attr("taqID");
-                var r = confirm('Seguro desea eliminar esta taquilla?');
-                if (r===true) {
-                    socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:1}, function (e, d) {
-                        if (d.code==1) {
-                            var taquilla = findBy("taquillaID", tID, taquillas);
-                            taquilla.papelera = 1;
-                            updateTaquillas();
-                        }
-                    })
-                }
-                return false;
-            });
-            $('.bn-remove-res').click(function (e) {
-                e.preventDefault(e);
-                var tID = $(this).attr("taqID");
-                socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:0}, function (e, d) {
+                var data = formControls(this);
+                data.bancaID = banca.bancaID;
+                data.comision = data.comision*multiplo;
+                //if (data.comision<$usuario.renta) { notificacion("ERROR","LA COMISION DE ALQUILER NO PUEDE SER MENOR A LA ASIGNADA POR EL ADMINISTRADOR"); return; }
+                formLock(this);
+                socket.sendMessage("banca-editar",data, function (e, d) {
+                    formLock(editar[0],false);
                     if (d.code==1) {
-                        var taquilla = findBy("taquillaID", tID, taquillas);
-                        taquilla.papelera = 0;
+                        notificacion("Cambios guardados con exito");
+                        if (d.hasOwnProperty("activa")) banca.activa = d.activa;
+                        if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
+                        if (d.hasOwnProperty("comision")) banca.comision = d.comision;
+                        if (d.hasOwnProperty("usuario")) banca.usuario = d.usuario;
+                    }
+                    else notificacion('Error al realizar cambios','','growl-danger');
+                });
+            });
+            renta.submit(function (e) {
+                e.preventDefault(e);
+                var data = formControls(this);
+                data.bancaID = banca.bancaID;
+                data.renta = data.renta/100;
+                formLock(this);
+                socket.sendMessage("banca-editar",data, function (e, d) {
+                    formLock(renta[0],false);
+                    if (d==1) notificacion("Cambios guardados con exito");
+                    else notificacion('Error al realizar cambios','','growl-danger');
+                });
+            });
+            clave.submit(function (e) {
+                e.preventDefault(e);
+                formLock(this);
+                var data = formControls(this);
+                data.bancaID = banca.bancaID;
+                socket.sendMessage("banca-editar",data, function (e, d) {
+                    formReset(clave[0]);
+                    if (d.code==1) {
+                        notificacion("Cambio de clave exitoso");
+                        if (d.hasOwnProperty("clave")) banca.clave = d.clave;
+                    }
+                    else notificacion('Cambio de clave fallido','','growl-danger');
+                });
+            });
+            $('.rdo-com').change(function () {
+                multiplo = this.value;
+                $('#bn-comision').prop("disabled",this.value==0);
+            });
+
+            banca = findBy("bancaID",args[0],$bancas);
+            formSet(editar,banca,function (val,field) {
+                if (field=="comision") return Math.abs(val*100);
+                if (val===false) return 0;
+                else if (val===true) return 1;
+                else return val;
+            });
+            if (banca.comision==0) $('#radioNormal').prop('checked',true);
+            else if (banca.comision>0) $('#radioRecogedor').trigger('click');
+            else if (banca.comision<0) $('#radioReventa').trigger('click');
+
+            socket.sendMessage("taquillas",{bancaID:banca.bancaID}, function (e, d) {
+                taquillas = d || [];
+                updateTaquillas();
+            });
+
+            $('#taquilla-nueva').submit(function (e) {
+                e.preventDefault(e);
+                var data = formControls(this);
+                data.bancaID = banca.bancaID;
+                data.usuarioID = banca.usuarioID;
+                var form = formLock(this);
+                socket.sendMessage("taquilla-nueva", data, function (e, d) {
+                    if (d.hasOwnProperty("code")) {
+                        formLock(form,false);
+                        notificacion("DISCULPE: USUARIO NO DISPONIBLE","El usuario que esta asignando a la taquilla, ya esta en uso intente con uno distinto.","growl-danger");
+                    } else {
+                        formReset(form);
+                        data.taquillaID = d;
+                        data.papelera = 0;
+                        data.fingerlock = true;
+                        data.fingerprint = null;
+                        taquillas.push(data);
                         updateTaquillas();
                     }
                 });
-                return false;
             });
-        }
-        var remTaqI = $('#rem-taqinactivas');
-        remTaqI.click(function () {
-            var i=0;
-            var taqs = taquillas.exploreBy("activa",0).exploreBy("papelera",0);
-            if (taqs.length==0) return;
-            remTaqI.prop('disabled',1);
-            var taq, cont = $('#rem-tqinc');
 
-            var r = confirm('Confirma desea remover todas las taquillas inactivas?');
-            if (r===true) removerTaquilla(taqs[i].taquillaID);
-
-            function removerTaquilla (id) {
-                cont.html(i+'/'+taqs.length);
-                socket.sendMessage('taquilla-remover',{taquillaID:id,papelera:1}, function (e,d) {
-                    if (d.code==1) {
-                        taq = findBy("taquillaID", id, taquillas);
-                        taq.papelera = 1;
-                        if (++i<taqs.length) removerTaquilla(taqs[i].taquillaID);
-                        else {
-                            updateTaquillas();
-                            cont.html('');
-                            remTaqI.prop('disabled',0);
-                        }
+            function updateTaquillas() {
+                var _papelera = papelera.prop("checked");
+                taquillas.sort(function (a,b) {
+                    if (a.papelera< b.papelera) return -1;
+                    else if (a.papelera> b.papelera) return 1;
+                    else {
+                        if (a.activa< b.activa) {
+                            return 1;
+                        } else if (a.activa> b.activa) {
+                            return -1;
+                        } else return a.taquillaID- b.taquillaID;
                     }
                 });
+
+                $('#taquillas-body').html(jsrender($('#rd-taquilla-row'),taquillas.filter(function (a) {
+                    return _papelera== a.papelera;
+                })));
+                var psw = $('.password');
+                psw.on('mouseover', function (e) {
+                    $(e.target).html($(e.target).data('clave'));
+                });
+                psw.on('mouseout', function (e) {
+                    $(e.target).html("***");
+                });
+
+                var toggles = $('.activart');
+                toggles.each(function (index) {
+                    var me = $(this);
+                    me.toggles({
+                        text: {
+                            on: "SI",
+                            off: "NO"
+                        },
+                        on: me.data('activa'),
+                        click: 1
+                    });
+                });
+                toggles.on("toggle", function (e, act) {
+                    var id = $(e.target).data('target');
+                    var taquilla = findBy("taquillaID", id, taquillas);
+                    socket.sendMessage("taquilla-editar", {taquillaID: taquilla.taquillaID, activa: act}, function (e, d) {
+                        if (d===1) taquilla.activa = act;
+                        else {
+                            alert("ERROR AL MODIFICAR ESTADO ACTIVO DE TAQUILLA")
+                        }
+                    })
+                });
+                //fingerlock
+                var fingerlock = $('.fingerlock');
+                fingerlock.each(function (index) {
+                    var me = $(this);
+                    me.toggles({
+                        text: {
+                            on: "SI",
+                            off: "NO"
+                        },
+                        on: me.data('activa'),
+                        click: true
+                    });
+                });
+                fingerlock.on("toggle", function (e, act) {
+                    var id = $(e.target).data('target');
+                    var taquilla = findBy("taquillaID", id, taquillas);
+                    socket.sendMessage("taquilla-flock", {taquillaID: taquilla.taquillaID, activa: act}, function (e, d) {
+                        if (d.ok===1) {
+                            taquilla.fingerlock = act;
+                            if (act==false) {
+                                alert('ADVERTENCIA: Al desactivar el sistema de proteccion por huella, SRQ no podra, ni se hara responsable por posibles fraudes por ventas no autorizadas por parte de la agencia.');
+                            }
+                        }
+                        else {
+                            alert("ERROR AL MODIFICAR VALIDACION DE HUELLA")
+                        }
+                    })
+                });
+
+                //fingerclear
+                $('.fingerclear').click(function (e) {
+                    e.preventDefault(e);
+                    var b = $(e.currentTarget);
+                    var id = parseInt(b.attr('val'));
+                    socket.sendMessage("taquilla-fpclear", {taquillaID:id}, function (e, d) {
+                        if (d.ok===1) {
+                            b.parent().html('<i class="fa fa-shield"></i>');
+                        } else {
+                            alert("ERROR AL MODIFICAR HUELLA DEL TAQUILLA")
+                        }
+                    })
+                });
+
+                $('.bn-remove-req').click(function (e) {
+                    e.preventDefault(e);
+                    var tID = $(this).attr("taqID");
+                    var r = confirm('Seguro desea eliminar esta taquilla?');
+                    if (r===true) {
+                        socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:1}, function (e, d) {
+                            if (d.code==1) {
+                                var taquilla = findBy("taquillaID", tID, taquillas);
+                                taquilla.papelera = 1;
+                                updateTaquillas();
+                            }
+                        })
+                    }
+                    return false;
+                });
+                $('.bn-remove-res').click(function (e) {
+                    e.preventDefault(e);
+                    var tID = $(this).attr("taqID");
+                    socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:0}, function (e, d) {
+                        if (d.code==1) {
+                            var taquilla = findBy("taquillaID", tID, taquillas);
+                            taquilla.papelera = 0;
+                            updateTaquillas();
+                        }
+                    });
+                    return false;
+                });
             }
-        });
-    } else {
-        nav.nav("406");
-    }
+            var remTaqI = $('#rem-taqinactivas');
+            remTaqI.click(function () {
+                var i=0;
+                var taqs = taquillas.exploreBy("activa",0).exploreBy("papelera",0);
+                if (taqs.length==0) return;
+                remTaqI.prop('disabled',1);
+                var taq, cont = $('#rem-tqinc');
+
+                var r = confirm('Confirma desea remover todas las taquillas inactivas?');
+                if (r===true) removerTaquilla(taqs[i].taquillaID);
+
+                function removerTaquilla (id) {
+                    cont.html(i+'/'+taqs.length);
+                    socket.sendMessage('taquilla-remover',{taquillaID:id,papelera:1}, function (e,d) {
+                        if (d.code==1) {
+                            taq = findBy("taquillaID", id, taquillas);
+                            taq.papelera = 1;
+                            if (++i<taqs.length) removerTaquilla(taqs[i].taquillaID);
+                            else {
+                                updateTaquillas();
+                                cont.html('');
+                                remTaqI.prop('disabled',0);
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            nav.nav("406");
+        }
 }
 nav.paginas.addListener("bancas/banca",bancasBanca_nav);
 
@@ -1159,18 +1158,18 @@ function reporteGeneral_nav (p,args) {
         });
 
         var total = {
-            j: j.format(0), pr: pr.format(0), b:(b-rn).format(0),cm:cm.format(0), r:rn.format(0)
+            j: j.format(2), pr: pr.format(2), b:(b-rn).format(2),cm:cm.format(2), r:rn.format(2)
         };
         $('#bheader').html(jsrender($('#rd-total'),total));
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
-        $('#mnt-balance').html((b-rn).format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((b-rn).format(2));
 
-        $('#tg-descuento').html((cm+rn).format(0));
-        $('#tg-comision').html(cm.format(0));
-        $('#tg-renta').html(rn.format(0));
+        $('#tg-descuento').html((cm+rn).format(2));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-renta').html(rn.format(2));
 
         var rank, bnc;
         //top jugado
@@ -1180,8 +1179,8 @@ function reporteGeneral_nav (p,args) {
         });
         bnc = rank[0];
         $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jugada.format(0));
-        $('#tj-balance').html(bnc.balance.format(0));
+        $('#tj-jugada').html(bnc.jugada.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
 
         //top ganancia
         rank = rpt.slice();
@@ -1190,8 +1189,8 @@ function reporteGeneral_nav (p,args) {
         });
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jugada.format(0));
-        $('#tg-balance').html(bnc.balance.format(0));
+        $('#tg-jugada').html(bnc.jugada.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
 
         if (premios.val()==0) $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
         else $('#reporte-body').html(jsrender($('#rd-reporte2'),rpt));
@@ -1266,14 +1265,14 @@ function reporteTaquilla_nav (p,args) {
 				cm+=item.comision;
             });
 
-            $('#mnt-jugado').html(j.format(0));
-            $('#mnt-premios').html(pr.format(0));
-            $('#mnt-pagos').html(pg.format(0));
-            $('#mnt-balance').html((j-pr-cm).format(0));
+            $('#mnt-jugado').html(j.format(2));
+            $('#mnt-premios').html(pr.format(2));
+            $('#mnt-pagos').html(pg.format(2));
+            $('#mnt-balance').html((j-pr-cm).format(2));
 
 
-            $('#tg-descuento').html((cm).format(0));
-            $('#tg-comision').html(cm.format(0));
+            $('#tg-descuento').html((cm).format(2));
+            $('#tg-comision').html(cm.format(2));
 
             var rank, bnc;
             //top jugado
@@ -1283,8 +1282,8 @@ function reporteTaquilla_nav (p,args) {
             });
             bnc = rank[0];
             $('#tj-banca').html(bnc.descripcion);
-            $('#tj-jugada').html(bnc.jugada.format(0));
-            $('#tj-balance').html(bnc.balance.format(0));
+            $('#tj-jugada').html(bnc.jugada.format(2));
+            $('#tj-balance').html(bnc.balance.format(2));
 
             //top ganancia
             rank = d.slice();
@@ -1293,8 +1292,8 @@ function reporteTaquilla_nav (p,args) {
             });
             bnc = rank[0];
             $('#tg-banca').html(bnc.descripcion);
-            $('#tg-jugada').html(bnc.jugada.format(0));
-            $('#tg-balance').html(bnc.balance.format(0));
+            $('#tg-jugada').html(bnc.jugada.format(2));
+            $('#tg-balance').html(bnc.balance.format(2));
 
             updateView();
         })
@@ -1353,23 +1352,23 @@ function reporteGrupo_nav (p,args) {
         if (rv) cmb = Math.abs(cmb);
 
         var total = {
-            j: j.format(0), pr: pr.format(0),cm:cm.format(0),cmb:cmb.format(0)
+            j: j.format(2), pr: pr.format(2),cm:cm.format(2),cmb:cmb.format(2)
         };
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
         if (rv) {
-            total.b=(b-cmb-cm).format(0);
-            $('#mnt-balance').html((b-cmb-cm).format(0));
-            $('#tg-descuento').html((Math.abs(cmb+cm)).format(0));
+            total.b=(b-cmb-cm).format(2);
+            $('#mnt-balance').html((b-cmb-cm).format(2));
+            $('#tg-descuento').html((Math.abs(cmb+cm)).format(2));
         } else {
-            total.b = (b-(cmb||cm)).format(0);
-            $('#mnt-balance').html((b-(cmb||cm)).format(0));
-            $('#tg-descuento').html((Math.abs(cmb-cm)).format(0));
+            total.b = (b-(cmb||cm)).format(2);
+            $('#mnt-balance').html((b-(cmb||cm)).format(2));
+            $('#tg-descuento').html((Math.abs(cmb-cm)).format(2));
         }
-        $('#tg-comision').html(cm.format(0));
-        $('#tg-comisionBanca').html(cmb.format(0));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-comisionBanca').html(cmb.format(2));
 
         var rank, bnc;
         //top jugado
@@ -1379,8 +1378,8 @@ function reporteGrupo_nav (p,args) {
         });
         bnc = rank[0];
         $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jugada.format(0));
-        $('#tj-balance').html(bnc.balance.format(0));
+        $('#tj-jugada').html(bnc.jugada.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
 
         //top ganancia
         rank = rpt.slice();
@@ -1389,8 +1388,8 @@ function reporteGrupo_nav (p,args) {
         });
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jugada.format(0));
-        $('#tg-balance').html(bnc.balance.format(0));
+        $('#tg-jugada').html(bnc.jugada.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
 
         $('#bheader').html(jsrender($('#rd-total'),total));
 
@@ -1537,15 +1536,15 @@ function reporteVentas_nav (p,args) {
             }
         });
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
-        $('#mnt-balance').html((j-pr).format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((j-pr).format(2));
 
-        $('#mnt-pendiente').html((pr-pg).format(0));
-        $('#mnt-ppagos').html(((pg/pr)*100).format(0));
-        $('#mnt-tanulados').html(an.format(0));
-        $('#mnt-anulados').html(anm.format(0));
+        $('#mnt-pendiente').html((pr-pg).format(2));
+        $('#mnt-ppagos').html(((pg/pr)*100).format(2));
+        $('#mnt-tanulados').html(an.format(2));
+        $('#mnt-anulados').html(anm.format(2));
     }
 
     $('#print-reporte').click(function () {
@@ -1557,11 +1556,11 @@ function reporteVentas_nav (p,args) {
             {type:"linea",text:"REPORTE TICKETS",align:"center"}
         ];
 
-        _lineas.push({type:"linea",text:"JUGADO: "+j.format(0),align:"left"});
-        _lineas.push({type:"linea",text:"PREMIOS: "+pr.format(0),align:"left"});
-        _lineas.push({type:"linea",text:"PAGOS: "+pg.format(0),align:"left"});
-        _lineas.push({type:"linea",text:"PENDIENTE: "+(pr-pg).format(0),align:"left"});
-        _lineas.push({type:"linea",text:"BALANCE: "+(j-pg).format(0),align:"left"});
+        _lineas.push({type:"linea",text:"JUGADO: "+j.format(2),align:"left"});
+        _lineas.push({type:"linea",text:"PREMIOS: "+pr.format(2),align:"left"});
+        _lineas.push({type:"linea",text:"PAGOS: "+pg.format(2),align:"left"});
+        _lineas.push({type:"linea",text:"PENDIENTE: "+(pr-pg).format(2),align:"left"});
+        _lineas.push({type:"linea",text:"BALANCE: "+(j-pg).format(2),align:"left"});
         _lineas.push({type:"linea",text:" ",align:"left"});
 
         print.sendMessage("print",{data:_lineas,printer:1});

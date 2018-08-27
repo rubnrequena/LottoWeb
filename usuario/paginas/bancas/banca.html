@@ -141,7 +141,7 @@
 <script type="text/x-jsrender" id="rd-taquilla-row">
     <tr>
         {{if fingerprint}}
-        <td><a href="#fp"><i class="fa fa-shield text-success"></i></a> </td>
+        <td><a class="fingerclear" id="fp-btn" val="{{:taquillaID}}" href="#{{:fingerprint}}"><i class="fa fa-shield text-success"></i></a> </td>
         {{else}}
         <td><i class="fa fa-shield"></i></td>
         {{/if}}

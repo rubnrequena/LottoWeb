@@ -137,7 +137,7 @@
                 </ul>
             </div>
         </td>
-        <td>{{:~formatNumber(jugada,0)}}</td>
+        <td>{{:~formatNumber(jugada,2)}}</td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-vtnum-row">
@@ -145,19 +145,19 @@
         <td>#{{:numero}} {{:desc}}</td>
         <td>
             {{if pcj<15}}
-            <span class="label label-default">{{:~formatNumber(pcj,0)}}%</span>
+            <span class="label label-default">{{:~formatNumber(pcj,2)}}%</span>
             {{else}}
-            <span class="label label-danger">{{:~formatNumber(pcj,0)}}%</span>
+            <span class="label label-danger">{{:~formatNumber(pcj,2)}}%</span>
             {{/if}}
-            {{:~formatNumber(jugada,0)}}
+            {{:~formatNumber(jugada,2)}}
         </td>
         <td>
             {{if pcj<15}}
-            <span class="label label-default">{{:~formatNumber(pcg,0)}}%</span>
+            <span class="label label-default">{{:~formatNumber(pcg,2)}}%</span>
             {{else}}
-            <span class="label label-danger">{{:~formatNumber(pcg,0)}}%</span>
+            <span class="label label-danger">{{:~formatNumber(pcg,2)}}%</span>
             {{/if}}
-            {{:~formatNumber(glb,0)}}
+            {{:~formatNumber(glb,2)}}
         </td>
     </tr>
 </script>

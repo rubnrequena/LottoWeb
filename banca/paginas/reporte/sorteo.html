@@ -72,20 +72,7 @@
         {{else}}
             <td>TOTAL</td>
         {{/if}}
-        <td>{{:monto}}</td>
-        <td>{{:premio}}</td>
-    </tr>
-</script>
-<script type="text/x-jsrender" id="rd-reporte-elemento">
-    <tr>
-    {{if numero }}
-        <td>{{:~elm(numero)}}</td>
-        <td>{{:monto}}</td>
-        <td>{{:premio}}</td>
-    {{else}}
-        <td>TOTAL</td>
-        <td>{{:monto}}</td>
-        <td>{{:premio}}</td>
-    {{/if}}
+        <td>{{:~formatNumber(monto,2)}}</td>
+        <td>{{:~formatNumber(premio,2)}}</td>
     </tr>
 </script>

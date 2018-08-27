@@ -127,6 +127,14 @@ function sorteoMonitor_nav(e,arg) {
     });
     $('#monitor-form').submit(function (e) {
         e.preventDefault(e);
+        var help = _helpers;
+        help.premio = function (m) {
+            return (m*100/jg).format(2);
+        };
+        help.gana = function (m) {
+            return (m*100/jg)>100;
+        };
+        var jg;
         var dataForm = formControls(this);
         var f = formLock(this);
         socket.sendMessage("monitor",dataForm, function (e, d) {
@@ -135,16 +143,16 @@ function sorteoMonitor_nav(e,arg) {
             var now = new Date();
             $("#ultact").html(now.format('dd/mm/yy hh:MM:ss TT'));
 
-            var jg=0;
+            jg=0;
             var ld = d.t[0];
             d.t.forEach(function (item) {
                 jg+=item.jugada;
                 if (item.jugada>ld.jugada) ld = item;
             });
 
-            $("#jugada").html(jg.format(0));
+            $("#jugada").html(jg.format(2));
             $("#bnLider").html(ld.banca);
-            $("#bnLider-jg").html(ld.jugada.format(0));
+            $("#bnLider-jg").html(ld.jugada.format(2));
 
             ld = d.n[0];
             d.n.forEach(function (item) {
@@ -152,10 +160,10 @@ function sorteoMonitor_nav(e,arg) {
                 if (item.jugada>ld.jugada) ld = item;
             });
             $("#numLider").html(ld.desc);
-            $("#numLider-jg").html(ld.jugada.format(0));
+            $("#numLider-jg").html(ld.jugada.format(2));
 
             $("#ventas-body").html(jsrender($('#rd-ventas-row'),d.t));
-            $("#numeros-body").html(jsrender($('#rd-vtnum-row'),d.n));
+            $("#numeros-body").html(jsrender($('#rd-vtnum-row'),d.n,help));
         })
     });
 
@@ -330,7 +338,14 @@ nav.paginas.addListener("sorteos/nuevo",sorteoNuevo_nav);
 function sorteoRegistrar_nav(p,arg) {
     var desde = $('#desde'), hasta = $('#hasta');
     var ct;
-    $('#sorteos').html(jsrender($('#rd-lsorteo-option'),$sorteos));
+
+    if ($sorteos && $sorteos.length>0) $('#sorteos').html(jsrender($('#rd-lsorteo-option'),$sorteos));
+    else {
+        socket.sendMessage("lsorteos",null,function (e,d) {
+            $sorteos = d;
+            $('#sorteos').html(jsrender($('#rd-lsorteo-option'),$sorteos));
+        });
+    }
 
     $('#sorteo-registrar').submit(function (e) {
         e.preventDefault(e);
@@ -364,13 +379,16 @@ function sorteoRegistrar_nav(p,arg) {
 nav.paginas.addListener("sorteos/registrar",sorteoRegistrar_nav);
 
 function sorteoFrutas_nav (p,arg) {
-    var sorteos;
     var sorteo = $('#sorteos');
-    socket.sendMessage("lsorteos",null,function (e,d) {
-        sorteos = d;
-        $('#sorteos').html(jsrender($('#rd-sorteo'),sorteos));
-        sorteo.select2("val","");
-    });
+    if ($sorteos && sorteos.length>0) $('#sorteos').html(jsrender($('#rd-sorteo'),$sorteos));
+    else {
+        socket.sendMessage("lsorteos",null,function (e,d) {
+            $sorteos = d;
+            $('#sorteos').html(jsrender($('#rd-sorteo'),$sorteos));
+            sorteo.select2("val","");
+        });
+    }
+
 
     sorteo.change(function () {
        elementos();
@@ -469,7 +487,15 @@ nav.paginas.addListener("sorteos/premiar",sorteoPremiar_nav);
 function bancasUsuarios_nav() {
     if ($usuarios) updateView();
     else socket.sendMessage('usuarios', null, function (e, d) {
-        $usuarios = d || []; updateView();
+        d.sort(function (a,b) {
+            if (a.tipo< b.tipo) return 1;
+            else if (a.tipo> b.tipo) return -1;
+            else {
+                return a.usuarioID- b.usuarioID;
+            }
+        });
+        $usuarios = d || [];
+        updateView();
     });
     function updateView() {
         $('#usuarios-body').html(jsrender($('#rd-usuario-row'), $usuarios));
@@ -846,17 +872,44 @@ function bancasBanca_nav(p,args) {
             });
             $('.btgl').on("toggle", function (e,act) {
                 var id = $(e.target).data('target');
-                var banca = findBy("bancaID",id,$bancas);
+                var banca = findBy("bancaID",id,grupos);
                 socket.sendMessage("banca-editar",{bancaID:banca.bancaID,activa:act}, function (e, d) {
-                    if (d.code==1) {
-                        if (d.hasOwnProperty("activa")) banca.activa = d.activa;
-                        if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
-                        if (d.hasOwnProperty("clave")) banca.clave = d.clave;
-                    }
+                    if (d==1) notificacion("CAMBIO ACTIVO EXITOSO");
                     else {
                         alert("ERROR AL MODIFICAR ESTADO ACTIVO DE BANCA")
                     }
                 })
+            });
+
+            $('.bn-remove-req').click(function (e) {
+                e.preventDefault(e);
+                var bID = $(this).attr("bancaID");
+                var r = confirm('Seguro desea eliminar esta banca? Tenga en cuenta que enviara a la papelera todas las taquillas asociadas.');
+                if (r===true) {
+                    socket.sendMessage("banca-remover",{bancaID:bID,papelera:1}, function (e, d) {
+                        if (d.code==1) {
+                            var b = findBy("bancaID",bID,grupos);
+                            b.papelera = 1;
+                            updateGrupos();
+                        }
+                    })
+                }
+                return false;
+            });
+            $('.bn-remove-res').click(function (e) {
+                e.preventDefault(e);
+                var bID = $(this).attr("bancaID");
+                var r = confirm('Seguro desea restaurar esta banca?  Tenga en cuenta que restaurara todas las taquillas asociadas.');
+                if (r===true) {
+                    socket.sendMessage("banca-remover",{bancaID:bID,papelera:0}, function (e, d) {
+                        if (d.code==1) {
+                            var b = findBy("bancaID",bID,grupos);
+                            b.papelera = 0;
+                            updateGrupos();
+                        }
+                    })
+                }
+                return false;
             });
         }
     } else {
@@ -866,78 +919,266 @@ function bancasBanca_nav(p,args) {
 nav.paginas.addListener("bancas/banca",bancasBanca_nav);
 
 function bancasTaquillas_nav(p,args) {
-    var taquillas;
-    function sobreNombres() {
-        $('.banca-celda').each(function (index) {
-            var me = $(this);
-            me.html(findBy("bancaID",parseInt(me.html()),$bancas).nombre);
-        })
-    }
-    function updateView () {
-        $('#taquillas-body').html(jsrender($('#rd-taquilla-row'),taquillas));
-        var psw = $('.password');
-        psw.on('mouseover', function (e) {
-            $(e.target).html($(e.target).data('clave'));
+    if (args && args.length==1) {
+        var editar = $('#banca-nueva');
+        var clave = $('#banca-psw');
+        var renta = $('#banca-renta');
+        var banca, taquillas;
+        var multiplo=0;
+
+        var papelera = $('#papelera');
+        papelera.change(function () {
+            updateTaquillas();
         });
-        psw.on('mouseout', function (e) {
-            $(e.target).html("***");
-        });
-        var toggles = $('.toggle');
-        toggles.each(function (index) {
-            var me = $(this);
-            me.toggles({
-                text:{
-                    on:"SI",
-                    off:"NO"
-                },
-                on:me.data('activa'),
-                click:true
+
+        editar.submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            data.bancaID = banca.bancaID;
+            data.comision = data.comision*multiplo;
+            //if (data.comision<$usuario.renta) { notificacion("ERROR","LA COMISION DE ALQUILER NO PUEDE SER MENOR A LA ASIGNADA POR EL ADMINISTRADOR"); return; }
+            formLock(this);
+            socket.sendMessage("banca-editar",data, function (e, d) {
+                formLock(editar[0],false);
+                if (d.code==1) {
+                    notificacion("Cambios guardados con exito");
+                    if (d.hasOwnProperty("activa")) banca.activa = d.activa;
+                    if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
+                    if (d.hasOwnProperty("comision")) banca.comision = d.comision;
+                    if (d.hasOwnProperty("usuario")) banca.usuario = d.usuario;
+                }
+                else notificacion('Error al realizar cambios','','growl-danger');
             });
         });
-        toggles.on("toggle", function (e,act) {
-            var id = $(e.target).data('target');
-            var taquilla = findBy("taquillaID",id,taquillas);
-            socket.sendMessage("taquilla-editar",{taquillaID:taquilla.taquillaID,activa:act}, function (e, d) {
-                if (d.ok) taquilla.activa = act;
-                else {
-                    alert("ERROR AL MODIFICAR ESTADO ACTIVO DE TAQUILLA")
+        renta.submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            data.bancaID = banca.bancaID;
+            data.renta = data.renta/100;
+            formLock(this);
+            socket.sendMessage("banca-editar",data, function (e, d) {
+                formLock(renta[0],false);
+                if (d==1) notificacion("Cambios guardados con exito");
+                else notificacion('Error al realizar cambios','','growl-danger');
+            });
+        });
+        clave.submit(function (e) {
+            e.preventDefault(e);
+            formLock(this);
+            var data = formControls(this);
+            data.bancaID = banca.bancaID;
+            socket.sendMessage("banca-editar",data, function (e, d) {
+                formReset(clave[0]);
+                if (d.code==1) {
+                    notificacion("Cambio de clave exitoso");
+                    if (d.hasOwnProperty("clave")) banca.clave = d.clave;
                 }
-            })
+                else notificacion('Cambio de clave fallido','','growl-danger');
+            });
+        });
+        $('.rdo-com').change(function () {
+            multiplo = this.value;
+            $('#bn-comision').prop("disabled",this.value==0);
         });
 
-        //estadisticas
-        var activas= 0, bnc = [];
-        taquillas.forEach(function (item) {
-            if (item.activa) activas++;
-            if (bnc.indexOf(item.bancaID)==-1) {
-                bnc.push(item.bancaID);
+        banca = findBy("bancaID",args[0],$bancas);
+        if (!banca) {
+            socket.sendMessage('bancas',{id:args[0]}, function (e, d) {
+                $bancas.push(d[0]);
+                banca = d[0];
+                bancaResult();
+            });
+        } else bancaResult();
+
+
+        function bancaResult() {
+
+            formSet(editar,banca,function (val,field) {
+                if (field=="comision") return Math.abs(val*100);
+                if (val===false) return 0;
+                else if (val===true) return 1;
+                else return val;
+            });
+            if (banca.comision==0) $('#radioNormal').prop('checked',true);
+            else if (banca.comision>0) $('#radioRecogedor').trigger('click');
+            else if (banca.comision<0) $('#radioReventa').trigger('click');
+
+            $('#taquilla-nueva').submit(function (e) {
+                e.preventDefault(e);
+                var data = formControls(this);
+                data.bancaID = banca.bancaID;
+                data.usuarioID = banca.usuarioID;
+                var form = formLock(this);
+                socket.sendMessage("taquilla-nueva", data, function (e, d) {
+                    if (d.hasOwnProperty("code")) {
+                        formLock(form,false);
+                        notificacion("DISCULPE: USUARIO NO DISPONIBLE","El usuario que esta asignando a la taquilla, ya esta en uso intente con uno distinto.","growl-danger");
+                    } else {
+                        formReset(form);
+                        data.taquillaID = d;
+                        data.papelera = 0;
+                        data.fingerlock = true;
+                        data.fingerprint = null;
+                        taquillas.push(data);
+                        updateTaquillas();
+                        notificacion('TAQUILLA REGISTRADA CON EXITO');
+                    }
+                });
+            });
+
+            socket.sendMessage("taquillas",{banca:banca.bancaID}, function (e, d) {
+                taquillas = d || [];
+                updateTaquillas();
+            });
+
+            function updateTaquillas() {
+                var _papelera = papelera.prop("checked");
+                taquillas.sort(function (a,b) {
+                    if (a.papelera< b.papelera) return -1;
+                    else if (a.papelera> b.papelera) return 1;
+                    else {
+                        if (a.activa< b.activa) {
+                            return 1;
+                        } else if (a.activa> b.activa) {
+                            return -1;
+                        } else return a.taquillaID- b.taquillaID;
+                    }
+                });
+
+                $('#taquillas-body').html(jsrender($('#rd-taquilla-row'),taquillas.filter(function (a) {
+                    return _papelera== a.papelera;
+                })));
+                var psw = $('.password');
+                psw.on('mouseover', function (e) {
+                    $(e.target).html($(e.target).data('clave'));
+                });
+                psw.on('mouseout', function (e) {
+                    $(e.target).html("***");
+                });
+
+                var toggles = $('.activart');
+                toggles.each(function (index) {
+                    var me = $(this);
+                    me.toggles({
+                        text: {
+                            on: "SI",
+                            off: "NO"
+                        },
+                        on: me.data('activa'),
+                        click: 1
+                    });
+                });
+                toggles.on("toggle", function (e, act) {
+                    var id = $(e.target).data('target');
+                    var taquilla = findBy("taquillaID", id, taquillas);
+                    socket.sendMessage("taquilla-editar", {taquillaID: taquilla.taquillaID, activa: act}, function (e, d) {
+                        if (d===1) taquilla.activa = act;
+                        else {
+                            alert("ERROR AL MODIFICAR ESTADO ACTIVO DE TAQUILLA")
+                        }
+                    })
+                });
+                //fingerlock
+                var fingerlock = $('.fingerlock');
+                fingerlock.each(function (index) {
+                    var me = $(this);
+                    me.toggles({
+                        text: {
+                            on: "SI",
+                            off: "NO"
+                        },
+                        on: me.data('activa'),
+                        click: true
+                    });
+                });
+                fingerlock.on("toggle", function (e, act) {
+                    var id = $(e.target).data('target');
+                    var taquilla = findBy("taquillaID", id, taquillas);
+                    socket.sendMessage("taquilla-flock", {taquillaID: taquilla.taquillaID, activa: act}, function (e, d) {
+                        if (d.ok===1) {
+                            taquilla.fingerlock = act;
+                            if (act==false) {
+                                alert('ADVERTENCIA: Al desactivar el sistema de proteccion por huella, SRQ no podra, ni se hara responsable por posibles fraudes por ventas no autorizadas por parte de la agencia.');
+                            }
+                        }
+                        else {
+                            alert("ERROR AL MODIFICAR VALIDACION DE HUELLA")
+                        }
+                    })
+                });
+
+                //fingerclear
+                $('.fingerclear').click(function (e) {
+                    e.preventDefault(e);
+                    var b = $(e.currentTarget);
+                    var id = parseInt(b.attr('val'));
+                    socket.sendMessage("taquilla-fpclear", {taquillaID:id}, function (e, d) {
+                        if (d.ok===1) {
+                            b.parent().html('<i class="fa fa-shield"></i>');
+                        } else {
+                            alert("ERROR AL MODIFICAR HUELLA DEL TAQUILLA")
+                        }
+                    })
+                });
+
+                $('.bn-remove-req').click(function (e) {
+                    e.preventDefault(e);
+                    var tID = $(this).attr("taqID");
+                    var r = confirm('Seguro desea eliminar esta taquilla?');
+                    if (r===true) {
+                        socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:1}, function (e, d) {
+                            if (d.code==1) {
+                                var taquilla = findBy("taquillaID", tID, taquillas);
+                                taquilla.papelera = 1;
+                                updateTaquillas();
+                            }
+                        })
+                    }
+                    return false;
+                });
+                $('.bn-remove-res').click(function (e) {
+                    e.preventDefault(e);
+                    var tID = $(this).attr("taqID");
+                    socket.sendMessage("taquilla-remover",{taquillaID:tID,papelera:0}, function (e, d) {
+                        if (d.code==1) {
+                            var taquilla = findBy("taquillaID", tID, taquillas);
+                            taquilla.papelera = 0;
+                            updateTaquillas();
+                        }
+                    });
+                    return false;
+                });
             }
-        });
-        $('#totalTaquillas').html(taquillas.length);
-        $('#taqAct').html(activas);
-        $('#taqInac').html(taquillas.length-activas);
-        $('#totalBancas').html(bnc.length);
+            var remTaqI = $('#rem-taqinactivas');
+            remTaqI.click(function () {
+                var i=0;
+                var taqs = taquillas.exploreBy("activa",0).exploreBy("papelera",0);
+                if (taqs.length==0) return;
+                remTaqI.prop('disabled',1);
+                var taq, cont = $('#rem-tqinc');
 
-        if ($bancas) sobreNombres();
-        else {
-            var hlp = $('#taquillas-hlp');
-            hlp.html("<i class='fa fa-spinner fa-spin'></i> Espere, recibiendo lista de bancas");
-            socket.sendMessage('bancas-nombres',null, function (e,d) {
-                hlp.remove();
-                $bancas = d;
-                sobreNombres();
-            })
+                var r = confirm('Confirma desea remover todas las taquillas inactivas?');
+                if (r===true) removerTaquilla(taqs[i].taquillaID);
+
+                function removerTaquilla (id) {
+                    cont.html(i+'/'+taqs.length);
+                    socket.sendMessage('taquilla-remover',{taquillaID:id,papelera:1}, function (e,d) {
+                        if (d.code==1) {
+                            taq = findBy("taquillaID", id, taquillas);
+                            taq.papelera = 1;
+                            if (++i<taqs.length) removerTaquilla(taqs[i].taquillaID);
+                            else {
+                                updateTaquillas();
+                                cont.html('');
+                                remTaqI.prop('disabled',0);
+                            }
+                        }
+                    });
+                }
+            });
         }
-    }
-    if (taquillas) {
-        updateView();
     } else {
-        taquillas = [];
-        socket.addListener("taquillas", function (e, d) {
-            taquillas = taquillas.concat(d);
-            updateView();
-        });
-        socket.sendMessage("taquillas",null);
+        nav.nav("406");
     }
 }
 nav.paginas.addListener("bancas/taquillas",bancasTaquillas_nav);
@@ -1067,9 +1308,9 @@ function reporteGeneral_nav (p,args) {
 				rn+= item.renta;
             });
 
-            $('#mnt-jugado').html(j.format(0));
-            $('#mnt-premios').html(pr.format(0));
-            $('#mnt-pagos').html(pg.format(0));
+            $('#mnt-jugado').html(j.format(2));
+            $('#mnt-premios').html(pr.format(2));
+            $('#mnt-pagos').html(pg.format(2));
 
             var rank, bnc;
             //top jugado
@@ -1079,13 +1320,13 @@ function reporteGeneral_nav (p,args) {
             });
             bnc = rank[0];
             $('#tj-banca').html(bnc.desc);
-            $('#tj-jugada').html(bnc.jugada.format(0));
-            $('#tj-renta').html(bnc.renta.format(0));
+            $('#tj-jugada').html(bnc.jugada.format(2));
+            $('#tj-renta').html(bnc.renta.format(2));
 
             //top ganancia
             
-            $('#comision').html(cm.format(0));
-            $('#renta').html(rn.format(0));
+            $('#comision').html(cm.format(2));
+            $('#renta').html(rn.format(2));
 
             $('#reporte-body').html(jsrender($('#rd-reporte'),d));
         })
@@ -1263,12 +1504,12 @@ function midas_nav (p, args) {
             var prc = pr==rpr;
 
             $('#st').html(st);
-            $('#jg').html(jg.format(0));
-            $('#pr').html(pr.format(0));
+            $('#jg').html(jg.format(2));
+            $('#pr').html(pr.format(2));
 
             $('#rst').html(rst);
-            $('#rjg').html(rjg.format(0));
-            $('#rpr').html(rpr.format(0));
+            $('#rjg').html(rjg.format(2));
+            $('#rpr').html(rpr.format(2));
 
             if (jgc) {
                 ejgc.html('JUGADA COINCIDE');

@@ -113,6 +113,8 @@
                         <tr>
                             <th><a class="order-num btn btn-primary btn-sm" id="ord-num-num" href="#num">Numero <i class="fa fa-sort-amount-asc"></i></a></th>
                             <th><a class="order-num" id="ord-num-jg" href="#jgrupo">Jugado <i class="fa fa-sort-amount-desc"></i></a></th>
+                            <th><a class="order-num" id="ord-num-prm" href="#jbanca">Premio</a></th>
+                            <th><a class="order-num" id="ord-num-ntk" href="#jbanca">Tickets</a></th>
                         </tr>
                         </thead>
                         <tbody id="numeros-body"></tbody>
@@ -136,19 +138,24 @@
                 </ul>
             </div>
         </td>
-        <td>{{:~formatNumber(jugada,0)}}</td>
+        <td>{{:~formatNumber(jugada,2)}}</td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-vtnum-row">
     <tr>
-        <td>#{{:numero}} {{:desc}}</td>
+        <td><a href="#"><i class="fa fa-history"></i></a> {{:numero}} {{:desc}}</td>
         <td>
-            {{if pcj<10}}
-            <span class="label label-default">{{:~formatNumber(pcj,0)}}%</span>
-            {{else}}
-            <span class="label label-danger">{{:~formatNumber(pcj,0)}}%</span>
-            {{/if}}
-            {{:~formatNumber(jugada,0)}}
+            <span class="label label-primary">{{:~formatNumber(pcj,2)}}%</span>
+            {{:~formatNumber(jugada,2)}}
         </td>
+        <td>
+            {{if ~gana(premios)}}
+                <span class="label label-danger">{{:~premio(premios)}}%</span>
+            {{else}}
+                <span class="label label-success">{{:~premio(premios)}}%</span>
+            {{/if}}
+            {{:~formatNumber(premios,2)}}
+        </td>
+        <td><a href="#"><i class="fa fa-ticket"></i> {{:tickets}}</a></td>
     </tr>
 </script>
