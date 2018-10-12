@@ -20,6 +20,12 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Grupos</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" id="grupos" required></select>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="mt10 col-sm-3 text-right">Taquilla</label>
                 <div class="col-sm-6">
                     <select class="s2 form-control" name="taquillaID" id="taquillas" required></select>
@@ -177,9 +183,9 @@
 <script type="text/x-jsrender" id="rd-reporte">
 <tr>
     <td class="text-uppercase">{{:descripcion}}</td>
-    <td>{{:~formatNumber(jugada)}}</td>
-    <td>{{:~formatNumber(comision)}}</td>
-    <td>{{:~formatNumber(premio)}}</td>
-    <td>{{:~formatNumber(jugada-premio-comision)}}</td>
+    <td>{{:~formatNumber(jugada,2)}}</td>
+    <td>{{:~formatNumber(comision,2)}}</td>
+    <td>{{:~formatNumber(premio,2)}}</td>
+    <td>{{:~formatNumber(jugada-premio-comision,2)}}</td>
     </tr>
 </script>

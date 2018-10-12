@@ -9,7 +9,7 @@ function socket_message () {
 }
 function socket_open(e) {
     $('#conectando').fadeOut();
-    var login = storage.getItem("loto_uslogin");
+    var login = storage.getItem("loto_cmlogin");
     if (login) {
         socket.sendMessage("login",JSON.parse(login));
     } else {
@@ -33,8 +33,16 @@ function socket_login(e,d) {
         $elementos = d.el;
         $sorteos = d.st;
 		$('.mn-usuario').html($usuario.usuario);
+
+        socket.sendMessage('balance-padre',null, function (e, d) {
+            $usuario.balance = d;
+            if ($usuario.balance) {
+                $('#menu-balance-date').html(d[0].fecha);
+                $('#menu-balance-value').html('<i class="fa fa-dollar"></i> '+d[0].balance.format(2));
+            }
+            nav.navUrl();
+        });
     }
-    nav.navUrl();
 }
 $('.logout').click(function (e) {
     e.preventDefault(e);
@@ -42,7 +50,7 @@ $('.logout').click(function (e) {
     $bancas=null;
     $elementos = null;
     $sorteos = null;
-    storage.removeItem("loto_uslogin");
+    storage.removeItem("loto_cmlogin");
     nav.nav('inicio');
 });
 

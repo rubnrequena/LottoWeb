@@ -28,10 +28,10 @@
                             <input class="rdo-com" type="radio" name="radio" value="0.01" id="radioRecogedor" />
                             <label for="radioRecogedor">Recogedor</label>
                         </div>
-                        <div class="rdio rdio-primary">
+                        <!--<div class="rdio rdio-primary">
                             <input class="rdo-com" type="radio" name="radio" value="-0.01" id="radioReventa" />
                             <label for="radioReventa">Reventa</label>
-                        </div>
+                        </div>-->
                         <div class="input-group">
                             <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required disabled="disabled">
                             <span class="input-group-addon">%</span>
@@ -141,7 +141,7 @@
 <script type="text/x-jsrender" id="rd-taquilla-row">
     <tr>
         {{if fingerprint}}
-        <td><a href="#fp"><i class="fa fa-shield text-success"></i></a> </td>
+        <td><a class="fingerclear" id="fp-btn" val="{{:taquillaID}}" href="#{{:fingerprint}}"><i class="fa fa-shield text-success"></i></a> </td>
         {{else}}
         <td><i class="fa fa-shield"></i></td>
         {{/if}}

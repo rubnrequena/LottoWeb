@@ -32,7 +32,7 @@
                 <label class="col-sm-3 control-label">Comision</label>
                 <div class="col-sm-6">
                     <div class="input-group">
-                        <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required>
+                        <input id="bn-comision" type="number" min="-100" step="any" max="100" class="form-control" name="comision" value="0" required>
                         <span class="input-group-addon">%</span>
                     </div>
                     <div class="help-block">
@@ -71,12 +71,10 @@
 </div>
 <div class="panel">
     <div class="panel-heading">
-        <div class="panel-heading">
-            <div class="panel-btns">
-                <a href="" class="minimize">&minus;</a>
-            </div>
-            <h3 class="panel-title">BANCAS</h3>
+        <div class="panel-btns">
+            <a href="" class="minimize">&minus;</a>
         </div>
+        <h3 class="panel-title">BANCAS</h3>
     </div>
     <div class="panel-body">
         <div class="ckbox ckbox-primary pull-right hidden">
@@ -92,7 +90,6 @@
                 <tr>
                     <th>NOMBRE</th>
                     <th>USUARIO</th>
-                    <th>RENTA</th>
                     <th title="COMISION/PARTICIPACION">COMISION/PART.</th>
                     <th>CLAVE</th>
                     <th>ACTIVA</th>
@@ -117,8 +114,8 @@
         </td>
         <td><a href="#bancas/banca|{{:usuarioID}}">{{if papelera==1}} <span class="label label-default"><i class="fa fa-trash"></i></span> {{/if}}{{:nombre}}</a></td>
         <td>{{:usuario}}</td>
-        <td>{{:~formatNumber(renta*100,1)}}%</td>
-        <td><span class="label label-success">{{:~formatNumber(comision*100,1)}}%</span> <span class="label label-default">{{:~formatNumber(participacion*100,1)}}%</span></td>
+        <td>
+            <span class="label label-success">{{:~formatNumber(~abs(comision*100),1)}}%{{if comision<0}} <i class="fa fa-shopping-cart"></i>{{/if}}</span><span class="label label-default">{{:~formatNumber(participacion*100,1)}}%</span></td>
         <td class="password" data-clave="{{:clave}}">***</td>
         <td><div data-target="{{:usuarioID}}" data-activa="{{:activo}}" class="toggle toggle-success btgl"></div></td>
     </tr>

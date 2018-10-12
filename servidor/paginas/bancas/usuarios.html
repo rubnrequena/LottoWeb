@@ -25,7 +25,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Renta</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="renta">
+                    <input type="text" class="form-control" name="renta" value="0">
                 </div>
             </div>
             <div class="form-group">
@@ -56,31 +56,37 @@
 </div>
 <div class="panel">
     <div class="panel-body">
-        <table class="table table-hover">
-            <thead>
+        <label class="checkbox">
+            <input type="checkbox" id="us-cmbn" checked><span> Comercial/Banca</span>
+        </label>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
                 <tr>
                     <th>usuario</th>
                     <th>nombre</th>
-                    <th>% renta</th>
+                    <th>comision</th>
                     <th>clave</th>
                     <th>activo</th>
                     <th>registrado</th>
                 </tr>
-            </thead>
-            <tbody id="usuarios-body"></tbody>
-        </table>
+                </thead>
+                <tbody id="usuarios-body"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script type="text/x-jsrender" id="rd-usuario-row">
-    <tr>
         {{if tipo==1}}
+        <tr class="us-bn">
             <td><a href="#bancas/usuario|{{:usuarioID}}">{{:usuario}}</a></td>
         {{else}}
+        <tr class="us-cm">
             <td><a href="#bancas/comercial|{{:usuarioID}}"><i class="fa fa-industry"></i> {{:usuario}}</a></td>
         {{/if}}
         <td>{{:nombre}}</td>
-        <td>{{:~formatNumber(renta*100,1)}}</td>
+        <td>{{:~formatNumber(~abs(comision*100),1)}}%</td>
         <td class="clave" uid="{{:usuarioID}}">***</td>
         <td><div data-target="{{:usuarioID}}" data-activo="{{:activo}}" class="toggle toggle-success btgl"></div></td>
         <td>{{:~formatDate(registrado)}}</td>

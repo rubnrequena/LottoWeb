@@ -25,10 +25,10 @@ nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
     select2w($('.s2'),{allowClear:true});
 
     // Minimize Button in Panels
-    jQuery('.minimize').click(function(){
-        var t = jQuery(this);
+    jQuery('.panel-heading').click(function(){
+        var t = jQuery(this).find('.minimize');
         var p = t.closest('.panel');
-        if(!jQuery(this).hasClass('maximize')) {
+        if(!t.hasClass('maximize')) {
             p.find('.panel-body, .panel-footer').slideUp(200);
             t.addClass('maximize');
             t.html('&plus;');
@@ -384,7 +384,7 @@ function sorteoPremiar_nav(p,args){
 }
 nav.paginas.addListener("sorteos/premiar",sorteoPremiar_nav);
 
-function bancasBancas_nav(p,args) {
+function bancasGrupos_nav(p,args) {
     var multiplo = 0;
     var papelera = $('#papelera');
 
@@ -505,9 +505,9 @@ function bancasBancas_nav(p,args) {
         });
     }
 }
-nav.paginas.addListener("bancas/bancas",bancasBancas_nav);
+nav.paginas.addListener("bancas/grupos",bancasGrupos_nav);
 
-function bancasBanca_nav(p,args) {
+function bancasGrupo_nav(p,args) {
         if (args && args.length==1) {
             var editar = $('#banca-nueva');
             var clave = $('#banca-psw');
@@ -757,7 +757,7 @@ function bancasBanca_nav(p,args) {
             nav.nav("406");
         }
 }
-nav.paginas.addListener("bancas/banca",bancasBanca_nav);
+nav.paginas.addListener("bancas/grupo",bancasGrupo_nav);
 
 function bancasPermisos_nav (p,args) {
     var _permisos;
@@ -1020,8 +1020,6 @@ function bancasTopes_nav (p,args) {
         });
     });
 
-
-
     var srt = $sorteos.slice();
     srt.unshift({sorteoID:0,nombre:"TODOS"});
     sorteo.html(jsrender($('#rd-sorteos-option'),srt));
@@ -1036,7 +1034,6 @@ function bancasTopes_nav (p,args) {
     });
     sorteo.select2("val",0);
     sorteo.trigger("change");
-
 
     var help = {
         elm: function (n) {
@@ -1109,6 +1106,10 @@ function bancasTopes_nav (p,args) {
         e.preventDefault(e);
         var data = formControls(this);
         data.bancaID = bancas.val();
+        if (data.taquillaID>0 && data.compartido>0) {
+            alert('ERROR: Al asignar un cupo a una taquilla especifica, dicho cupo debera ser INDIVIDUAL por obligacion.');
+            return;
+        }
         var f = formLock(this);
         socket.sendMessage("tope-nuevo",data, function (e,d) {
             formLock(f,false);
@@ -1117,6 +1118,24 @@ function bancasTopes_nav (p,args) {
         })
     });
     sfecha.trigger('change');
+
+    var toggles = $('.toggle');
+    toggles.each(function (index) {
+        var me = $(this);
+        me.toggles({
+            text:{
+                on:"SI",
+                off:"NO"
+            },
+            on:false,
+            click:true
+        });
+    });
+    toggles.on("toggle", function (e, act) {
+        if (act) $('.tp-avanzado').removeClass('hidden')
+        else $('.tp-avanzado').addClass('hidden')
+
+    });
 }
 nav.paginas.addListener("bancas/topes",bancasTopes_nav);
 
@@ -1154,9 +1173,9 @@ function reporteGeneral_nav (p,args) {
             pr+= item.premio;
             pg+= item.pago;
             cm+= item.cmb==0?item.comision:item.cmb;
-            rn+= item.renta;
+            //rn+= item.renta;
         });
-
+        rn = j*$usuario.comision;
         var total = {
             j: j.format(2), pr: pr.format(2), b:(b-rn).format(2),cm:cm.format(2), r:rn.format(2)
         };
@@ -1192,8 +1211,11 @@ function reporteGeneral_nav (p,args) {
         $('#tg-jugada').html(bnc.jugada.format(2));
         $('#tg-balance').html(bnc.balance.format(2));
 
-        if (premios.val()==0) $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
-        else $('#reporte-body').html(jsrender($('#rd-reporte2'),rpt));
+        var hlp = copyTo(_helpers);
+        hlp.historia = function (id) {
+            return f1.val()+"|"+f2.val()+'|'+id;
+        }
+        $('#reporte-body').html(jsrender($('#rd-reporte2'),rpt,hlp));
 
         prepareDownload();
     }
@@ -1399,6 +1421,12 @@ function reporteGrupo_nav (p,args) {
     if (args && args.length>0) {
         var a = args[0].split("-");
         var b = args[1].split("-");
+        var gid = args[2];
+
+        //var gidx = findIndex("bancaID",gid,$bancas);
+        bancas.val(gid);
+        bancas.trigger('change');
+
         f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
         f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
         reporte.trigger("submit");

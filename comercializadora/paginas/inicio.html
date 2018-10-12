@@ -1,15 +1,36 @@
-<style>
-    tbody>tr:last-child { font-weight: bold; }
-</style>
-<div class="pageheader">
+<div class="pageheader mb10">
     <h2><i class="fa fa-home"></i> Panel de Control</h2>
 </div>
-<div class="panel panel-danger">
+<div class="panel bl-preg panel-dark" id="bl-my">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize maximize">+</a>
+        </div>
+        <h3 class="panel-title">Mi Balance | <i class="fa fa-dollar"></i> <span id="bl-my-total">0.00</span></h3>
+    </div>
+    <div class="panel-body" style="display: none;">
+        <div class="table-responsive">
+            <table id="tb" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>REF</th>
+                    <th>FECHA</th>
+                    <th>DESCRIPCION</th>
+                    <th>Monto</th>
+                    <th>Balance</th>
+                </tr>
+                </thead>
+                <tbody id="reporte-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--<div class="panel panel-danger">
     <div class="panel-heading heading-condensed"><span class="panel-title">AVISO IMPORTANTE</span></div>
     <div class="panel-body">
         <h3>Estimado usuario, el equipo SRQ le notifica que esta prohibida la publicación del sistema por medios públicos (Mercadolibre, Youtube) sin previa autorización de su administrador. El incumplimiento de la misma incurrirá en la suspensión del servicio.</h3>
     </div>
-</div>
+</div>-->
 <div class="panel">
     <div class="panel-heading hidden-xs">
         <div class="panel-title">SORTEOS DEL DIA</div>
@@ -22,83 +43,6 @@
     </div>
 </div>
 <!--<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-dark widget-messaging">
-            <div class="panel-heading heading-condensed"><span class="panel-title">NOVEDADES</span></div>
-            <div class="panel-body">
-                <ul>
-                    <li>
-                        <small class="pull-right label label-primary">06 Marzo, 2017</small>
-                        <h4 class="sender">CODIGO DE SEGURIDAD EN TICKET</h4>
-                        <small>A partir del 06/03/17 se solicitar&aacute; un <label class="label label-info">codigo de seguridad</label> de 4 digitos, para <label class="label label-info">pagar</label> o <label class="label label-info">anular</label> un ticket, este codigo solo quedar&aacute; impreso en el ticket del cliente.
-                            <p><label class="label label-warning"><i class="fa fa-info"></i> IMPORTANTE:</label> Tickets impresos antes de la fecha, podran ser procesados obviando el codigo de seguridad.</p>
-                        </small>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-primary">06 Marzo, 2017</small>
-                        <h4 class="sender">TECLA <i class="fa fa-plus"></i> YA NO ES NECESARIA</h4>
-                        <small>
-                            A partir del 06/03/17, ya dejara de ser necesario el uso de la tecla <label class="label label-default"><i class="fa fa-plus"></i></label> para cambiar entre campos, puede cambiar de un campo a otro solo usando la tecla <label class="label label-default">INTRO</label> despues de haber hecho su seleccion,
-                            para seleccionar varias opciones del mismo campo puede usar las teclas <label class="label label-default"><i class="fa fa-arrow-down"></i></label> <label class="label label-default"><i class="fa fa-arrow-up"></i></label> o escribir el numero, animal o fruta deseada.
-                        </small>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-primary">06 Marzo, 2017</small>
-                        <h4 class="sender">REPORTE DE VENTAS</h4>
-                        <small>
-                            El <a href="#reporte/ventas"> Reporte de ventas</a> a sido mejorado para ofrecer una mejor perspectiva y control de las ventas.
-                        </small>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-primary">06 Marzo, 2017</small>
-                        <h4 class="sender">REPETIR JUGADA</h4>
-                        <small>
-                            La funcion de repetir jugada esta de vuelta!.
-                        </small>
-                    </li>
-                    <a href="#novedades">
-                        <li>
-                            <h4 class="sender text-right"><i class="fa fa-search-plus"></i>VER TODAS...</h4>
-                        </li>
-                    </a>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel panel-dark widget-messaging">
-            <div class="panel-heading heading-condensed"><span class="panel-title">PLANES 2017</span></div>
-            <div class="panel-body">
-                <ul>
-                    <li>
-                        <small class="pull-right label label-warning">Experimental</small>
-                        <h4 class="sender">SRTOPE<i class="fa fa-trademark"></i>: SU TOPE INTELIGENTE </h4>
-                        <small>
-                            SRTOPE<i class="fa fa-trademark"></i> esta dise&ntilde;ado viene a proteger sus fondos, este tope se activara de manera programada al detectar alguna anormalidad en las ventas de cada sorteo, le permitira bloquear o reducir el cupo disponible monitoreando las ventas por usted.
-                        </small>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-warning">Experimental</small>
-                        <h4 class="sender">USUARIO PREPAGO.</h4>
-                        <small>Establecer una plataforma que permita a usuarios independientes realizar sus propias ventas desde su casa o dispositivo movil, limitando sus apuestas por medio de un saldo PRE-PAGADO.</small>
-                        <p><label class="label label-warning">IMPORTANTE:</label> El banquero es responsable de la recarga y/o retiro del saldo disponible de cada cliente.</p>
-                    </li>
-                    <li>
-                        <small class="pull-right">&#45;&#45;</small>
-                        <h4 class="sender">Chat Banca-Agencia.</h4>
-                        <small>Permitirá establecer un sistema de mensajes entre el banquero y las agencias.</small>
-                    </li>
-                    <li>
-                        <small class="pull-right">&#45;&#45;</small>
-                        <h4 class="sender">Cerrar y abrir sorteos.</h4>
-                        <small>Permitirá al banquero cerrar/abrir un sorteo especifico, siempre y cuando no haya cumplido su horario de cierre.</small>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>-->
-<div class="row">
     <div class="col-sm-12">
         <div class="panel panel-info widget-messaging">
             <div class="panel-heading heading-condensed"><span class="panel-title">AVISOS</span></div>
@@ -123,108 +67,6 @@
                         <small class="pull-right label label-success">26 Enero, 2017</small>
                         <h4 class="sender">NUEVO SORTEO, FRUTA ACTIVA <a class="btn btn-success btn-xs" href="#sorteos/publicar">Activar aqui</a> </h4>
                         <span>Sorteo oficial de la Ruleta Activa</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--<div class="row">
-    <div class="col-sm-12">
-        <div class="panel panel-success widget-messaging">
-            <div class="panel-heading heading-condensed"><span class="panel-title">SORTEOS DISPONIBLES</span></div>
-            <div class="panel-body">
-                <ul>
-                    <li>
-                        <small class="pull-right">
-                            <a class=" btn btn-primary btn-xs" target="_blank" href="https://twitter.com/ruletactiva?lang=es"><i class="fa fa-link"></i> RESULTADOS</a>
-                        </small>
-                        <h4 class="sender"><a target="_blank" href="https://twitter.com/ruletactiva?lang=es"><i class="fa fa-link"></i> RULETA ACTIVA</a> </h4>
-                        <span>
-                            Horarios:<br/>
-                            <span class="badge badge-info">8 Sorteos</span>
-                            <span class="badge">10:00 AM</span>
-                            <span class="badge">11:00 AM</span>
-                            <span class="badge">12:00 M</span>
-                            <span class="badge">01:00 PM</span>
-                            <span class="badge">04:00 PM</span>
-                            <span class="badge">05:00 PM</span>
-                            <span class="badge">06:00 PM</span>
-                            <span class="badge">07:00 PM</span>
-                            <br/>Pagos:<br/>
-                            <span class="badge badge-primary">1X30</span>
-                            <span class="badge badge-primary">10X300</span>
-                            <span class="badge badge-primary">100X3000</span>
-                        </span>
-                    </li>
-                    <li>
-                        <small class="pull-right">
-                            <a class=" btn btn-primary btn-xs" target="_blank" href="https://twitter.com/frutactivaofic?lang=es"><i class="fa fa-link"></i> RESULTADOS</a>
-                        </small>
-                        <h4 class="sender"><a target="_blank" href="https://twitter.com/frutactivaofic?lang=es"><i class="fa fa-link"></i> FRUTA ACTIVA</a> </h4>
-                        <span>
-                            Horarios:<br/>
-                            <span class="badge badge-info">8 Sorteos</span>
-                            <span class="badge">10:00 AM</span>
-                            <span class="badge">11:00 AM</span>
-                            <span class="badge">12:00 M</span>
-                            <span class="badge">01:00 PM</span>
-                            <span class="badge">04:00 PM</span>
-                            <span class="badge">05:00 PM</span>
-                            <span class="badge">06:00 PM</span>
-                            <span class="badge">07:00 PM</span>
-                            <br/>Pagos:<br/>
-                            <span class="badge badge-primary">1X30</span>
-                            <span class="badge badge-primary">10X300</span>
-                            <span class="badge badge-primary">100X3000</span>
-                        </span>
-                    </li>
-                    <li>
-                        <small class="pull-right">
-                            <a class=" btn btn-primary btn-xs" target="_blank" href="https://twitter.com/lagranruleta?lang=es"><i class="fa fa-link"></i> RESULTADOS</a>
-                        </small>
-                        <h4 class="sender"><a target="_blank" href="https://twitter.com/lagranruleta?lang=es"><i class="fa fa-link"></i> GRAN RULETA</a> </h4>
-                        <span>
-                            Horarios:<br/>
-                            <span class="badge badge-info">10 Sorteos</span>
-                            <span class="badge">09:30 AM</span>
-                            <span class="badge">10:30 AM</span>
-                            <span class="badge">11:30 AM</span>
-                            <span class="badge">12:30 M</span>
-                            <span class="badge">01:30 PM</span>
-                            <span class="badge">03:30 PM</span>
-                            <span class="badge">04:30 PM</span>
-                            <span class="badge">05:30 PM</span>
-                            <span class="badge">06:30 PM</span>
-                            <span class="badge">07:30 PM</span>
-                            <br/>Pagos:<br/>
-                            <span class="badge badge-primary">1X32</span>
-                            <span class="badge badge-primary">10X320</span>
-                            <span class="badge badge-primary">100X3200</span>
-                        </span>
-                    </li>
-                    <li>
-                        <small class="pull-right">
-                            <a class=" btn btn-primary btn-xs" target="_blank" href="https://twitter.com/tufrutactiva?lang=es"><i class="fa fa-link"></i> RESULTADOS</a>
-                        </small>
-                        <h4 class="sender"><a target="_blank" href="https://twitter.com/tufrutactiva?lang=es"><i class="fa fa-link"></i>TU FRUTA ACTIVA</a> </h4>
-                        <span>
-                            Horarios:<br/>
-                            <span class="badge badge-info">8 Sorteos</span>
-                            <span class="badge">10:00 AM</span>
-                            <span class="badge">11:00 AM</span>
-                            <span class="badge">12:00 M</span>
-                            <span class="badge">01:00 PM</span>
-                            <span class="badge">04:00 PM</span>
-                            <span class="badge">05:00 PM</span>
-                            <span class="badge">06:00 PM</span>
-                            <span class="badge">07:00 PM</span>
-                            <br/>Pagos:<br/>
-                            <span class="badge badge-primary">1X30</span>
-                            <span class="badge badge-primary">10X300</span>
-                            <span class="badge badge-primary">100X3000</span>
-                        </span>
                     </li>
                 </ul>
             </div>
@@ -278,4 +120,13 @@
             </table>
         </div><!-- table-responsive -->
         <label class="pull-right" >Actualizado a las <span id="str-dia-stamp">--</span></label>
+</script>
+<script type="text/x-jsrender" id="rd-reporte-us">
+    <tr>
+        <td>{{:~padding(balID,4)}}</td>
+        <td>{{:fecha}}</td>
+        <td>{{:desc}}</td>
+        <td>{{:~formatNumber(monto,2)}}</td>
+        <td>{{:~formatNumber(balance,2)}}</td>
+    </tr>
 </script>

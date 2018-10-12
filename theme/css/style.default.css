@@ -944,9 +944,9 @@ p {
 }
 
 .panel-stat i {
-    font-size: 30px;
-    border: 1px solid #fff;
-    padding: 15px;
+    font-size: 10px;
+    /* border: 1px solid #fff; */
+    /* padding: 15px; */
     border-radius: 50px;
     opacity: 0.5;
 }
@@ -4045,7 +4045,9 @@ div.error label.error:before {
 .mb40 {
     margin-bottom: 40px;
 }
-
+.mb50 {
+    margin-bottom: 50px;
+}
 .mr5 {
     margin-right: 5px;
 }
@@ -4068,6 +4070,8 @@ div.error label.error:before {
 
 .mt10 {
     margin-top: 10px;
+    padding: 0px;
+    margin-left: 0px;
 }
 
 .nomargin {

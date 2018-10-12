@@ -1,5 +1,5 @@
 <div class="pageheader hidden-xs">
-    <h2><i class="fa fa-area-chart"></i> Reporte General</h2>
+    <h2><i class="fa fa-area-chart"></i> Reporte Cobros</h2>
 </div>
 <div class="panel">
     <div class="panel-body">
@@ -18,8 +18,7 @@
                 <label class="col-sm-3 control-label">Agrupar</label>
                 <div class="col-sm-6">
                     <select class="s2 form-control" id="rp-agrupar">
-                        <option value="3">COMERCIALES</option>
-                        <option value="2">USUARIO</option>
+                        <option value="2">BANCAS</option>
                         <option value="1">FECHA</option>
                     </select>
                 </div>
@@ -66,7 +65,7 @@
                 <div class="stat">
                     <div class="row">
                         <div class="col-xs-12">
-                            <small class="stat-label">MAYOR RENTA</small>
+                            <small class="stat-label">MAYOR VENTA</small>
                             <h2 id="tj-banca" class="clr">--</h2>
                         </div>
                     </div><!-- row -->
@@ -93,15 +92,15 @@
                 <div class="stat">
                     <div class="row">
                         <div class="col-xs-6">
-                            <small class="stat-label">Renta</small>
-                            <h2 id="renta" class="clr">--</h2>
+                            <small class="stat-label">Total a Recaudar</small>
+                            <h2 id="recaudo" class="clr">--</h2>
                         </div>
                     </div><!-- row -->
                     <div class="mb15"></div>
                     <div class="row">
                         <div class="col-xs-6">
-                            <small class="stat-label">Participacion</small>
-                            <h4 id="participacion" class="clr">--</h4>
+                            <small class="stat-label">Renta</small>
+                            <h4 id="trenta" class="clr">--</h4>
                         </div>
                     </div><!-- row -->
                 </div><!-- stat -->
@@ -112,40 +111,51 @@
 </div>
 <div class="panel">
     <div class="panel-body">
-		<div class="table-responsive">
-			<table id="tb" class="table table-hover table-condensed">
-				<thead>
-				<tr>
-					<th><a href="#" id="rtp-desc-o">FECHA / BANCA</a> </th>
-					<th>JUGADO</th>
-					<th>PREMIOS</th>
-                    <th>COMISION</th>
-					<th>PARTICIPACION</th>
-					<th>BALANCE</th>
-				</tr>
-				</thead>
-				<tbody id="reporte-body"></tbody>
-			</table>
-		</div>
+        <div class="table-responsive">
+            <table id="tb" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th><a href="#" id="rtp-desc-o">FECHA / BANCA</a> </th>
+                    <th>JUGADO</th>
+                    <th>% COMISION</th>
+                    <th>RENTA</th>
+                </tr>
+                </thead>
+                <tbody id="reporte-body"></tbody>
+            </table>
+        </div>
     </div>
     <div class="panel-footer">
-        <button class="btn btn-lightblue disabled"><i class="fa fa-print"></i> IMPRIMIR</button>
-        <button class="btn btn-success disabled"><i class="fa fa-file-excel-o"></i> EXPORTAR</button>
+        <button id="cbr-procesar" class="btn btn-darkblue"><i class="fa fa-paypal"></i> PROCESAR TODO</button>
     </div>
 </div>
 <script type="text/x-jsrender" id="rd-reporte">
+    {{if gID}}
+    <tr id="rdg{{:gID}}" class="rc-grrow subrow{{:uID}} hidden">
+    <td>
+        <a class="cbr-shutdown grupo" grupo="{{:gID}}" href="#{{:gID}}"><i class="fa fa-power-off text-danger"></i></a>
+        {{if cm>0}}<a id="rbg{{:gID}}" class="cbr-bal" desc="V:{{:~formatNumber(jg)}}, C:{{:~abs(cm*100)}}" usID="g{{:gID}}" monto="{{:(jg*cm)}}" href="#"><i class="fa fa-paypal text-success"></i></a>{{/if}}
+        <a href="#bancas/grupo|{{:gID}}"><i class="fa fa-user text-success"></i></a>
+    {{else uID}}
+    <tr id="rdu{{:uID}}" class="rc-usrow">
+    <td>
+        <a class="cbr-shutdown banca" banca="{{:uID}}" href="#{{:uID}}"><i class="fa fa-power-off text-danger"></i></a>
+        {{if cm>0}}<a id="rbu{{:uID}}" class="cbr-bal" desc="V:{{:~formatNumber(jg)}}, C:{{:~abs(cm*100)}}" usID="u{{:uID}}" monto="{{:(jg*cm)}}" href="#"><i class="fa fa-paypal text-primary"></i></a>{{/if}}
+        <a href="#bancas/banca|{{:uID}}"><i class="fa fa-user"></i></a>
+    {{else}}
     <tr>
-        <td class="text-uppercase">
-            {{if cID}}
-            <a href="#reporte/comercial|{{:cID}}{{:~rgFiltro()}}">{{:desc}}</a>
-            {{else}}
-            <a href="#reporte/banca|{{:usuarioID}}{{:~rgFiltro()}}">{{:desc}}</a>
-            {{/if}}
+    {{/if}}
         </td>
-        <td>{{:~formatNumber(jugada,2)}}</td>
-        <td>{{:~formatNumber(premio,2)}}</td>
-        <td>{{:~formatNumber(comision,2)}}</td>
-        <td>{{:~formatNumber(balance*participacion,2)}}</td>
-        <td>{{:~formatNumber(balance-(renta)-(jugada*participacion),2)}}</td>
+        <td class="text-uppercase rpdesc">
+            {{if !gID}}
+            <a fld="0" fldid="{{:uID}}" class="cbr-folder" href="#"><i id="cbrfi{{:uID}}" style="color:darkgrey;" class="fa fa-folder-o"></i></a>
+            {{/if}}
+            <!--<a href="#reporte/cobros-banca|{{:uID}}{{:~rgFiltro()}}">{{:desc}}</a>-->
+            <a href="javascript:">{{:desc}}</a>
+        </td>
+        <td>{{:~formatNumber(jg,2)}}</td>
+        <td>{{:~formatNumber(cm*100,1)}}</td>
+        <td id="rnt{{:uID}}">{{:~formatNumber(jg*cm,2)}}</td>
     </tr>
 </script>

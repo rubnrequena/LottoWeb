@@ -18,10 +18,10 @@ nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
     select2w($('.s2'),{allowClear:true});
 
     // Minimize Button in Panels
-    jQuery('.minimize').click(function(){
-        var t = jQuery(this);
+    jQuery('.panel-heading').click(function(){
+        var t = jQuery(this).find('.minimize');
         var p = t.closest('.panel');
-        if(!jQuery(this).hasClass('maximize')) {
+        if(!t.hasClass('maximize')) {
             p.find('.panel-body, .panel-footer').slideUp(200);
             t.addClass('maximize');
             t.html('&plus;');
@@ -82,17 +82,10 @@ function inicio_nav(p,arg) {
                         t1+=rdia[i].jugado;
                         t2+=rdia[i].premio;
                         t3+=rdia[i].pago;
-                    }
-                    rdia.push({
-                        sorteoID:"",
-                        sorteo:"TOTAL",
-                        jugado:t1,
-                        premio:t2,
-                        pago:t3
-                    });
+                    };
                     $('#srt_dia').html(jsrender($('#rd-sorteos-dia-row'), d.data, hlp));
                 }
-                $('#str-dia-stamp').html((new Date(d.time).format('hh:MM TT')))
+                $('#str-dia-stamp').html(d.time);
             });
         }
     })
@@ -101,8 +94,8 @@ function inicio_nav(p,arg) {
 function sorteoMonitor_nav(e,arg) {
     var fecha = $('#sfecha');
     var d = new Date();
-    var data;
-    listarSorteos(d.format());
+    var data; var dataForm;
+    var mntfiltro; var filtrado;
 
     $('#ord-num-num').click(function (e) {
         e.preventDefault(e);
@@ -112,6 +105,7 @@ function sorteoMonitor_nav(e,arg) {
             return a.numero- b.numero;
         });
         $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
+        actualizarVista();
     });
     $('#ord-num-jg').click(function (e) {
         e.preventDefault(e);
@@ -121,12 +115,14 @@ function sorteoMonitor_nav(e,arg) {
             return b.jugada- a.jugada;
         });
         $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
+        actualizarVista();
     });
     fecha.on("change", function (e) {
         listarSorteos(e.target.value);
     });
     $('#monitor-form').submit(function (e) {
         e.preventDefault(e);
+        var jg, tt;
         var help = _helpers;
         help.premio = function (m) {
             return (m*100/jg).format(2);
@@ -134,8 +130,10 @@ function sorteoMonitor_nav(e,arg) {
         help.gana = function (m) {
             return (m*100/jg)>100;
         };
-        var jg;
-        var dataForm = formControls(this);
+        help.pdist = function (n) {
+            return (n*100/tt).format(2);
+        };
+        dataForm = formControls(this);
         var f = formLock(this);
         socket.sendMessage("monitor",dataForm, function (e, d) {
             formLock(f,false);
@@ -143,7 +141,7 @@ function sorteoMonitor_nav(e,arg) {
             var now = new Date();
             $("#ultact").html(now.format('dd/mm/yy hh:MM:ss TT'));
 
-            jg=0;
+            jg=0; tt=0;
             var ld = d.t[0];
             d.t.forEach(function (item) {
                 jg+=item.jugada;
@@ -156,6 +154,7 @@ function sorteoMonitor_nav(e,arg) {
 
             ld = d.n[0];
             d.n.forEach(function (item) {
+                tt+=item.tickets;
                 item.pcj = item.jugada*100/jg;
                 if (item.jugada>ld.jugada) ld = item;
             });
@@ -164,14 +163,140 @@ function sorteoMonitor_nav(e,arg) {
 
             $("#ventas-body").html(jsrender($('#rd-ventas-row'),d.t));
             $("#numeros-body").html(jsrender($('#rd-vtnum-row'),d.n,help));
+
+            actualizarVista();
         })
     });
 
+    $('#mnt-filtrar-tickets').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        filtrado = mntfiltro.filter(function (item) {
+            return item.us==data.usuario||data.usuario==0;
+        })
+        filtrado = filtrado.filter(function (item) {
+            return item.bc==data.banca||data.banca==0;
+        })
+        filtrado = filtrado.filter(function (item) {
+            return item.tq==data.taquilla||data.taquilla==0;
+        })
+        $('#md-tickets-body').html(jsrender($('#rd-num-ticket'),filtrado))
+        actualizarVista_tickets();
+    });
+    $('#mnt-ticket-smonto').click(function (e) {
+        e.preventDefault(e);
+        var ord = parseInt($(this).attr("ord"));
+        $(this).attr("ord",ord*-1);
+        if (filtrado) {
+            filtrado.sort(ordenarMonto);
+            $('#md-tickets-body').html(jsrender($('#rd-num-ticket'),filtrado))
+        }
+        else {
+            mntfiltro.sort(ordenarMonto);
+            $('#md-tickets-body').html(jsrender($('#rd-num-ticket'),mntfiltro));
+        }
+        actualizarVista_tickets();
+
+        function ordenarMonto (a,b) {
+            if (ord==1) {
+                return a.m- b.m;
+            } else {
+                return b.m- a.m;
+            }
+        }
+    });
+
+    function actualizarVista() {
+        $('.mnt-historial').click(function (e) {
+            e.preventDefault(e);
+            var num = $(this).attr("n");
+            var help = {dateDif: function (d) {
+                var _now = new Date().format().split("-");
+                var now = new Date(_now[0],_now[1]-1,_now[2]);
+                var da = d.split("-");
+                var dd = new Date(da[0],da[1]-1,da[2]);
+                return (now.getTime()-dd.getTime())/86400000;
+            }};
+            socket.sendMessage("sorteo-num-hist",{n:num}, function (e, result) {
+                var ns = findBy("n",num, data.n);
+                $('#md-hnum').html(ns.numero+" "+ns.desc);
+                $('#md-historia-body').html(jsrender($('#rd-num-row'),result,help));
+                $('#md-numhist').modal();
+            });
+        });
+        $('.mnt-vnt-tickets').click(function (e) {
+            e.preventDefault(e);
+            var num = $(this).attr("n");
+            socket.sendMessage("sorteo-monitor-vnt",{numero:num,sorteo:dataForm.sorteoID}, function (e, result) {
+                mntfiltro = result;
+                var us = uniqueVal(result,"us");
+                var bn = uniqueVal(result,"bc");
+                var tq = uniqueVal(result,"tq");
+
+                us.unshift({us:0,usn:"TODAS"});
+                bn.unshift({bc:0,bnc:"TODAS"});
+                tq.unshift({tq:0,tqn:"TODAS"});
+
+                var s2us = $('#mnt-ventas-us'), s2bc = $('#mnt-ventas-bc'), s2tq = $('#mnt-ventas-tq');
+                s2us.html(jsrender($('#rd-us-option'),us));
+                s2us.select2('val',0);
+                s2bc.html(jsrender($('#rd-bn-option'),bn));
+                s2bc.select2('val',0);
+                s2tq.html(jsrender($('#rd-tq-option'),tq));
+                s2tq.select2('val',0);
+
+                $('#md-tickets-body').html(jsrender($('#rd-num-ticket'),result));
+                actualizarVista_tickets();
+                var ns = findBy("n",num, data.n);
+                $('#md-tnum').html(ns.numero+" "+ns.desc);
+                $('#md-numventas').modal();
+
+                function uniqueVal (source,field,full) {
+                    full = full==undefined?true:full;
+                    var flags = [], output = [], l = source.length, i;
+                    for( i=0; i<l; i++) {
+                        if( flags[source[i][field]]) continue;
+                        flags[source[i][field]] = true;
+                        if (full) output.push(source[i]);
+                        else output.push(source[i][field]);
+                    }
+                    return output;
+                }
+            });
+        });
+
+    }
+    function actualizarVista_tickets () {
+        $('.fticket').click(function (e) {
+            e.preventDefault(e);
+            var md = $('#md-ticket');
+            var val = parseInt($(this).attr('tid'));
+            md.on('shown.bs.modal', function (e) {
+                md.off('shown.bs.modal',arguments.callee);
+                var input = $('#md-pagar-ticket');
+                input.val(parseInt(val));
+                input.focus();
+            });
+            md.on('hidden.bs.modal', function (e) {
+                md.off('hidden.bs.modal',arguments.callee);
+                $('#md-numventas').modal("show");
+            });
+            $('#md-numventas').modal("hide");
+
+            md.modal('show');
+        });
+    }
     function listarSorteos (fecha) {
         socket.sendMessage("sorteos",{lista:fecha}, function (e, d) {
             var sorteo = $('#ssorteos');
             sorteo.html(jsrender($('#rd-sorteo-option'),d));
             sorteo.select2("val", "");
+
+            if (arg && arg.length>1) {
+                var b = parseInt(arg[1]);
+                sorteo.prop('selectedIndex',b).change();
+                $('#monitor-form').submit();
+            }
         })
     }
 
@@ -179,6 +304,8 @@ function sorteoMonitor_nav(e,arg) {
         var a = arg[0].split("-");
         fecha.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
         fecha.trigger('change');
+    } else {
+        listarSorteos(d.format());
     }
 }
 nav.paginas.addListener("sorteos/monitor",sorteoMonitor_nav);
@@ -202,6 +329,13 @@ function sorteoBuscar_nav(p,args) {
         socket.sendMessage("sorteos",data, function (e, d) {
             formLock(f,false);
             $('#sorteos-body').html(jsrender($('#rd-sorteo-row'),d || [],help));
+
+            var srts = uniqueVal(d,"sorteo");
+            srts.forEach(function (item) {
+                var s = String(item.descripcion).split(" ").slice(0,-1).join(" ");
+                item.descripcion = s;
+            })
+            $('#prm-fsorteo').html(jsrender($('#rd-operadora-option'),srts));
 
             var toggles = $('.toggle');
             toggles.each(function (index) {
@@ -259,11 +393,11 @@ function sorteoBuscar_nav(p,args) {
                     }
                     else if (d.code==4) {
                         notificacion("SORTEOS","SORTEO #"+data.sorteoID+" YA ESTA PREMIADO",'growl-danger');
-                        var r = confirm('Este sorteo ya esta premiado, desea reiniciarlo y volver a premiar');
+                        var r = confirm('Este sorteo ya esta premiado, desea reiniciarlo');
                         if (r) {
                             socket.sendMessage("sorteo-reiniciar", {sorteoID:data.sorteoID}, function (e, d) {
                                 notificacion("SORTEOS", "SORTEO #" + data.sorteoID + " REINICIADO SATISFACTORIAMENTE");
-                                premiar(data,elm);
+                                if (confirm('DESEA VOLVER A PREMIAR CON EL NUMERO SELECCIONADO?')) premiar(data,elm);
                             });
                         } else {
                             elm.select2("val",elm.data('select'));
@@ -487,18 +621,33 @@ nav.paginas.addListener("sorteos/premiar",sorteoPremiar_nav);
 function bancasUsuarios_nav() {
     if ($usuarios) updateView();
     else socket.sendMessage('usuarios', null, function (e, d) {
-        d.sort(function (a,b) {
-            if (a.tipo< b.tipo) return 1;
-            else if (a.tipo> b.tipo) return -1;
-            else {
-                return a.usuarioID- b.usuarioID;
-            }
-        });
         $usuarios = d || [];
         updateView();
     });
     function updateView() {
+        $usuarios.sort(function (a,b) {
+            if (b.activo-a.activo) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+
         $('#usuarios-body').html(jsrender($('#rd-usuario-row'), $usuarios));
+
+
+        var cmbn = $('#us-cmbn');
+        cmbn.on("change",function () {
+            updateView();
+        })
+        if (cmbn.is(":checked")) {
+            $('.us-bn').addClass("hidden");
+            $('.us-cm').removeClass("hidden");
+        } else {
+            $('.us-bn').removeClass("hidden");
+            $('.us-cm').addClass("hidden");
+        }
+
         var clave = $('.clave');
         clave.on("mouseover",function () {
             var id = parseInt($(this).attr("uid"));
@@ -643,17 +792,22 @@ nav.paginas.addListener("bancas/usuario",bancasUsuario_nav);
 function bancasComercial_nav (p,args) {
     var usuario, bancas, taquillas,usuarios = $('#usuarios');
 
-    usuarios.html(jsrender($('#rd-usuario-option'),$usuarios));
     $('#usuario-editar').submit(function (e) {
         e.preventDefault(e);
         var data = formControls(this);
         data.usuarioID = usuario.usuarioID;
-        data.participacion = 0;
-        data.comision = 0;
+        data.renta = data.renta/100;
+        data.participacion = data.participacion/100;
+        data.comision = data.comision/100;
+        if ($('#alquiler').is(':checked')) {
+            data.comision = data.comision*-1;
+        }
         var f = formLock(this);
         socket.sendMessage("usuario-editar",data, function (e, d) {
             formLock(f,false);
-            console.log(e,d);
+            var u = findBy("usuarioID",data.usuarioID,$usuarios);
+            u.renta = data.renta;
+            notificacion("EDICION EXITOSA");
         })
     });
 
@@ -681,10 +835,12 @@ function bancasComercial_nav (p,args) {
         });
         $('.btgl').on("toggle", function (e,act) {
             var id = $(e.target).data('target');
-            var banca = findBy("bancaID",id,bancas);
-            socket.sendMessage("banca-editar",{bancaID:banca.bancaID,activa:act}, function (e, d) {
-                if (d==1) banca.activa = act;
-                else {
+            var banca = findBy("usuarioID",id,bancas);
+            socket.sendMessage("usuario-editar",{usuarioID:banca.usuarioID,activo:act}, function (e, d) {
+                if (d.code==1) {
+                    notificacion('ACT/DESC COMPLETADA CON EXITO');
+                    banca.activo = act;
+                } else {
                     alert("ERROR AL MODIFICAR ESTADO ACTIVO DE BANCA")
                 }
             })
@@ -694,7 +850,13 @@ function bancasComercial_nav (p,args) {
     if (args && args.length==1) {
         socket.sendMessage("usuarios",{id:args[0]}, function (e, d) {
             usuario = d[0];
-            formSet($('#usuario-editar'),usuario);
+            formSet($('#usuario-editar'),usuario,function (val,field) {
+                if (field=="comision" || field=="participacion" || field=="renta") return Math.abs(val*100);
+                if (val===false) return 0;
+                else if (val===true) return 1;
+                else return val;
+            });
+            if (usuario.comision<0) $('#alquiler').prop("checked",1);
 
             socket.sendMessage('usuarios', {comercial:usuario.usuarioID}, function (e, d) {
                 bancas = d || [];
@@ -711,7 +873,7 @@ function bancasComercial_nav (p,args) {
             data.comision = data.comision / 100;
             data.participacion = data.participacion / 100;
             data.tipo = 1;
-            data.renta = usuario.renta;
+            //data.renta = usuario.renta;
             data.cid = usuario.usuarioID;
             var form = formLock(this);
             socket.sendMessage("usuario-nuevo",data, function (e, d) {
@@ -745,7 +907,13 @@ function bancasComercial_nav (p,args) {
             })
         });
         function updateView() {
-            usuarios.html(jsrender($('#rd-usuario-option'),$usuarios));
+            var uactivo = $usuarios.filter(function (us) {
+                return us.activo>0;
+            });
+            uactivo = uactivo.sort(function (a,b) {
+                return a.nombre< b.nombre?-1:1;
+            });
+            usuarios.html(jsrender($('#rd-usuario-option'),uactivo));
             usuarios.select2("val",0);
         }
     } else {
@@ -814,7 +982,7 @@ function bancasBanca_nav(p,args) {
         });
         $('.rdo-com').change(function () {
             multiplo = this.value;
-            $('#bn-comision').prop("disabled",this.value==0);
+            $('#gr-comision').prop("disabled",this.value==0);
         });
 
         socket.sendMessage("usuarios",{id:args[0]}, function (e,d) {
@@ -1285,6 +1453,9 @@ function reporteGeneral_nav (p,args) {
 	var f2 = $('#reporte-fecha2');
     var reporte = $('#reporte');
     var rdata;
+    _helpers.rgFiltro = function () {
+        return (f1.val() && f2.val())?"|"+f1.val()+"|"+f2.val():'';
+    };
     reporte.submit(function (e) {
         e.preventDefault(e);
         var data = formControls(this);
@@ -1298,19 +1469,17 @@ function reporteGeneral_nav (p,args) {
                 return;
             }
             rdata = d;
-            var j=0, pr=0, pg=0, cm=0, rn=0;
+            var j=0, pr=0, cm= 0, pt=0;
             d.forEach(function (item) {
-                item.balance = item.jugada-item.premio-item.comision-item.renta;
+                item.balance = item.jugada-item.premio;
                 j+=item.jugada;
                 pr+=item.premio;
-                pg+= item.pago;
-				cm+= item.comision;
-				rn+= item.renta;
+				cm+= item.renta;
+                pt+= item.balance*item.participacion;
             });
 
             $('#mnt-jugado').html(j.format(2));
             $('#mnt-premios').html(pr.format(2));
-            $('#mnt-pagos').html(pg.format(2));
 
             var rank, bnc;
             //top jugado
@@ -1321,12 +1490,10 @@ function reporteGeneral_nav (p,args) {
             bnc = rank[0];
             $('#tj-banca').html(bnc.desc);
             $('#tj-jugada').html(bnc.jugada.format(2));
-            $('#tj-renta').html(bnc.renta.format(2));
 
             //top ganancia
             
-            $('#comision').html(cm.format(2));
-            $('#renta').html(rn.format(2));
+            $('#renta').html(cm.format(2));
 
             $('#reporte-body').html(jsrender($('#rd-reporte'),d));
         })
@@ -1356,6 +1523,704 @@ function reporteGeneral_nav (p,args) {
 	}
 }
 nav.paginas.addListener("reporte/general",reporteGeneral_nav);
+
+function reporteComercial_nav (p,args) {
+    var comercial=args[0];
+    var f1 = $('#reporte-fecha1');
+    var f2 = $('#reporte-fecha2');
+    var fdata;
+    var reporte = $('#reporte');
+    var premios = $('#prm-select'), grp = $('#rp-agrupar');
+    var rpt; var hlp = {bn:function () { return $usuario.nombre;  }};
+    $('#reporte').submit(function (e) {
+        e.preventDefault(e);
+        fdata = formControls(this);
+        var f = formLock(this);
+        $('#pheader').html(jsrender($('#rd-prtaq'),fdata,hlp));
+        fdata.comercial = comercial;
+        socket.sendMessage("reporte-comercial",{s:fdata,g:grp.val()}, function (e, d) {
+            formLock(f,false);
+            rpt = d || [];
+            updateView();
+        })
+    });
+    premios.change(updateView);
+
+    function updateView () {
+        if (rpt.length==0) return;
+        var j=0, pr=0, pg=0, cm=0, rn= 0, b=0;
+        rpt.forEach(function (item) {
+            item.balance = item.jg - item.pr - item.cm - item.prt;
+            item.rango = f1[0].value+'|'+f2[0].value;
+            b+=item.balance;
+            j+=item.jg;
+            pr+= item.pr;
+            cm+= item.cm;
+            rn+= item.rt;
+        });
+
+        var total = {
+            j: j.format(2), pr: pr.format(2), b:(b-rn).format(2),cm:cm.format(2), r:rn.format(2)
+        };
+        $('#bheader').html(jsrender($('#rd-total'),total));
+
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((b-rn).format(2));
+
+        $('#tg-descuento').html((cm+rn).format(2));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-renta').html(rn.format(2));
+
+        var rank, bnc;
+        //top jugado
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.jg- a.jg;
+        });
+        bnc = rank[0];
+        $('#tj-banca').html(bnc.desc);
+        $('#tj-jugada').html(bnc.jg.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
+
+        //top ganancia
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.balance- a.balance;
+        });
+        bnc = rank[0];
+        $('#tg-banca').html(bnc.desc);
+        $('#tg-jugada').html(bnc.jg.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
+
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
+
+        prepareDownload();
+    }
+
+    var formato = $('#formato');
+    formato.change(prepareDownload);
+    function prepareDownload() {
+        var a = document.getElementById("exportar");
+        a.href = "#reporte/general";
+        var name = name = "SRQ - REPORTE "+fdata.inicio+"-"+fdata.fin+"."+formato.val();
+        if (formato.val()=="json") {
+            download("exportar",JSON.stringify(rpt,null,2),name,"text/plain");
+        } else if (formato.val()=="csv") {
+            notificacion("FORMATO NO DISPONIBLE");
+        } else {
+            html2canvas($("#print-img"), {
+                onrendered: function (canvas) {
+                    var myImage = canvas.toDataURL("image/png");
+                    a.href = myImage;
+                    a.download = name;
+                }
+            });
+        }
+    }
+
+    if (args && args.length>1) {
+        var a = args[1].split("-");
+        var b = args[2].split("-");
+        f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.trigger("submit");
+    }
+}
+nav.paginas.addListener("reporte/comercial",reporteComercial_nav);
+
+function reporteBanca_nav (p,args) {
+    var f1 = $('#reporte-fecha1');
+    var f2 = $('#reporte-fecha2');
+    var fdata;
+    var reporte = $('#reporte');
+    var premios = $('#prm-select'), grp = $('#rp-agrupar');
+    var rpt; var hlp = {bn:function () { return $usuario.nombre;  }};
+    $('#reporte').submit(function (e) {
+        e.preventDefault(e);
+        fdata = formControls(this);
+        fdata.usuarioID = args[0];
+        var f = formLock(this);
+        $('#pheader').html(jsrender($('#rd-prtaq'),fdata,hlp));
+        socket.sendMessage("reporte-banca",{s:fdata,g:grp.val()}, function (e, d) {
+            formLock(f,false);
+            rpt = d || [];
+            updateView();
+        })
+    });
+    premios.change(updateView);
+
+    function updateView () {
+        if (rpt.length==0) return;
+        var j=0, pr=0, pg=0, cm=0, rn= 0, b=0;
+        rpt.forEach(function (item) {
+            item.balance = item.jg - item.pr - (item.cm || item.cmt) - item.prt;
+            item.rango = f1[0].value+'|'+f2[0].value;
+            b+=item.balance;
+            j+=item.jg;
+            pr+= item.pr;
+            cm+= item.cm || item.cmt;
+            rn+= item.rt;
+        });
+
+        var total = {
+            j: j.format(2), pr: pr.format(2), b:(b-rn).format(2),cm:cm.format(2), r:rn.format(2)
+        };
+        $('#bheader').html(jsrender($('#rd-total'),total));
+
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((b-rn).format(2));
+
+        $('#tg-descuento').html((cm+rn).format(2));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-renta').html(rn.format(2));
+
+        var rank, bnc;
+        //top jugado
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.jg- a.jg;
+        });
+        bnc = rank[0];
+        $('#tj-banca').html(bnc.desc);
+        $('#tj-jugada').html(bnc.jg.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
+
+        //top ganancia
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.balance- a.balance;
+        });
+        bnc = rank[0];
+        $('#tg-banca').html(bnc.desc);
+        $('#tg-jugada').html(bnc.jg.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
+
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
+
+        prepareDownload();
+    }
+
+    var formato = $('#formato');
+    formato.change(prepareDownload);
+    function prepareDownload() {
+        var a = document.getElementById("exportar");
+        a.href = "#reporte/general";
+        var name = name = "SRQ - REPORTE "+fdata.inicio+"-"+fdata.fin+"."+formato.val();
+        if (formato.val()=="json") {
+            download("exportar",JSON.stringify(rpt,null,2),name,"text/plain");
+        } else if (formato.val()=="csv") {
+            notificacion("FORMATO NO DISPONIBLE");
+        } else {
+            html2canvas($("#print-img"), {
+                onrendered: function (canvas) {
+                    var myImage = canvas.toDataURL("image/png");
+                    a.href = myImage;
+                    a.download = name;
+                }
+            });
+        }
+    }
+
+    if (args && args.length>1) {
+        a = args[1].split("-");
+        b = args[2].split("-");
+        f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.trigger("submit");
+    }
+}
+nav.paginas.addListener("reporte/banca",reporteBanca_nav);
+
+function reporteRecogedor_nav (p,args) {
+    var f1 = $('#reporte-fecha1');
+    var f2 = $('#reporte-fecha2');
+    var fdata;
+    var reporte = $('#reporte');
+    var premios = $('#prm-select'), grp = $('#rp-agrupar');
+    var rpt; var hlp = {bn:function () { return $usuario.nombre;  }};
+    $('#reporte').submit(function (e) {
+        e.preventDefault(e);
+        fdata = formControls(this);
+        fdata.bancaID = args[0];
+        var f = formLock(this);
+        $('#pheader').html(jsrender($('#rd-prtaq'),fdata,hlp));
+        socket.sendMessage("reporte-recogedor",{s:fdata,g:grp.val()}, function (e, d) {
+            formLock(f,false);
+            rpt = d || [];
+            updateView();
+        })
+    });
+    premios.change(updateView);
+
+    function updateView () {
+        if (rpt.length==0) return;
+        var j=0, pr=0, pg=0, cm=0, rn= 0, b=0;
+        rpt.forEach(function (item) {
+            item.balance = item.jg - item.pr - item.cmt;
+            item.rango = f1[0].value+'|'+f2[0].value;
+            b+=item.balance;
+            j+=item.jg;
+            pr+= item.pr;
+            cm+= item.cmt;
+            rn+= item.rt;
+        });
+
+        var total = {
+            j: j.format(2), pr: pr.format(2), b:b.format(2),cm:cm.format(2), r:rn.format(2)
+        };
+        $('#bheader').html(jsrender($('#rd-total'),total));
+
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((b).format(2));
+
+        $('#tg-descuento').html((cm+rn).format(2));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-renta').html(rn.format(2));
+
+        var rank, bnc;
+        //top jugado
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.jg- a.jg;
+        });
+        bnc = rank[0];
+        $('#tj-banca').html(bnc.desc);
+        $('#tj-jugada').html(bnc.jg.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
+
+        //top ganancia
+        rank = rpt.slice();
+        rank.sort(function (a, b) {
+            return b.balance- a.balance;
+        });
+        bnc = rank[0];
+        $('#tg-banca').html(bnc.desc);
+        $('#tg-jugada').html(bnc.jg.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
+
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
+
+        prepareDownload();
+    }
+
+    var formato = $('#formato');
+    formato.change(prepareDownload);
+    function prepareDownload() {
+        var a = document.getElementById("exportar");
+        a.href = "#reporte/general";
+        var name = name = "SRQ - REPORTE "+fdata.inicio+"-"+fdata.fin+"."+formato.val();
+        if (formato.val()=="json") {
+            download("exportar",JSON.stringify(rpt,null,2),name,"text/plain");
+        } else if (formato.val()=="csv") {
+            notificacion("FORMATO NO DISPONIBLE");
+        } else {
+            html2canvas($("#print-img"), {
+                onrendered: function (canvas) {
+                    var myImage = canvas.toDataURL("image/png");
+                    a.href = myImage;
+                    a.download = name;
+                }
+            });
+        }
+    }
+
+    if (args && args.length>1) {
+        a = args[1].split("-");
+        b = args[2].split("-");
+        f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.trigger("submit");
+    }
+}
+nav.paginas.addListener("reporte/recogedor",reporteRecogedor_nav);
+
+function reporteTaquilla_nav (p,args) {
+    var taqID = args[0];
+    var f1 = $('#reporte-fecha1');
+    var f2 = $('#reporte-fecha2');
+    var reporte = $('#reporte');
+    var premios = $('#prm-select');
+    var hbtaq = $('#hb-taquilla');
+    var rpt;
+
+    var bancas = $('#bancas');
+    bancas.html(jsrender($('#rd-banca-option'),$bancas));
+    bancas.on("change", function () {
+        hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...');
+        socket.sendMessage("taquillas", {bancaID:bancas.val()}, function (e, d) {
+            $('#taquillas').html(jsrender($('#rd-taquilla-option'),d));
+            hbtaq.remove();
+        });
+    });
+    bancas.trigger("change");
+
+    reporte.submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        var f = formLock(this);
+        data.taquillaID = taqID;
+        socket.sendMessage("reporte-taquilla",data, function (e, d) {
+            formLock(f,false);
+            d = d || [];
+            rpt = d;
+            var j=0, pg= 0, pr = 0, cm=0;
+            d.forEach(function (item) {
+                item.balance = item.jugada-item.premio;
+                j+=item.jugada;
+                pg+=item.pago;
+                pr+=item.premio;
+                cm+=item.comision;
+            });
+
+            $('#mnt-jugado').html(j.format(2));
+            $('#mnt-premios').html(pr.format(2));
+            $('#mnt-pagos').html(pg.format(2));
+            $('#mnt-balance').html((j-pr-cm).format(2));
+
+
+            $('#tg-descuento').html((cm).format(2));
+            $('#tg-comision').html(cm.format(2));
+
+            var rank, bnc;
+            //top jugado
+            rank = d.slice();
+            rank.sort(function (a, b) {
+                return b.jugada- a.jugada;
+            });
+            bnc = rank[0];
+            $('#tj-banca').html(bnc.descripcion);
+            $('#tj-jugada').html(bnc.jugada.format(2));
+            $('#tj-balance').html(bnc.balance.format(2));
+
+            //top ganancia
+            rank = d.slice();
+            rank.sort(function (a, b) {
+                return b.balance- a.balance;
+            });
+            bnc = rank[0];
+            $('#tg-banca').html(bnc.descripcion);
+            $('#tg-jugada').html(bnc.jugada.format(2));
+            $('#tg-balance').html(bnc.balance.format(2));
+
+            updateView();
+        })
+    });
+    premios.change(updateView);
+
+    function updateView () {
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
+    }
+
+    if (args && args.length>0) {
+        var a = args[1].split("-");
+        var b = args[2].split("-");
+        f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.trigger("submit");
+    }
+}
+nav.paginas.addListener("reporte/taquilla",reporteTaquilla_nav);
+
+function reporteCobros_nav (p,args) {
+    var f1 = $('#reporte-fecha1');
+    var f2 = $('#reporte-fecha2');
+    var reporte = $('#reporte');
+    var rdata;
+    _helpers.rgFiltro = function () {
+        return (f1.val() && f2.val())?"|"+f1.val()+"|"+f2.val():'';
+    };
+    reporte.submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        var f = formLock(this);
+        var grp = $('#rp-agrupar').val();
+        socket.sendMessage("reporte-cobros",{s:data,g:grp}, function (e, d) {
+            formLock(f,false);
+            var lazy = [];
+            if (!d) {
+                $('#reporte-body').html('');
+                $('.clr').html('--');
+                return;
+            }
+            rdata = d;
+            var j=0, cm= 0, pt=0;
+            d.forEach(function (item) {
+                j+=item.jg;
+                cm += item.jg*item.cm;
+
+                if (item.hasOwnProperty("cm") && item.cm==0 && item.hasOwnProperty("cID")) {
+
+                    $('#rnt'+item.cID).html('<i class="fa fa-spinner fa-spin"></i>');
+
+                    lazy.push(item.cID);
+                }
+            });
+            lazyLoad();
+
+            $('#mnt-jugado').html(j.format(2));
+
+            var rank, bnc;
+            //top jugado
+            rank = d.slice();
+            rank.sort(function (a, b) {
+                return b.renta- a.renta;
+            });
+            bnc = rank[0];
+            $('#tj-banca').html(bnc.desc);
+
+            $('#tj-jugada').html(bnc.jg.format(2));
+            $('#renta').html(cm.format(2));
+
+            $('#reporte-body').html(jsrender($('#rd-reporte'),d));
+
+            $('.cbr-folder').click(function (e) {
+                e.preventDefault(e);
+                var o = parseInt($(this).attr("fld"));
+                $(this).attr("fld",o==1?0:1);
+                var fld = parseInt($(this).attr("fldid"));
+                if (o==0) {
+                    $('.subrow'+fld).removeClass('hidden');
+                    $(this).find('i').addClass('fa-folder-open');
+                }
+                else {
+                    $('.subrow'+fld).addClass('hidden');
+                    $(this).find('i').removeClass('fa-folder-open');
+                }
+            });
+
+            function lazyLoad() {
+                if (lazy.length>0) {
+                    var id = lazy.shift();
+                    var sdata = copyTo(data);
+                    sdata.cid = id;
+                    socket.sendMessage("reporte-subcobros", {s: sdata, g: 2}, function (e, d) {
+                        var cm2 = 0;
+                        d.forEach(function (sitem) {
+                            sitem.cID = id;
+                            cm2 += sitem.jg * sitem.cm;
+                        });
+                        cm += cm2;
+                        $('#rnt' + id).html(cm2.format(2));
+                        $('#renta').html(cm.format(2));
+
+                        var b = jsrender($('#rd-reporte'), d);
+                        $(b).insertAfter('#c' + id);
+
+                        $('.cbr-shutdown').off('click');
+                        $('.cbr-shutdown').click(function (e) {
+                            e.preventDefault(e);
+                            alert('Oops.. Esto aun no funciona ;) vuelva pronto...');
+                        })
+                        $('#cbrfi'+id).switchClass('fa-folder-o','fa-folder');
+
+                        $('.cbr-disable').off("click");
+                        $('.cbr-disable').click(function (e) {
+                            e.preventDefault(e);
+                            var uID = $(this).attr('usID');
+                            var row = $('#'+uID);
+                            var cbr = $('#cbrbal-'+uID);
+                            cbr.toggleClass('cbr-bal-act');
+                            if (cbr.hasClass('cbr-bal-act')) row.css('opacity',1);
+                            else row.css('opacity',0.5);
+                        })
+
+                        $('.cbr-bal').off("click");
+                        $('.cbr-bal').on('click', function (e) {
+                            e.preventDefault(e);
+                            var id = $(this).attr('usID');
+                            var m = parseFloat($(this).attr('monto'));
+                            var d = "COBRO SRQ SEMANA "+f1.val()+"|"+f2.val()+" "+$(this).attr('desc');
+                            socket.sendMessage('balance-add',{usID:id,monto:m,desc:d}, function (e, d) {
+                                    $('#'+ d.usID).addClass('success');
+                            });
+                        })
+                        lazyLoad();
+                    });
+                }
+            }
+        })
+    });
+
+    $('#rtp-desc-o').click(function (e) {
+        e.preventDefault(e);
+        rdata.sort(function (a,b) {
+            var ret = 0;
+            a = a.desc.toLowerCase();
+            b = b.desc.toLowerCase();
+            if(a > b)
+                ret = 1;
+            if(a < b)
+                ret = -1;
+            return ret;
+        });
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rdata));
+    });
+    $('#cbr-procesar').click(function () {
+        $(this).prop("disabled",1);
+        var lz = [];
+        $('.cbr-bal-act').each(function (idx,item) {
+            lz.push(item);
+        });
+        lzLoad(lz.shift());
+        function lzLoad (item) {
+            var id = $(item).attr('usID');
+            var m = parseFloat($(item).attr('monto'));
+            var d = "COBRO SRQ SEMANA "+f1.val()+"|"+f2.val()+", "+$(item).attr('desc');
+            socket.sendMessage('balance-add',{usID:id,monto:m,desc:d}, function (e, d) {
+                $('#'+ d.usID).addClass('success');
+                if (lz.length>0) lzLoad(lz.shift())
+                else $('#cbr-procesar').prop("disabled",0);
+            });
+        }
+    })
+    if (args && args.length>0) {
+        var a = args[0].split("-");
+        var b = args[1].split("-");
+        f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.trigger("submit");
+    }
+}
+nav.paginas.addListener("reporte/cobros",reporteCobros_nav);
+
+function reporteCobrosComercial_nav (p,args) {
+    var f1 = $('#reporte-fecha1');
+    var f2 = $('#reporte-fecha2');
+    var reporte = $('#reporte');
+    var rdata;
+    _helpers.rgFiltro = function () {
+        return (f1.val() && f2.val())?"|"+f1.val()+"|"+f2.val():'';
+    };
+    reporte.submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        var f = formLock(this);
+        var grp = $('#rp-agrupar').val();
+        socket.sendMessage("reporte-cobros",{s:data,g:grp}, function (e, d) {
+            formLock(f,false);
+            if (!d) {
+                $('#reporte-body').html('');
+                $('.clr').html('--');
+                return;
+            }
+            rdata = d;
+            var j=0, pr=0, cm= 0, pt=0;
+            d.forEach(function (item) {
+                item.balance = item.jugada-item.premio;
+                j+=item.jugada;
+                pr+=item.premio;
+                cm+= item.renta;
+                pt+= item.balance*item.participacion;
+            });
+
+            $('#mnt-jugado').html(j.format(2));
+            $('#mnt-premios').html(pr.format(2));
+
+            var rank, bnc;
+            //top jugado
+            rank = d.slice();
+            rank.sort(function (a, b) {
+                return b.renta- a.renta;
+            });
+            bnc = rank[0];
+            $('#tj-banca').html(bnc.desc);
+            $('#tj-jugada').html(bnc.jugada.format(2));
+
+            //top ganancia
+
+            $('#renta').html(cm.format(2));
+
+            $('#reporte-body').html(jsrender($('#rd-reporte'),d));
+        })
+    });
+
+    $('#rtp-desc-o').click(function (e) {
+        e.preventDefault(e);
+        rdata.sort(function (a,b) {
+            var ret = 0;
+            a = a.desc.toLowerCase();
+            b = b.desc.toLowerCase();
+            if(a > b)
+                ret = 1;
+            if(a < b)
+                ret = -1;
+            return ret;
+        });
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rdata));
+    });
+
+    if (args && args.length>0) {
+        var cid = args[0];
+        var a = args[1].split("-");
+        var b = args[2].split("-");
+        f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.trigger("submit");
+    }
+}
+nav.paginas.addListener("reporte/cobros-comercial",reporteCobrosComercial_nav);
+
+function reporteBalance_nav (p,args) {
+    var user, usData;
+
+    if (args && args.length > 0) {
+        $('.bl-dreg').each(function () {
+            $(this).removeClass('hidden');
+        });
+        a = args[0].slice(1);
+        user = findBy("usuarioID",a,$usuarios);
+        if (user) balance();
+        else socket.sendMessage('usuarios',{id:a}, function (e, d) {
+            user = d[0];
+             balance(); 
+        })
+
+        function balance () {
+            $('#bl-us-name').html(user.nombre);
+            $('#bl-clients-total').html('Cargando...');
+            socket.sendMessage('balance-general', {usID:user.usID}, function (e, d) {
+                usData = d || [];
+                if (usData.length>0) {
+                    $('#reporte-body').html(jsrender($('#rd-reporte-us'), usData));
+                    $('#bl-clients-total').html(usData[0].balance.format(2));
+                } else {
+                    $('#bl-clients-total').html('0.00');
+                }
+            });
+        }
+    } else {
+        $('.bl-dreg').addClass('hidden');
+        socket.sendMessage('balance-general', null, function (e, d) {
+            $('#reporte-body').html(jsrender($('#rd-reporte'), d));
+            var tc = 0;
+            d.forEach(function (item) {
+                tc = tc + item.balance;
+            });
+            $('#bl-clients-total').html(tc.format(2));
+        });
+    }
+    $('#bl-new-reg').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        var f = formLock(this);
+        data.usID = args[0];
+        socket.sendMessage('balance-add',data, function (e, d) {
+            if (usData.length>0) d.balance = d.monto + (usData[usData.length - 1].balance);
+            else d.balance = d.monto;
+            usData.unshift(d);
+            formReset(f);
+            $('#reporte-body').html(jsrender($('#rd-reporte-us'), usData));
+            $('#bl-clients-total').html(d.balance.format(2));
+        });
+    });
+}
+nav.paginas.addListener("reporte/balance",reporteBalance_nav);
 
 function ticketsAnular (p,args) {
     $('#anular').submit(function (e) {

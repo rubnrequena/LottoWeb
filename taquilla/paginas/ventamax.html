@@ -1,23 +1,38 @@
-<!--<style>-->
-    <!--.cesto-indice {-->
-        <!--font-size: 11px;-->
-    <!--}-->
-<!--</style>-->
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize maximize">&plus;</a>
+        </div>
+        <h3 class="panel-title"><i class="fa fa-newspaper-o"></i> ANUNCIOS 19/09/18 <small>Click para ver mas...</small></h3>
+    </div>
+    <div class="panel-body" style="display: none;">
+        <p>
+            Apreciado usuario SRQ, a partir de hoy con la finalidad de agilizar el proceso de ventas por la introduccion de los decimales, hemos cambiado la tecla predefinida para imprimir que anteriormente era el punto decimal "." del teclado numerico, a la tecla "+", de esta manera dejar libre la tecla decimal para introducir los montos, recordamos que la tecla "+" se usaba para ubicarnos en el campo sorteo para reiniciar el curso del proceso de ventas, esta tecla fue movida a la tecla "Inicio", ubicada en el grupo de teclas encima de las direccionales.
+        </p>
+        <p>
+            <strong>Nota: esta configuracion no afectara a los usuarios que ya cambiaron manualmente esta tecla de impresion en el area de <a href="#preferencias">Preferencias</a></strong>
+        </p>
+        <p>
+            Aprovechando de dejar un listado actual de los accesos directos disponibles actualizados:
+            <ul>
+                <li>Teclado Numerico "+": Imprimir venta.</li>
+                <li>Teclado Numerico "Enter": Avanzar flujo de venta (Sorteo > Numero > Monto > Procesar venta)</li>
+                <li>Teclado Numerico "-": Remover ultimo numero procesado</li>
+                <li>Inicio: Reubicarse en el campo sorteo</li>
+            </ul>
+        </p>
+        <p>
+            Recordando tambien que en SRQ nos preocupamos por tu eficiencia, el campo <strong>Numero</strong> es un campo inteligente que acepta multiples atajos:
+            <ul>
+                <li>Multiples Numeros: introduzca todos los numeros a procesar por un mismo monto Ej.: 1 3 4 5 10 11 20 (Separados con espacio o con asteriscos "Teclado Numerico")</li>
+                <li>Series: puede introducir una serie entera de la siguiente manera Ej.: 1/5</li>
+                <li>Tambien es posible combinarlos Ej.: 1 3 10/15</li>
+            </ul>
+        </p>
+    </div>
+</div>
 <div class="pageheader hidden-xs">
     <h2 class="text-uppercase" id="taq-nombre"></h2>
-</div>
-<div class="panel">
-    <div class="panel-heading hidden-xs">
-        <span class="panel-title"><i class="fa fa-newspaper-o"></i>SRQ RECONVERSION 2018</span>
-    </div>
-    <div class="panel-body panel-body-nopadding">
-        <div class="table-responsive">
-            <h4>
-                <p>Porque SRQ se las pone faciliiiiito.. a partir de hoy (6/11) le traemos la libreria de video tutoriales, donde podran aprender a dominar el sistema desde lo mas basico hasta los aspectos mas avanzados.</p>
-                <p>Para empezar a disfrutar solo necesita ingresar en la seccion de <a href="#ayuda"><i class="fa fa-question"></i> Ayuda</a>.</p>
-            </h4>
-        </div>&lt;!&ndash; table-responsive &ndash;&gt;
-    </div>
 </div>
 <div class="panel">
     <div class="panel-body">
@@ -119,11 +134,18 @@
                 <h4 class="modal-title">Repetir Jugada</h4>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-6 col-sm-offset-3">
-                        <select class="s2 form-control" id="md-msorteos" name="sorteos" required></select>
-                    </div>
-                </div>
+                <!--<div class="row">-->
+                    <!--<div class="col-sm-6 col-sm-offset-3">-->
+                        <!--<div class="btn-group-justified">-->
+                            <!--<div class="btn-group">-->
+                                <!--<button class="btn btn-darkblue" id="rpt-minus"><i class="fa fa-chevron-down"></i></button>-->
+                            <!--</div>-->
+                            <!--<div class="btn-group">-->
+                                <!--<button class="btn btn-darkblue" id="rpt-plus"><i class="fa fa-chevron-up"></i></button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
                 <div class="row">
                     <div class="col-sm-3"><strong>NUMERO</strong></div>
                     <div class="col-sm-6"><strong>SORTEO</strong></div>
@@ -134,6 +156,7 @@
                 </form>
             </div>
             <div class="modal-footer">
+                <span class="pull-left"><a href="javascript:alert('PROXIMAMENTE!');" target="_blank"><i class="fa fa-question-circle fa-2x"></i><i style="vertical-align: super;">&iquest;Como repetir un ticket?</i></a> </span>
                 <button form="vnt-repetir" class="btn btn-darkblue">CONFIRMAR</button>
             </div>
         </div>
@@ -207,6 +230,20 @@
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-repetir">
+    {{if h==1 }}
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <div class="btn-group-justified">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-darkblue rpt-minus btn-sm" sorteo="{{:sorteoID}}"><i class="fa fa-minus"></i></button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-darkblue rpt-plus btn-sm" sorteo="{{:sorteoID}}"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+        </div>
+    {{/if}}
     <div class="form-group">
         <div class="col-sm-3">
             <div class="input-group">
@@ -215,17 +252,17 @@
             </div>
         </div>
         <div class="col-sm-6">
-            <select class="s2b form-control s2sorteos rptsorteo srt{{:sorteoID}}" name="sorteo" required></select>
+            <select id="srpt{{:sorteoID}}{{:#index}}" class="s2b form-control s2sorteos rptsorteo srt{{:sorteoID}}" name="sorteo" required></select>
         </div>
         <div class="col-sm-3">
-            <input class="form-control" name="monto" type="number" min="0.1" step="any" value="{{:monto}}">
+            <input class="form-control" name="monto" type="number" min="0.01" step="any" value="{{:monto}}">
         </div>
     </div>
 </script>
 <script type="text/x-jsrender" id="print-select">
     <div class="btn-group" style="margin-top:10px; width: 100%;">
         <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" id="printbtn">
-            <span id="print-label">Elegir</span> <strong class="text-x">[<span class="ncono" datan="{{:~formatNumber(0,2,'.','t')}}" id="vnt-total">0.00</span> Bs]</strong> <span class="caret"></span>
+            <span id="print-label">Elegir</span> <strong class="text-x">[<span class="ncono" datan="{{:~formatNumber(0,2,'.','t')}}" id="vnt-total">0.00</span> <i class="fa fa-money"></i>]</strong> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
             <li><a id="print-paper" href="#imprimir"><i class="fa fa-print"></i> Imprimir</a></li>

@@ -739,12 +739,34 @@ function bancasTopes_nav (p,args) {
     $('#tope-nuevo').submit(function (e) {
         e.preventDefault(e);
         var data = formControls(this);
+        if (data.taquillaID>0 && data.compartido>0) {
+            alert('ERROR: Al asignar un cupo a una taquilla especifica, dicho cupo debera ser INDIVIDUAL por obligacion.');
+            return;
+        }
         var f = formLock(this);
         socket.sendMessage("tope-nuevo",data, function (e,d) {
             formLock(f,false);
             monto.val('');
             socket.sendMessage("topes",null, dsp_topes);
         })
+    });
+
+    var toggles = $('.toggle');
+    toggles.each(function (index) {
+        var me = $(this);
+        me.toggles({
+            text:{
+                on:"SI",
+                off:"NO"
+            },
+            on:false,
+            click:true
+        });
+    });
+    toggles.on("toggle", function (e, act) {
+        if (act) $('.tp-avanzado').removeClass('hidden')
+        else $('.tp-avanzado').addClass('hidden')
+
     });
 
     if ($elementos) {
@@ -758,9 +780,9 @@ function bancasTopes_nav (p,args) {
         })
     }
 
-    var tcomp = [{val:0,desc:"NO"}];
+    var tcomp = [{val:0,desc:"INDIVIDUAL"}];
     var tcompe = $('#tp-compartido');
-    if (topeGrupo) tcomp.push({val:1,desc:"SI"});
+    if (topeGrupo) tcomp.push({val:1,desc:"GRUPO"});
     else tcompe.prop('disabled','disabled');
     tcompe.html(jsrender($('#rd-topes-comp'),tcomp));
 
@@ -800,9 +822,10 @@ function reporteGeneral_nav (p,args) {
             pr+=item.premio;
             pg+= item.pago;
             cm+= item.comision;
-            rn+= item.renta;
+            //rn+= item.renta;
             cmb+= item.cmBanca;
         });
+        rn = j*$usuario.comision;
         rv = cmb<0;
         if (rv) cmb = Math.abs(cmb);
 
@@ -826,7 +849,7 @@ function reporteGeneral_nav (p,args) {
 
         $('#bheader').html(jsrender($('#rd-total'),total));
 
-        var rank, bnc;
+        /*var rank, bnc;
         //top jugado
         rank = rpt.slice();
         rank.sort(function (a, b) {
@@ -845,7 +868,7 @@ function reporteGeneral_nav (p,args) {
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
         $('#tg-jugada').html(bnc.jugada.format(2));
-        $('#tg-balance').html(bnc.balance.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));*/
 
         if (premios.val()==0) $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
         else $('#reporte-body').html(jsrender($('#rd-reporte2'),rpt));
@@ -980,12 +1003,11 @@ nav.paginas.addListener("reporte/taquilla",reporteTaquilla_nav);
 
 function reporteSorteo_nav (p,args) {
     var freporte = $('#reporte');
-    var help = {
-        elm:function (n) {
+    var help = copyTo(_helpers);
+    help.elm = function (n) {
             var e = findBy("id",n,$elementos);
             return e? "#"+e.n+" "+e.d:n;
-        },padding:padding
-    };
+        };
 
     var rf = $('#reporte-fecha');
     var hbs = $('#hb-sorteo');

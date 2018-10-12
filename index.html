@@ -9,36 +9,75 @@
 
     <link href="theme/css/style.default.css" rel="stylesheet">
     <style>
-        .fa-8x {
-            font-size: 6em;
-        }
         .row {
             padding: 15px;
         }
+        .fa-15x {
+            font-size: 1.5em;
+        }
+        .col-sm-2 {
+            padding: 10px;
+        }
+        h1 {
+            font-weight: bolder;
+            color: #ffffff;
+        }
+        body {
+            color: #FFFFFF;
+            background: url(./assets/bg-pattern.png),#7b4397;
+            background: url(./assets/bg-pattern.png),-webkit-gradient(linear,right top,left top,from(#7b4397),to(#dc2430));
+            background: url(./assets/bg-pattern.png),linear-gradient(to left,#7b4397,#dc2430)
+        }
+        .btn-primary {
+            background-color: rgba(66,139,202,0.66);
+        }
+        .btn-success {
+            background-color: rgba(68,157,68,0.66);
+        }
+        .btn-orange {
+            background-color: rgba(222,117,4,0.66);
+        }
     </style>
-
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-7746704629943716",
-            enable_page_level_ads: true
-        });
-    </script>
 </head>
 <body>
-    <div class="container">
-        <div class="well">
-            <h1>SISTEMA DE ANIMALITOS - SRQ</h1>
+    <div class="container" style="height: auto;">
+        <div class="row mt10 text-head">
+            <span class="fa-3x">SRQ...</span>
+            <span class="pull-right"><i>Nuestra pasion, su tranquilidad.</i> <i class="fa fa-smile-o"></i></span>
         </div>
         <div class="row">
-            <a class="btn btn-primary-alt center-block" href="./taquilla"><i class="fa fa-money fa-8x"></i><span class="fa-8x"> TAQUILLA / AGENCIA</span></a>
+            <div class="col-sm-4">
+                <a class="btn btn-primary btn-block" href="./taquilla">
+                    <i class="fa fa-money fa-4x"></i>
+                    <div class="fa-2x mt10">Taquilla</div></a>
+            </div>
+            <div class="col-sm-4">
+                <a class="btn btn-success btn-block" href="./banca"><i class="fa fa-group fa-4x"></i>
+                    <div class="fa-2x mt10">Grupo</div></a>
+            </div>
+            <div class="col-sm-4">
+                <a class="btn btn-orange btn-block" href="./usuario"><i class="fa fa-user fa-4x"></i>
+                    <div class="fa-2x mt10">Banca</div></a></a>
+            </div>
         </div>
         <div class="row">
-            <a class="btn btn-success-alt center-block" href="./banca"><i class="fa fa-group fa-8x"></i><span class="fa-8x"> GRUPO / RECOGEDOR</span></a>
-        </div>
-        <div class="row">
-            <a class="btn btn-maroon-alt center-block" href="./usuario"><i class="fa fa-user fa-8x"></i><span class="fa-8x"> USUARIO / BANCA</span></a>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-4">
+                <a class="btn btn-info-alt btn-block" href="/dl"><i class="fa fa-folder fa-4x"></i>
+                    <div class="fa-15x mt10">Descargas</div></a>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-3"></div>
         </div>
     </div>
+    <div id="SC_TBlock_576203" class="SC_TBlock">loading...</div>
+    <script type="text/javascript">
+        (sc_adv_out = window.sc_adv_out || []).push({
+            id : "576203",
+            domain : "n.ads1-adnow.com"
+        });
+    </script>
+    <script type="text/javascript" src="//st-n.ads1-adnow.com/js/a.js"></script>
 </body>
 </html>

@@ -39,16 +39,13 @@
                         <input class="rdo-com" type="radio" name="radio" value="0.01" id="radioRecogedor" />
                         <label for="radioRecogedor">Recogedor</label>
                     </div>
-                    <div class="rdio rdio-primary">
+                    <!--<div class="rdio rdio-primary">
                         <input class="rdo-com" type="radio" name="radio" value="-0.01" id="radioReventa" />
                         <label for="radioReventa">Reventa</label>
-                    </div>
+                    </div>-->
                     <div class="input-group">
                         <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required disabled="disabled">
                         <span class="input-group-addon">%</span>
-                    </div>
-                    <div class="help-block">
-                        <span class="text-danger">Consulte con su administrador sobre este nuevo campo, de lo contrario no lo modifique.</span>
                     </div>
                 </div>
             </div>
@@ -93,7 +90,6 @@
                     <th></th>
                     <th>NOMBRE</th>
                     <th>USUARIO</th>
-                    <th>RENTA</th>
                     <th>COMISION</th>
                     <th>CLAVE</th>
                     <th>ACTIVA</th>
@@ -116,9 +112,8 @@
             {{else}} <a class="bn-remove-res" bancaID="{{:bancaID}}" href="#res-{{:bancaID}}"><i class="fa fa-refresh text-success"></i></a>
             {{/if}}
         </td>
-        <td><a href="#bancas/banca|{{:bancaID}}">{{if papelera==1}} <span class="label label-default"><i class="fa fa-trash"></i></span> {{/if}}{{:nombre}}</a></td>
+        <td><a href="#bancas/grupo|{{:bancaID}}">{{if papelera==1}} <span class="label label-default"><i class="fa fa-trash"></i></span> {{/if}}{{:nombre}}</a></td>
         <td>{{:usuario}}</td>
-        <td>{{:~formatNumber(renta*100,1)}}%</td>
         {{if comision>0 }}
             <td>{{:~formatNumber(comision*100,1)}}%
             <i class="fa fa-shopping-bag" title="Recogedor"></i>

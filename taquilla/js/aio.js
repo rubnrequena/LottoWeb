@@ -3,12 +3,11 @@ var init = function () {
     var storage = localStorage;
 // SOCKET
     var host = $.cookie("taquilla") || location.hostname+":4022";
-    //host = "104.129.171.16:5002";
     var socket;
 //CONFIG
     var config = {
-        mimp:storage.getItem("srq.taq.modoImpresion") || 0,
-        imprimirTecla:storage.getItem("srq.taq.imprimirTecla") || 110,
+        mimp:storage.getItem("srq.taq.modoImpresion") || 1,
+        imprimirTecla:storage.getItem("srq.taq.imprimirTecla") || 107,
         formatoImpresion:storage.getItem("srq.taq.formatoImpresion") || 0,
         letrasLinea:storage.getItem('srq.taq.letrasLinea') || 25,
         ordenSorteos:storage.getItem('srq.taq.ordenSorteos') || 0
@@ -130,10 +129,12 @@ var init = function () {
     });
     nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
         // Minimize Button in Panels
-        jQuery('.minimize').click(function(){
-            var t = jQuery(this);
+        var heading = jQuery('.panel-heading');
+        heading.attr("title","Click para expandir y/o contraer panel");
+        heading.click(function(){
+            var t = jQuery(this).find('.minimize');
             var p = t.closest('.panel');
-            if(!jQuery(this).hasClass('maximize')) {
+            if(!t.hasClass('maximize')) {
                 p.find('.panel-body, .panel-footer').slideUp(200);
                 t.addClass('maximize');
                 t.html('&plus;');
@@ -145,6 +146,7 @@ var init = function () {
             return false;
         });
         // Close Button in Panels
+
         jQuery('.panel .panel-close').click(function(){
             jQuery(this).closest('.panel').fadeOut(200);
             return false;
@@ -229,13 +231,6 @@ var init = function () {
                 formatoImpresion = 1;
                 $('#print-label').html('<i class="fa fa-envelope"></i> ENVIAR');
                 srqag.modal();
-            });
-            $('#print-sms').click(function (e) {
-                alert("ESTIMADOS USUARIOS, SRQ NOTIFICA QUE LAMENTABLEMENTE HEMOS SUSPENDIDO TEMPORALMENTE EL SERVICIO DE MENSAJERIA POR PROBLEMAS CON LA OPERADORA, ESPERAMOS PRONTO SOLUCIONAR EL INCONVENIENTE.");
-                e.preventDefault(e);
-                /*formatoImpresion = 2;
-                $('#print-label').html('<i class="fa fa-mobile-phone"></i> ENVIAR');
-                srqag.modal();*/
             });
             $('#print-ws').click(function (e) {
                 e.preventDefault(e);
@@ -497,7 +492,7 @@ var init = function () {
                 });
 
                 //imprimir
-                var mimp = storage.getItem("srq.taq.modoImpresion") || 0;
+                var mimp = storage.getItem("srq.taq.modoImpresion") || 1;
                 //modo auto
                 if (mimp=="atm") mimp = d.vt.length>6?2:1;
                 _printStack[mimp](d.vt, d.tk);
@@ -524,12 +519,10 @@ var init = function () {
             var ncono = $('.ncono');
             ncono.mouseover(function () {
                 var n = $(this).attr("datan");
-                console.log("n",n);
                 $(this).text((n*100000).format(0)+" BsF");
             });
             ncono.mouseout(function () {
                 var n = $(this).attr("datan");
-                console.log("n",n);
                 $(this).text(formatNumber(n,2));
             });
 
@@ -617,7 +610,7 @@ var init = function () {
                     var num = elementoSorteo(srt.sorteo,numero);
                     if (num>-1) {
                         var idx = elementoCesto(sorteo, num);
-                        if (idx > -1) cesto[idx].monto += data.monto;
+                        if (idx > -1) cesto[idx].monto += cono_sel(data.monto);
                         else {
                             cesto.push({
                                 numero: num,
@@ -685,7 +678,7 @@ var init = function () {
                 });
                 ultimoTicket(d);
 
-                var mimp = storage.getItem("srq.taq.modoImpresion") || 0;
+                var mimp = storage.getItem("srq.taq.modoImpresion") || 1;
                 if (mimp=="atm") mimp = _ultimoTicket.ventas.length>6?2:1; //modo auto
                 _printStack[mimp](_ultimoTicket.ventas, _ultimoTicket.ticket,true);
             }
@@ -715,34 +708,62 @@ var init = function () {
             cesto_updateView();
             $('#md-repetir').modal('hide');
         });
+        var _cacherpt;
         $('#repetir').submit(function (e) {
             e.preventDefault(e);
             var data = formControls(this);
             var f = formLock(this);
             socket.sendMessage("venta-repetir",data, function (e, d) {
                 formReset(f);
+                _cacherpt = d;
+                d[0].h=1;
+                for (var i=1;i< d.length;i++) {
+                    if (d[i].sorteoID!=d[i-1].sorteoID) d[i].h=1;
+                }
                 $('#vnt-repetir').html(jsrender($('#rd-repetir'),d,helper));
                 $('#md-repetir').modal('show');
             })
         });
         $('#md-repetir').on('shown.bs.modal', function (e) {
             var disponibles = $sorteos.filter(sorteosDisponibles_filtro);
+            disponibles = disponibles.sort(sorteos_ordenSorteo);
             var s = $('.s2sorteos');
             s.html(jsrender($('#rd-sorteo-option'),disponibles));
             select2w(s);
+
+            var rptplus = $('.rpt-plus');
+            var rptminus = $('.rpt-minus');
 
             disponibles.forEach(function (item,index) {
                $('.srt'+item.sorteoID).select2("val",item.sorteoID);
             });
 
-            var mdSorteos = $('#md-msorteos');
-            mdSorteos.html(jsrender($('#rd-sorteo-option'),$sorteos.filter(sorteosDisponibles_filtro)));
-            //select2w(mdSorteos);
-            mdSorteos.on("change", function (e) {
-                $('.s2sorteos').select2("val",$(this).val());
-            })
-        });
+            /*var mdSorteos = $('#md-msorteos');
+            mdSorteos.html(jsrender($('#rd-sorteo-option'),disponibles));*/
 
+            rptplus.click(function () {
+                var sid = parseInt($(this).attr("sorteo"));
+                var n = _cacherpt.length;
+                var srt = $('select.srt'+sid);
+                srt.each(function (index, val) {
+                    var el = $(this);
+                    var v = el.val();
+                    var idx = findIndex("sorteoID", v, disponibles);
+                    if (idx<disponibles.length-1) el.prop('selectedIndex', idx + 1).change();
+                });
+            });
+            rptminus.click(function () {
+                var sid = parseInt($(this).attr("sorteo"));
+                var n = _cacherpt.length;
+                var srt = $('select.srt'+sid);
+                srt.each(function (index, val) {
+                    var el = $(this);
+                    var v = el.val();
+                    var idx = findIndex("sorteoID", v, disponibles);
+                    if (idx>0) el.prop('selectedIndex', idx - 1).change();
+                });
+            });
+        });
         sorteos_updateView();
 
         num.html(jsrender($('#rd-elemento-option'),$numeros));
@@ -756,6 +777,7 @@ var init = function () {
         $(document).on("keydown", onKeyDown);
 
         function onKeyDown (e) {
+            console.log("tecla",e.which);
             if (e.altKey) {
                 if (e.which>=96 && e.which<=105) {
                     e.preventDefault(e);
@@ -779,7 +801,7 @@ var init = function () {
                     }
                     break;
                 }
-                case parseInt(config.imprimirTecla): { // NUMPAD .
+                case parseInt(config.imprimirTecla): { // NUMPAD +
                     e.preventDefault(e);
                     cesto_realizarVenta();
                     sorteos.select2("close");
@@ -797,7 +819,7 @@ var init = function () {
                     }
                     break;
                 }
-                case 107: { //NUMPAD +
+                case 36: { //FIN
                     e.preventDefault(e);
                     if (e.target.id==numInput) {
                         num.select2('close');
@@ -824,8 +846,14 @@ var init = function () {
                 {type:"linea",text:ticket.hora,align:"center"},
                 {type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"}
             ];
-            if (copia) _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
-            else _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
+            if (copia) {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
+            }
+            else {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
+            }
 
             cesto.sort(function (a,b) {
                 var s1 = a.sorteoID, s2 = b.sorteoID;
@@ -853,11 +881,16 @@ var init = function () {
             copia = copia || false;
             var _lineas = [
                 {type:"linea",text:$usuario.nombre,align:"center"},
-                {type:"linea",text:ticket.hora,align:"center"},
-                {type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"}
+                {type:"linea",text:ticket.hora,align:"center"}
             ];
-            if (copia) _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
-            else _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
+            if (copia) {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
+            }
+            else {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
+            }
 
             cesto.sort(function (a,b) {
                 var s1 = a.sorteoID, s2 = b.sorteoID;
@@ -905,11 +938,16 @@ var init = function () {
             copia = copia || false;
             var _lineas = [
                 {type:"linea",text:$usuario.nombre,align:"center"},
-                {type:"linea",text:ticket.hora,align:"center"},
-                {type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"}
+                {type:"linea",text:ticket.hora,align:"center"}
             ];
-            if (copia) _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
-            else _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
+            if (copia) {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
+            }
+            else {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
+            }
 
             cesto.sort(function (a,b) {
                 var s1 = a.sorteoID, s2 = b.sorteoID;
@@ -965,11 +1003,16 @@ var init = function () {
             copia = copia || false;
             var _lineas = [
                 {type:"linea",text:$usuario.nombre,align:"center"},
-                {type:"linea",text:ticket.hora,align:"center"},
-                {type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"}
+                {type:"linea",text:ticket.hora,align:"center"}
             ];
-            /*if (copia) _lineas.push({type:"linea",text:"COPIA TICKET",align:"center"});
-            else _lineas.push({type:"linea",text:"TICKET",align:"center"});*/
+            if (copia) {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
+            }
+            else {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
+            }
 
             cesto.sort(function (a,b) {
                 var s1 = a.sorteoID, s2 = b.sorteoID;
@@ -1003,9 +1046,14 @@ var init = function () {
             copia = copia || false;
             var _lineas = [
                 {type:"linea",text:$usuario.nombre,align:"center"},
-                {type:"linea",text:ticket.hora,align:"center"},
-                {type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"}
+                {type:"linea",text:ticket.hora,align:"center"}
             ];
+            if (copia) {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" N:"+cesto.length,align:"center"});
+            }
+            else {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"});
+            }
             _lineas.push({type:"linea",text:"T:"+ticket.monto.format(2)+" AG"+_fingerprint,align:"left"});
             _lineas.push({type:"linea",text:" ",align:"left"});
             print.sendMessage("print",{data:_lineas,printer:1});
@@ -1077,7 +1125,7 @@ var init = function () {
             var _sorteos = $sorteos.filter(sorteosDisponibles_filtro);
             var tm = new Date().getTime();
             function bot_venta() {
-                var ns = getRandomArbitrary(1, _sorteos.length);
+                var ns = getRandomInt(1, _sorteos.length);
                 //var ns = 10;
                 var t = [];
                 for (var i = 0; i < ns; i++) {
@@ -1086,7 +1134,7 @@ var init = function () {
                     var elm = exploreBy("s",sr.sorteo,$elementos);
                     var nn = parseInt(Math.random() * elm.length);
                     var v = {
-                        monto: getRandomInt(10, 100),
+                        monto: parseFloat(getRandomArbitrary(0.10, 10).toFixed(2)),
                         //monto: 1000,
                         numero: elm[nn].id,
                         sorteoID: sr.sorteoID
@@ -1099,7 +1147,7 @@ var init = function () {
                     /*if (d.vt.length!= t.length) {
                         alert("ALERTA: VERIFICAR TICKET, PUEDE ESTAR DEFECTUOSO");
                     }*/
-                    $('#bot').html((++r)+" de "+repeat+" ventas confirmadas, con "+montot+" bs");
+                    $('#bot').html((++r)+" de "+repeat+" ventas confirmadas, con "+montot.format(2)+" bs");
                     if (r<repeat) bot_venta();
                     else $('#bot').append(',en '+(new Date().getTime()-tm)+" ms");
                 });
@@ -1514,8 +1562,8 @@ var init = function () {
             storage.setItem("srq.taq.modoImpresion",modoImpresion.val());
         });
         var mi = storage.getItem("srq.taq.modoImpresion");
-        modoImpresion.select2("val",mi || 0);
-        modoImpresion.val(mi || 0);
+        modoImpresion.select2("val",mi || 1);
+        modoImpresion.val(mi || 1);
 
         formatoImpresion.change(function (e) {
             setConfig("formatoImpresion",formatoImpresion.val());

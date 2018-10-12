@@ -34,6 +34,31 @@ function socket_init (e,d) {
     $elementos = d.elem || [];
     $bancas = d.bancas || [];
 }
+
+var hlp = {
+    formatDate:dateFormat,
+    formatNumber:formatNumber,
+    padding:padding
+};
+$('#vnt-pagar').submit(function (e) {
+    e.preventDefault(e);
+    var data = formControls(this);
+    var f = formLock(this);
+    socket.sendMessage("ticket",data, function (e, d) {
+        formReset(f);
+        if (d.hasOwnProperty("code")) {
+            notificacion("TICKET NO EXISTE",'');
+        } else {
+            $('#md-pagar-tpremio').html(jsrender($('#rd-premio-ticket'), [d.tk]));
+            $('#md-pagar-prms').html(jsrender($('#rd-premio-premios'), d.prm, hlp));
+        }
+    })
+});
+$('#md-ticket').on('hidden.bs.modal', function (e) {
+    $('#md-pagar-ticket').val('');
+    $('#md-pagar-tpremio').html('');
+    $('#md-pagar-prms').html('');
+});
 $('.logout').click(function (e) {
     e.preventDefault(e);
     $usuario=null;

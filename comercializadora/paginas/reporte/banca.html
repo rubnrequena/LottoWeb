@@ -210,14 +210,14 @@
     <tr>
         <td class="text-uppercase"><a href="#reporte/recogedor|{{:id}}|{{:rango}}">{{:desc}}</a>
             <span style="color:grey;font-size: 10px;"><span title="COMISION">{{:cb*100}}</span>|<span title="PARTICIPACION">{{:pb*100}}</span></span> </td>
-        <td>{{:~formatNumber(jg,0)}}</td>
-        <td>{{:~formatNumber(pr,0)}}</td>
+        <td>{{:~formatNumber(jg,2)}}</td>
+        <td>{{:~formatNumber(pr,2)}}</td>
         {{if cm>0}}
-            <td>{{:~formatNumber(cm,0)}}</td>
+            <td>{{:~formatNumber(cm,2)}}</td>
         {{else}}
-            <td>{{:~formatNumber(cmt,0)}}</td>
+            <td>{{:~formatNumber(cmt,2)}}</td>
         {{/if}}
-        <td>{{:~formatNumber(prt,0)}}</td>
-        <td>{{:~formatNumber(balance,0)}}</td>
+        <td>{{:~formatNumber(prt,2)}}</td>
+        <td>{{:~formatNumber(balance,2)}}</td>
     </tr>
 </script>

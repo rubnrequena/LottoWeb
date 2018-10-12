@@ -66,10 +66,13 @@
                 <li class="nav-parent"><a href=""><i class="fa fa-money"></i> <span>Sorteos</span></a>
                     <ul class="children">
                         <li><a href="#sorteos/buscar"><i class="fa fa-search"></i> <span>Buscar/Premiar</span></a></li>
-                        <li><a href="#sorteos/usuarios"><i class="fa fa-users"></i> <span>Usuarios</span></a></li>
+                        <li><a href="#sorteos/premiar"><i class="fa fa-flag-checkered"></i> <span>Premiar/Reiniciar</span></a></li>
+                        <!--<li><a href="#sorteos/usuarios"><i class="fa fa-users"></i> <span>Usuarios</span></a></li>-->
                     </ul>
                 </li>
                 <li><a href="#reporte/general"><i class="fa fa-bar-chart"></i> <span>Reporte Sorteo</span></a></li>
+                <li><a href="#monitor"><i class="fa fa-eye"></i> <span>Monitor</span></a></li>
+
             </ul>
         </div><!-- leftpanelinner -->
     </div><!-- leftpanel -->
@@ -171,10 +174,76 @@
 <script type="text/x-jsrender" id="rd-taquilla-option">
     <option value="{{:taquillaID}}" class="text-uppercase">{{:nombre}}</option>
 </script>
+
+<script type="text/x-jsrender" id="rd-premio-ticket">
+    <tr><td>TICKET</td><td>{{:ticketID}}</td></tr>
+    <tr><td>HORA</td><td>{{:~formatDate(tiempo)}}</td></tr>
+    <tr><td>MONTO</td><td>{{:~formatNumber(monto,2)}}</td></tr>
+    <tr><td>ANULADO</td><td>
+        {{if anulado==1}} SI {{else}} NO {{/if}}
+    </td></tr>
+</script>
+<script type="text/x-jsrender" id="rd-premio-premios">
+    <tr>
+        <td>#{{:numero}} {{:descripcion}}</td>
+        <td>{{:sorteo}}</td>
+        <td>{{:~formatNumber(monto,2)}}</td>
+        <td>{{:~formatNumber(premio,2)}}</td>
+        {{if pago}}
+        <td>{{:~formatDate(pago,"dd/mm hh:MM TT")}}</td>
+        {{else}}
+            {{if premio>0}}
+                <td><span class="label label-warning">PENDIENTE</span></td>
+            {{else}}
+                <td></td>
+            {{/if}}
+        {{/if}}
+    </tr>
+</script>
 <!--JSRENDER END-->
 
 <!--MODALS-->
-
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="md-ticket">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                <h4 class="modal-title">Buscar Ticket</h4>
+            </div>
+            <div class="modal-body">
+                <form id="vnt-pagar">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <input type="number" min="1" max="999999999" step="any" name="ticketID" class="form-control" id="md-pagar-ticket" required>
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-lightblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="md-pagar-premios" class="table-responsive">
+                    <table class="table table-hover table-condensed">
+                        <tbody id="md-pagar-tpremio"></tbody>
+                    </table>
+                </div>
+                <div id="md-pagar-prm" class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>sorteo</th>
+                            <th>monto</th>
+                            <th>premio</th>
+                            <th>pago</th>
+                        </tr>
+                        </thead>
+                        <tbody id="md-pagar-prms"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!--MODALS END-->
 
 <script src="../theme/js/jquery-1.11.1.min.js"></script>

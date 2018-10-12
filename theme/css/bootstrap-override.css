@@ -155,6 +155,7 @@ h4, .h4 {
    -webkit-transition: all 0.2s ease-out 0s;
    transition: all 0.2s ease-out 0s;
    padding: 9px 15px;
+   backface-visibility:  0.5;
 }
 
 .btn:focus {
@@ -583,6 +584,7 @@ h4, .h4 {
 
 .panel-heading {
    padding: 20px;
+   cursor: pointer;
 }
 
 .panel-default > .panel-heading {

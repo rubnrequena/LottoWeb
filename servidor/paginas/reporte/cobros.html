@@ -1,5 +1,5 @@
 <div class="pageheader hidden-xs">
-    <h2><i class="fa fa-area-chart"></i> Reporte General</h2>
+    <h2><i class="fa fa-area-chart"></i> Reporte Cobros</h2>
 </div>
 <div class="panel">
     <div class="panel-body">
@@ -19,7 +19,6 @@
                 <div class="col-sm-6">
                     <select class="s2 form-control" id="rp-agrupar">
                         <option value="3">COMERCIALES</option>
-                        <option value="2">USUARIO</option>
                         <option value="1">FECHA</option>
                     </select>
                 </div>
@@ -93,17 +92,11 @@
                 <div class="stat">
                     <div class="row">
                         <div class="col-xs-6">
-                            <small class="stat-label">Renta</small>
+                            <small class="stat-label">Total Renta</small>
                             <h2 id="renta" class="clr">--</h2>
                         </div>
                     </div><!-- row -->
                     <div class="mb15"></div>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <small class="stat-label">Participacion</small>
-                            <h4 id="participacion" class="clr">--</h4>
-                        </div>
-                    </div><!-- row -->
                 </div><!-- stat -->
 
             </div><!-- panel-heading -->
@@ -112,40 +105,59 @@
 </div>
 <div class="panel">
     <div class="panel-body">
-		<div class="table-responsive">
-			<table id="tb" class="table table-hover table-condensed">
-				<thead>
-				<tr>
-					<th><a href="#" id="rtp-desc-o">FECHA / BANCA</a> </th>
-					<th>JUGADO</th>
-					<th>PREMIOS</th>
-                    <th>COMISION</th>
-					<th>PARTICIPACION</th>
-					<th>BALANCE</th>
-				</tr>
-				</thead>
-				<tbody id="reporte-body"></tbody>
-			</table>
-		</div>
+        <div class="table-responsive">
+            <table id="tb" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th><a href="#" id="rtp-desc-o">FECHA / BANCA</a> </th>
+                    <th>JUGADO</th>
+                    <th>% COMISION</th>
+                    <th>RENTA</th>
+                </tr>
+                </thead>
+                <tbody id="reporte-body"></tbody>
+            </table>
+        </div>
     </div>
     <div class="panel-footer">
-        <button class="btn btn-lightblue disabled"><i class="fa fa-print"></i> IMPRIMIR</button>
-        <button class="btn btn-success disabled"><i class="fa fa-file-excel-o"></i> EXPORTAR</button>
+        <button id="cbr-procesar" class="btn btn-darkblue"><i class="fa fa-paypal"></i> PROCESAR TODO</button>
     </div>
 </div>
 <script type="text/x-jsrender" id="rd-reporte">
+    {{if uID}}
+    <tr id="u{{:uID}}" class="rc-usrow subrow{{:cID}} hidden">
+    {{else cID}}
+    <tr id="c{{:cID}}" class="rc-cmrow">
+    {{else}}
     <tr>
-        <td class="text-uppercase">
-            {{if cID}}
-            <a href="#reporte/comercial|{{:cID}}{{:~rgFiltro()}}">{{:desc}}</a>
-            {{else}}
-            <a href="#reporte/banca|{{:usuarioID}}{{:~rgFiltro()}}">{{:desc}}</a>
+    {{/if}}
+        <td width="140px">
+            <div class="btn-group">
+                <button class="btn btn-xs btn-maroon cbr-shutdown" href="#"><i class="fa fa-power-off"></i></button>
+                {{if uID}}
+                {{if cm>0}}
+                <button class="btn btn-xs btn-danger cbr-disable" usID="u{{:uID}}" href="#"><i class="fa fa-remove text-danger"></i></button>
+                <button id="cbrbal-u{{:uID}}" class="btn btn-xs cbr-bal cbr-bal-act" desc="V:{{:~formatNumber(jg)}}, C:{{:~abs(cm*100)}}" usID="u{{:uID}}" monto="{{:(jg*cm)}}" href="#"><i class="fa fa-paypal text-success"></i></button>
+                {{/if}}
+                <button class="btn btn-xs cbr-edit" href="#bancas/banca|{{:uID}}"><i class="fa fa-user text-success"></i></button>
+                {{else}}
+                {{if cm>0}}
+                <button class="btn btn-xs btn-danger cbr-disable" usID="c{{:cID}}" href="#"><i class="fa fa-remove"></i></button>
+                <button id="cbrbal-c{{:cID}}" class="btn btn-xs cbr-bal cbr-bal-act" desc="V:{{:~formatNumber(jg)}}, C:{{:~abs(cm*100)}}" usID="c{{:cID}}" monto="{{:(jg*cm)}}"><i class="fa fa-paypal"></i></button>
+                {{/if}}
+                <button class="btn btn-xs cbr-edit" href="#bancas/comercial|{{:cID}}"><i class="fa fa-user"></i></button>
+                {{/if}}
+            </div>
+        </td>
+        <td class="text-uppercase rpdesc">
+            <a href="#reporte/cobros-comercial|{{:cID}}{{:~rgFiltro()}}">{{:desc}}</a>
+            {{if !uID && cm==0}}
+            <a fld="0" fldid="{{:cID}}" class="cbr-folder" href="#"><i id="cbrfi{{:cID}}" style="color:darkgrey;" class="fa fa-folder-o"></i></a>
             {{/if}}
         </td>
-        <td>{{:~formatNumber(jugada,2)}}</td>
-        <td>{{:~formatNumber(premio,2)}}</td>
-        <td>{{:~formatNumber(comision,2)}}</td>
-        <td>{{:~formatNumber(balance*participacion,2)}}</td>
-        <td>{{:~formatNumber(balance-(renta)-(jugada*participacion),2)}}</td>
+        <td>{{:~formatNumber(jg,2)}}</td>
+        <td>{{:~formatNumber(cm*100,1)}}</td>
+        <td id="rnt{{:cID}}">{{:~formatNumber(jg*cm,2)}}</td>
     </tr>
 </script>

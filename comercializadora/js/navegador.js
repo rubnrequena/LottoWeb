@@ -21,10 +21,12 @@ nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
     select2w($('.s2'),{allowClear:true});
 
     // Minimize Button in Panels
-    jQuery('.minimize').click(function(){
-        var t = jQuery(this);
+    var heading = jQuery('.panel-heading');
+    heading.attr("title","Click para expandir y/o contraer panel");
+    heading.click(function(){
+        var t = jQuery(this).find('.minimize');
         var p = t.closest('.panel');
-        if(!jQuery(this).hasClass('maximize')) {
+        if(!t.hasClass('maximize')) {
             p.find('.panel-body, .panel-footer').slideUp(200);
             t.addClass('maximize');
             t.html('&plus;');
@@ -46,8 +48,8 @@ function login_nav(p,arg) {
         socket.sendMessage("login",data,function (e,d) {
             formLock(f,false);
             var recordar = $('#recordar').prop("checked");
-            if (recordar) storage.setItem("loto_uslogin",JSON.stringify(data));
-            else storage.removeItem("loto_uslogin");
+            if (recordar) storage.setItem("loto_cmlogin",JSON.stringify(data));
+            else storage.removeItem("loto_cmlogin");
         });
     });
 }
@@ -102,6 +104,7 @@ function inicio_nav(p,arg) {
 
         function getReporte () {
             socket.sendMessage("inicio", null, function (e,d) {
+                $('#srt_dia').html('');
                 if (d.hasOwnProperty("code")) {
 
                 } else {
@@ -125,6 +128,11 @@ function inicio_nav(p,arg) {
             });
         }
     })
+
+    if ($usuario.balance) {
+        $('#reporte-body').html(jsrender($('#rd-reporte-us'), $usuario.balance));
+        $('#bl-my-total').html($usuario.balance[0].balance.format(2));
+    }
 }
 
 function sorteoMonitor_nav() {
@@ -182,9 +190,9 @@ function sorteoMonitor_nav() {
                     if (item.jugada > ld.jugada) ld = item;
                 });
 
-                $("#jugada").html(jg.format(0));
+                $("#jugada").html(jg.format(2));
                 $("#bnLider").html(ld.banca);
-                $("#bnLider-jg").html(ld.jugada.format(0));
+                $("#bnLider-jg").html(ld.jugada.format(2));
 
                 ld = data.n[0];
                 data.n.forEach(function (item) {
@@ -196,7 +204,7 @@ function sorteoMonitor_nav() {
                     if (item.jugada > ld.jugada) ld = item;
                 });
                 $("#numLider").html(ld.desc);
-                $("#numLider-jg").html(ld.jugada.format(0));
+                $("#numLider-jg").html(ld.jugada.format(2));
 
                 $("#ventas-body").html(jsrender($('#rd-ventas-row'), data.t));
                 $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
@@ -392,11 +400,12 @@ function bancasBancas_nav(p,args) {
         var data = formControls(this);
         data.comision = data.comision / 100;
         data.participacion = data.participacion / 100;
+        data.renta = $usuario.renta;
         var form = formLock(this);
         socket.sendMessage("usuario-nuevo",data, function (e, d) {
             if (d>0) {
                 formReset(form);
-                data.bancaID = d;
+                data.usuarioID = d;
                 data.renta = $usuario.renta;
                 $bancas.push(data);
                 updateBancas();
@@ -447,6 +456,7 @@ function bancasBancas_nav(p,args) {
         $('.btgl').on("toggle", function (e,act) {
             var id = $(e.target).data('target');
             var banca = findBy("usuarioID",id,$bancas);
+            act = act==1?3:0;
             socket.sendMessage("usuario-editar",{usuarioID:banca.usuarioID,activo:act}, function (e, d) {
                 if (d.code==1) {
                     if (d.hasOwnProperty("activa")) banca.activo = d.activo;
@@ -518,20 +528,46 @@ function bancasBanca_nav(p,args) {
             var data = formControls(this);
             data.usuarioID = banca.usuarioID;
             data.comision = data.comision/100;
+            if ($('#alquiler').is(':checked')) {
+                data.comision = data.comision*-1;
+            }
             data.participacion = data.participacion/100;
-            data.renta = data.renta/100;
+            data.renta = banca.renta;
             formLock(this);
-            socket.sendMessage("banca-editar",data, function (e, d) {
+            socket.sendMessage("usuario-editar",data, function (e, d) {
                 formLock(editar[0],false);
                 if (d.code==1) {
                     notificacion("Cambios guardados con exito");
-                    if (d.hasOwnProperty("activa")) banca.activa = d.activa;
-                    if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
-                    if (d.hasOwnProperty("comision")) banca.comision = d.comision;
-                    if (d.hasOwnProperty("usuario")) banca.usuario = d.usuario;
+                    banca.activa = data.activa;
+                    banca.nombre = data.nombre;
+                    banca.comision = data.comision;
+                    banca.usuario = data.usuario;
+                    banca.clave = data.clave;
                 }
                 else notificacion('Error al realizar cambios','','growl-danger');
             });
+        });
+        var multiplo=0;
+        $('#grupo-nuevo').submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            data.usuarioID = banca.usuarioID;
+            data.renta = $usuario.renta;
+            data.comision = data.comision * multiplo;
+            var form = formLock(this);
+            socket.sendMessage("banca-nueva",data, function (e, d) {
+                if (d>0) {
+                    formReset(form);
+                    data.bancaID = d;
+                    data.papelera = 0;
+                    grupos.push(data);
+                    updateGrupos();
+                    notificacion("BANCA NUEVA", "Banca registrada exitosamente");
+                } else {
+                    formLock(form,false);
+                    notificacion("ERROR", "Banca no registrada, usuario duplicado",'growl-danger');
+                }
+            })
         });
         renta.submit(function (e) {
             e.preventDefault(e);
@@ -549,7 +585,7 @@ function bancasBanca_nav(p,args) {
             e.preventDefault(e);
             formLock(this);
             var data = formControls(this);
-            data.bancaID = banca.bancaID;
+            data.usuarioID = banca.usuarioID;
             socket.sendMessage("banca-editar",data, function (e, d) {
                 formReset(clave[0]);
                 if (d.code==1) {
@@ -561,10 +597,11 @@ function bancasBanca_nav(p,args) {
         });
         $('.rdo-com').change(function () {
             multiplo = this.value;
-            $('#bn-comision').prop("disabled",this.value==0);
+            $('#gr-comision').prop("disabled",this.value==0);
         });
 
         banca = findBy("usuarioID",args[0],$bancas);
+        if (banca.comision<0) $('#alquiler').prop("checked",1);
         formSet(editar,banca,function (val,field) {
             if (field=="comision" || field=="participacion" || field =="renta") return Math.abs(val*100);
             if (val===false) return 0;
@@ -617,17 +654,46 @@ function bancasBanca_nav(p,args) {
             });
             $('.btgl').on("toggle", function (e,act) {
                 var id = $(e.target).data('target');
-                var banca = findBy("bancaID",id,$bancas);
+                var banca = findBy("bancaID",id,grupos);
                 socket.sendMessage("banca-editar",{bancaID:banca.bancaID,activa:act}, function (e, d) {
                     if (d.code==1) {
                         if (d.hasOwnProperty("activa")) banca.activa = d.activa;
-                        if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
-                        if (d.hasOwnProperty("clave")) banca.clave = d.clave;
                     }
                     else {
-                        alert("ERROR AL MODIFICAR ESTADO ACTIVO DE BANCA")
+                        alert("ERROR AL MODIFICAR ESTADO ACTIVO DE GRUPO")
                     }
                 })
+            });
+
+            $('.bn-remove-req').click(function (e) {
+                e.preventDefault(e);
+                var bID = $(this).attr("bancaID");
+                var r = confirm('Seguro desea eliminar esta banca? Tenga en cuenta que enviara a la papelera todas las taquillas asociadas.');
+                if (r===true) {
+                    socket.sendMessage("banca-remover",{bancaID:bID,papelera:1}, function (e, d) {
+                        if (d.code==1) {
+                            var b = findBy("bancaID",bID,grupos);
+                            b.papelera = 1;
+                            updateGrupos();
+                        }
+                    })
+                }
+                return false;
+            });
+            $('.bn-remove-res').click(function (e) {
+                e.preventDefault(e);
+                var bID = $(this).attr("bancaID");
+                var r = confirm('Seguro desea restaurar este grupo?  Tenga en cuenta que restaurara todas las taquillas asociadas.');
+                if (r===true) {
+                    socket.sendMessage("banca-remover",{bancaID:bID,papelera:0}, function (e, d) {
+                        if (d.code==1) {
+                            var b = findBy("bancaID",bID,grupos);
+                            b.papelera = 0;
+                            updateGrupos();
+                        }
+                    })
+                }
+                return false;
             });
         }
     } else {
@@ -710,7 +776,7 @@ function bancasPermisos_nav (p,args) {
 }
 nav.paginas.addListener("bancas/permisos",bancasPermisos_nav);
 
-function bancasTaquillas_nav(p,args) {
+function bancasGrupo_nav(p,args) {
     if (args && args.length==1) {
         var editar = $('#banca-nueva');
         var clave = $('#banca-psw');
@@ -727,8 +793,10 @@ function bancasTaquillas_nav(p,args) {
             e.preventDefault(e);
             var data = formControls(this);
             data.bancaID = banca.bancaID;
-            data.comision = data.comision*multiplo;
-            //if (data.comision<$usuario.renta) { notificacion("ERROR","LA COMISION DE ALQUILER NO PUEDE SER MENOR A LA ASIGNADA POR EL ADMINISTRADOR"); return; }
+            data.comision = data.comision/100;
+            if ($('#alquiler').is(':checked')) {
+                data.comision = data.comision*-1;
+            }
             formLock(this);
             socket.sendMessage("banca-editar",data, function (e, d) {
                 formLock(editar[0],false);
@@ -781,6 +849,7 @@ function bancasTaquillas_nav(p,args) {
                 else if (val===true) return 1;
                 else return val;
             });
+            if (banca.comision<0) $('#alquiler').prop("checked",1);
             if (banca.comision==0) $('#radioNormal').prop('checked',true);
             else if (banca.comision>0) $('#radioRecogedor').trigger('click');
             else if (banca.comision<0) $('#radioReventa').trigger('click');
@@ -890,7 +959,7 @@ function bancasTaquillas_nav(p,args) {
                 e.preventDefault(e);
                 var b = $(e.currentTarget);
                 var id = parseInt(b.attr('val'));
-                socket.sendMessage("taquilla-fpclear", {taquillaID:id}, function (e, d) {
+                socket.sendMessage("taquilla-fpclear", {taquillaID:id,usuarioID:banca.usuarioID}, function (e, d) {
                     if (d.ok===1) {
                         b.parent().html('<i class="fa fa-shield"></i>');
                     } else {
@@ -958,7 +1027,7 @@ function bancasTaquillas_nav(p,args) {
         nav.nav("406");
     }
 }
-nav.paginas.addListener("bancas/taquillas",bancasTaquillas_nav);
+nav.paginas.addListener("bancas/grupo",bancasGrupo_nav);
 
 function bancasTaquilla_nav(p,args) {
     var taquilla;
@@ -1020,18 +1089,42 @@ function bancasTaquilla_nav(p,args) {
 nav.paginas.addListener("bancas/taquilla",bancasTaquilla_nav);
 
 function bancasTransferir_nav (p,args) {
-    var bancas = $('.bnc'), taqs = $('#taquilla');
-    bancas.html(jsrender($('#rd-banca-option'),$bancas));
+    var bancas = $('.bnc'), taqs = $('#taquilla'), grupos = $('#trf-grupo');
+    bancas.html(jsrender($('#rd-usuario-option'),$bancas));
+
     var reportes = $('#sreporte');
-    $('#dbancas').on("change", function () {
-        socket.sendMessage("taquillas", {bancaID:bancas.val()}, updateTaquillas);
+    var dBanca = $('#desdebnc');
+    dBanca.select2('val','');
+
+    dBanca.on("change", function (e) {
+        var bncid = $(this).val();
+        socket.sendMessage("usuario-grupos", {usuarioID:bncid}, updateGrupos);
     });
+    function updateGrupos (e,d) {
+        grupos.html(jsrender($('#rd-grupo-option'),d));
+        grupos.select2('val',0);
+    }
+
+    $('#trf-grupo-form').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        if (dBanca.val()==data.uID) {
+            notificacion("ASISTENTE","La banca de origen debe ser diferente a la banca destino");
+        } else {
+            socket.sendMessage("transferir-grupo",data, function (e, d) {
+                if (d>0) {
+                    var m = "- Grupo transferida con exito.";
+                    notificacion("TRANSFERENCIA EXITOSA",m);
+                } else notificacion("TRANFERENCIA FALLIDA","Comuniquese con el administrador");
+            })
+        }
+    })
 
     function updateTaquillas (e,d) {
         taqs.html(jsrender($('#rd-taquilla-option'),d));
         taqs.select2('val',0);
     }
-    socket.sendMessage("taquillas", {bancaID:bancas.val()}, updateTaquillas);
+    //socket.sendMessage("taquillas", {bancaID:bancas.val()}, updateTaquillas);
 
     $('#tranferir').submit(function (e) {
         e.preventDefault(e);
@@ -1204,18 +1297,18 @@ function reporteGeneral_nav (p,args) {
         });
 
         var total = {
-            j: j.format(0), pr: pr.format(0), b:(b-rn).format(0),cm:cm.format(0), r:rn.format(0)
+            j: j.format(2), pr: pr.format(2), b:(b-rn).format(2),cm:cm.format(2), r:rn.format(2)
         };
         $('#bheader').html(jsrender($('#rd-total'),total));
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
-        $('#mnt-balance').html((b-rn).format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((b-rn).format(2));
 
-        $('#tg-descuento').html((cm+rn).format(0));
-        $('#tg-comision').html(cm.format(0));
-        $('#tg-renta').html(rn.format(0));
+        $('#tg-descuento').html((cm+rn).format(2));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-renta').html(rn.format(2));
 
         var rank, bnc;
         //top jugado
@@ -1225,8 +1318,8 @@ function reporteGeneral_nav (p,args) {
         });
         bnc = rank[0];
         $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jg.format(0));
-        $('#tj-balance').html(bnc.balance.format(0));
+        $('#tj-jugada').html(bnc.jg.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
 
         //top ganancia
         rank = rpt.slice();
@@ -1235,8 +1328,8 @@ function reporteGeneral_nav (p,args) {
         });
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jg.format(0));
-        $('#tg-balance').html(bnc.balance.format(0));
+        $('#tg-jugada').html(bnc.jg.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
 
         $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
 
@@ -1309,18 +1402,18 @@ function reporteBanca_nav (p,args) {
         });
 
         var total = {
-            j: j.format(0), pr: pr.format(0), b:(b-rn).format(0),cm:cm.format(0), r:rn.format(0)
+            j: j.format(2), pr: pr.format(2), b:(b-rn).format(2),cm:cm.format(2), r:rn.format(2)
         };
         $('#bheader').html(jsrender($('#rd-total'),total));
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
-        $('#mnt-balance').html((b-rn).format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((b-rn).format(2));
 
-        $('#tg-descuento').html((cm+rn).format(0));
-        $('#tg-comision').html(cm.format(0));
-        $('#tg-renta').html(rn.format(0));
+        $('#tg-descuento').html((cm+rn).format(2));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-renta').html(rn.format(2));
 
         var rank, bnc;
         //top jugado
@@ -1330,8 +1423,8 @@ function reporteBanca_nav (p,args) {
         });
         bnc = rank[0];
         $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jg.format(0));
-        $('#tj-balance').html(bnc.balance.format(0));
+        $('#tj-jugada').html(bnc.jg.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
 
         //top ganancia
         rank = rpt.slice();
@@ -1340,8 +1433,8 @@ function reporteBanca_nav (p,args) {
         });
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jg.format(0));
-        $('#tg-balance').html(bnc.balance.format(0));
+        $('#tg-jugada').html(bnc.jg.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
 
         $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
 
@@ -1414,18 +1507,18 @@ function reporteRecogedor_nav (p,args) {
         });
 
         var total = {
-            j: j.format(0), pr: pr.format(0), b:b.format(0),cm:cm.format(0), r:rn.format(0)
+            j: j.format(2), pr: pr.format(2), b:b.format(2),cm:cm.format(2), r:rn.format(2)
         };
         $('#bheader').html(jsrender($('#rd-total'),total));
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
-        $('#mnt-balance').html((b).format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((b).format(2));
 
-        $('#tg-descuento').html((cm+rn).format(0));
-        $('#tg-comision').html(cm.format(0));
-        $('#tg-renta').html(rn.format(0));
+        $('#tg-descuento').html((cm+rn).format(2));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-renta').html(rn.format(2));
 
         var rank, bnc;
         //top jugado
@@ -1435,8 +1528,8 @@ function reporteRecogedor_nav (p,args) {
         });
         bnc = rank[0];
         $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jg.format(0));
-        $('#tj-balance').html(bnc.balance.format(0));
+        $('#tj-jugada').html(bnc.jg.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
 
         //top ganancia
         rank = rpt.slice();
@@ -1445,8 +1538,8 @@ function reporteRecogedor_nav (p,args) {
         });
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jg.format(0));
-        $('#tg-balance').html(bnc.balance.format(0));
+        $('#tg-jugada').html(bnc.jg.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
 
         $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
 
@@ -1492,16 +1585,25 @@ function reporteTaquilla_nav (p,args) {
     var hbtaq = $('#hb-taquilla');
     var rpt;
 
-    var bancas = $('#bancas');
-    bancas.html(jsrender($('#rd-banca-option'),$bancas));
-    bancas.on("change", function () {
-        hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...');
-        socket.sendMessage("taquillas", {bancaID:bancas.val()}, function (e, d) {
-            $('#taquillas').html(jsrender($('#rd-taquilla-option'),d));
+    var bancas = $('#bancas'); var grupos = $('#grupos');
+    bancas.html(jsrender($('#rd-usuario-option'),$bancas));
+    bancas.change(function () {
+        hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo grupos...');
+        socket.sendMessage("usuario-grupos", {usuarioID:bancas.val()}, function (e, d) {
+            $('#grupos').html(jsrender($('#rd-banca-option'),d));
             hbtaq.remove();
         });
     });
-    bancas.trigger("change");
+    bancas.select2('val','');
+
+    grupos.change(function () {
+        hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo grupos...');
+        var b = bancas.val();
+        socket.sendMessage("taquillas", {usuarioID:b}, function (e, d) {
+            $('#taquillas').html(jsrender($('#rd-taquilla-option'),d));
+            hbtaq.remove();
+        });
+    })
 
     reporte.submit(function (e) {
         e.preventDefault(e);
@@ -1520,14 +1622,14 @@ function reporteTaquilla_nav (p,args) {
 				cm+=item.comision;
             });
 
-            $('#mnt-jugado').html(j.format(0));
-            $('#mnt-premios').html(pr.format(0));
-            $('#mnt-pagos').html(pg.format(0));
-            $('#mnt-balance').html((j-pr-cm).format(0));
+            $('#mnt-jugado').html(j.format(2));
+            $('#mnt-premios').html(pr.format(2));
+            $('#mnt-pagos').html(pg.format(2));
+            $('#mnt-balance').html((j-pr-cm).format(2));
 
 
-            $('#tg-descuento').html((cm).format(0));
-            $('#tg-comision').html(cm.format(0));
+            $('#tg-descuento').html((cm).format(2));
+            $('#tg-comision').html(cm.format(2));
 
             var rank, bnc;
             //top jugado
@@ -1537,8 +1639,8 @@ function reporteTaquilla_nav (p,args) {
             });
             bnc = rank[0];
             $('#tj-banca').html(bnc.descripcion);
-            $('#tj-jugada').html(bnc.jugada.format(0));
-            $('#tj-balance').html(bnc.balance.format(0));
+            $('#tj-jugada').html(bnc.jugada.format(2));
+            $('#tj-balance').html(bnc.balance.format(2));
 
             //top ganancia
             rank = d.slice();
@@ -1547,8 +1649,8 @@ function reporteTaquilla_nav (p,args) {
             });
             bnc = rank[0];
             $('#tg-banca').html(bnc.descripcion);
-            $('#tg-jugada').html(bnc.jugada.format(0));
-            $('#tg-balance').html(bnc.balance.format(0));
+            $('#tg-jugada').html(bnc.jugada.format(2));
+            $('#tg-balance').html(bnc.balance.format(2));
 
             updateView();
         })
@@ -1607,23 +1709,23 @@ function reporteGrupo_nav (p,args) {
         if (rv) cmb = Math.abs(cmb);
 
         var total = {
-            j: j.format(0), pr: pr.format(0),cm:cm.format(0),cmb:cmb.format(0)
+            j: j.format(2), pr: pr.format(2),cm:cm.format(2),cmb:cmb.format(2)
         };
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
         if (rv) {
-            total.b=(b-cmb-cm).format(0);
-            $('#mnt-balance').html((b-cmb-cm).format(0));
-            $('#tg-descuento').html((Math.abs(cmb+cm)).format(0));
+            total.b=(b-cmb-cm).format(2);
+            $('#mnt-balance').html((b-cmb-cm).format(2));
+            $('#tg-descuento').html((Math.abs(cmb+cm)).format(2));
         } else {
-            total.b = (b-(cmb||cm)).format(0);
-            $('#mnt-balance').html((b-(cmb||cm)).format(0));
-            $('#tg-descuento').html((Math.abs(cmb-cm)).format(0));
+            total.b = (b-(cmb||cm)).format(2);
+            $('#mnt-balance').html((b-(cmb||cm)).format(2));
+            $('#tg-descuento').html((Math.abs(cmb-cm)).format(2));
         }
-        $('#tg-comision').html(cm.format(0));
-        $('#tg-comisionBanca').html(cmb.format(0));
+        $('#tg-comision').html(cm.format(2));
+        $('#tg-comisionBanca').html(cmb.format(2));
 
         var rank, bnc;
         //top jugado
@@ -1633,8 +1735,8 @@ function reporteGrupo_nav (p,args) {
         });
         bnc = rank[0];
         $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jugada.format(0));
-        $('#tj-balance').html(bnc.balance.format(0));
+        $('#tj-jugada').html(bnc.jugada.format(2));
+        $('#tj-balance').html(bnc.balance.format(2));
 
         //top ganancia
         rank = rpt.slice();
@@ -1643,8 +1745,8 @@ function reporteGrupo_nav (p,args) {
         });
         bnc = rank[0];
         $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jugada.format(0));
-        $('#tg-balance').html(bnc.balance.format(0));
+        $('#tg-jugada').html(bnc.jugada.format(2));
+        $('#tg-balance').html(bnc.balance.format(2));
 
         $('#bheader').html(jsrender($('#rd-total'),total));
 
@@ -1791,15 +1893,15 @@ function reporteVentas_nav (p,args) {
             }
         });
 
-        $('#mnt-jugado').html(j.format(0));
-        $('#mnt-premios').html(pr.format(0));
-        $('#mnt-pagos').html(pg.format(0));
-        $('#mnt-balance').html((j-pr).format(0));
+        $('#mnt-jugado').html(j.format(2));
+        $('#mnt-premios').html(pr.format(2));
+        $('#mnt-pagos').html(pg.format(2));
+        $('#mnt-balance').html((j-pr).format(2));
 
-        $('#mnt-pendiente').html((pr-pg).format(0));
-        $('#mnt-ppagos').html(((pg/pr)*100).format(0));
-        $('#mnt-tanulados').html(an.format(0));
-        $('#mnt-anulados').html(anm.format(0));
+        $('#mnt-pendiente').html((pr-pg).format(2));
+        $('#mnt-ppagos').html(((pg/pr)*100).format(2));
+        $('#mnt-tanulados').html(an.format(2));
+        $('#mnt-anulados').html(anm.format(2));
     }
 
     $('#print-reporte').click(function () {
@@ -1811,11 +1913,11 @@ function reporteVentas_nav (p,args) {
             {type:"linea",text:"REPORTE TICKETS",align:"center"}
         ];
 
-        _lineas.push({type:"linea",text:"JUGADO: "+j.format(0),align:"left"});
-        _lineas.push({type:"linea",text:"PREMIOS: "+pr.format(0),align:"left"});
-        _lineas.push({type:"linea",text:"PAGOS: "+pg.format(0),align:"left"});
-        _lineas.push({type:"linea",text:"PENDIENTE: "+(pr-pg).format(0),align:"left"});
-        _lineas.push({type:"linea",text:"BALANCE: "+(j-pg).format(0),align:"left"});
+        _lineas.push({type:"linea",text:"JUGADO: "+j.format(2),align:"left"});
+        _lineas.push({type:"linea",text:"PREMIOS: "+pr.format(2),align:"left"});
+        _lineas.push({type:"linea",text:"PAGOS: "+pg.format(2),align:"left"});
+        _lineas.push({type:"linea",text:"PENDIENTE: "+(pr-pg).format(2),align:"left"});
+        _lineas.push({type:"linea",text:"BALANCE: "+(j-pg).format(2),align:"left"});
         _lineas.push({type:"linea",text:" ",align:"left"});
 
         print.sendMessage("print",{data:_lineas,printer:1});
@@ -1828,6 +1930,207 @@ function reporteVentas_nav (p,args) {
     }
 }
 nav.paginas.addListener('reporte/ventas',reporteVentas_nav);
+
+function reporteCobros_nav (p,args) {
+    var f1 = $('#reporte-fecha1');
+    var f2 = $('#reporte-fecha2');
+    var reporte = $('#reporte');
+    var rdata;
+    _helpers.rgFiltro = function () {
+        return (f1.val() && f2.val())?"|"+f1.val()+"|"+f2.val():'';
+    };
+    reporte.submit(function (e) {
+        e.preventDefault(e);
+        var lazy = [];
+        var data = formControls(this);
+        var f = formLock(this);
+        var grp = $('#rp-agrupar').val();
+        socket.sendMessage("reporte-cobros",{s:data,g:grp}, function (e, d) {
+            formLock(f,false);
+            if (!d) {
+                $('#reporte-body').html('');
+                $('.clr').html('--');
+                return;
+            }
+            rdata = d;
+            var j=0, cm= 0, pt=0;
+            d.forEach(function (item) {;
+                j+=item.jg;
+                cm += item.jg*item.cm;
+
+                if (item.hasOwnProperty("cm") && (item.cm==0 || item.cm==null) && item.hasOwnProperty("uID")) {
+                    lazy.push(item.uID);
+                }
+
+            });
+            lazyLoad();
+            $('#mnt-jugado').html(j.format(2));
+
+            var rank, bnc;
+            //top jugado
+            rank = d.slice();
+            rank.sort(function (a, b) {
+                return b.jg- a.jg;
+            });
+            bnc = rank[0];
+            $('#tj-banca').html(bnc.desc);
+
+            $('#tj-jugada').html(bnc.jg.format(2));
+            $('#recaudo').html(cm.format(2));
+
+            $('#trenta').html((j*$usuario.comision).format(2));
+
+            $('#reporte-body').html(jsrender($('#rd-reporte'),d));
+
+
+            $('.cbr-folder').click(function (e) {
+                e.preventDefault(e);
+                var o = parseInt($(this).attr("fld"));
+                $(this).attr("fld",o==1?0:1);
+                var fld = parseInt($(this).attr("fldid"));
+                if (o==0) {
+                    $('.subrow'+fld).removeClass('hidden');
+                    $(this).find('i').addClass('fa-folder-open');
+                }
+                else {
+                    $('.subrow'+fld).addClass('hidden');
+                    $(this).find('i').removeClass('fa-folder-open');
+                }
+            });
+
+            function lazyLoad () {
+                if (lazy.length > 0) {
+                    var id = lazy.shift();
+                    var gdata = copyTo(data);
+                    gdata.uid = id;
+                    socket.sendMessage("reporte-subcobros", {s: gdata, g: 3}, function (e, dgr) {
+                        var cm2 = 0;
+                        dgr.forEach(function (sitem) {
+                            sitem.uID = id;
+                            cm2 += sitem.jg * sitem.cm;
+                        });
+                        cm += cm2;
+                        $('#rnt' + id).html(cm2.format(2));
+                        $('#renta').html(cm.format(2));
+
+                        var b = jsrender($('#rd-reporte'), dgr);
+                        $(b).insertAfter('#rdu' + id);
+
+                        $('.cbr-shutdown').off('click');
+                        $('.cbr-shutdown').click(function (e) {
+                            e.preventDefault(e);
+                            var id;
+                            if ($(this).attr('banca')) {
+                                id = parseInt($(this).attr('banca'));
+                                var us = findBy("uID",id,d);
+                                var c = confirm('SEGURO DESEA SUSPENDER USUARIO '+us.desc);
+                                if (c) {
+                                    socket.sendMessage("usuario-editar", {usuarioID: id, activo: 0}, function (e, d) {
+                                        if (d.code == 1) {
+                                            if (d.hasOwnProperty("activa")) banca.activo = d.activo;
+                                            notificacion('USUARIO SUSPENDIDO CON EXITO');
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                        $('#cbrfi'+id).switchClass('fa-folder-o','fa-folder');
+
+                        $('.cbr-bal').off("click");
+                        $('.cbr-bal').on('click', function (ev) {
+                            ev.preventDefault(ev);
+                            var id = $(this).attr('usID');
+                            var m = parseFloat($(this).attr('monto'));
+                            var d = "COBRO SRQ SEMANA"+f1.val()+"|"+f2.val()+" "+$(this).attr('desc');
+                            socket.sendMessage('balance-add',{usID:id,monto:m,desc:d}, function (e, d) {
+                                $('#rd'+ d.usID).addClass('success');
+                                $(ev.target.parentElement).remove();
+                            });
+                        })
+
+                        lazyLoad();
+                    });
+                }
+            }
+        })
+    });
+
+    $('#rtp-desc-o').click(function (e) {
+        e.preventDefault(e);
+        rdata.sort(function (a,b) {
+            var ret = 0;
+            a = a.desc.toLowerCase();
+            b = b.desc.toLowerCase();
+            if(a > b)
+                ret = 1;
+            if(a < b)
+                ret = -1;
+            return ret;
+        });
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rdata));
+    });
+    $('#cbr-procesar').click(function () {
+        $(this).prop("disabled",1);
+        var lz = [];
+        $('.cbr-bal').each(function (idx,item) {
+            lz.push(item);
+        });
+        lzLoad(lz.shift());
+        function lzLoad (item) {
+            var id = $(item).attr('usID');
+            var m = parseFloat($(item).attr('monto'));
+            var d = "COBRO SRQ SEMANA "+f1.val()+"|"+f2.val()+", "+$(item).attr('desc');
+            socket.sendMessage('balance-add',{usID:id,monto:m,desc:d}, function (e, d) {
+                $('#rd'+ d.usID).addClass('success');
+                if (lz.length>0) lzLoad(lz.shift())
+                else $('#cbr-procesar').prop("disabled",0);
+            });
+        }
+    })
+    if (args && args.length>0) {
+        var a = args[0].split("-");
+        var b = args[1].split("-");
+        f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
+        f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.trigger("submit");
+    }
+}
+nav.paginas.addListener("reporte/cobros",reporteCobros_nav);
+
+function reporteBalance_nav (p,args) {
+    if (args && args.length>0) {
+        $('.bl-dreg').each(function () {
+            $(this).removeClass('hidden');
+        });
+        $('#bl-my').addClass("hidden");
+        socket.sendMessage('balance-us',{usID:args[0]}, function (e,d) {
+            if (d.hasOwnProperty("code")) {
+                //vacio
+            } else {
+                $('#bl-us-name').html(d.us.nombre);
+                $('#reporte-body-client').html(jsrender($('#rd-reporte-us'), d.bl));
+                $('#bl-clients-total').html(d.bl[0].balance.format(2));
+                $('#bl-client-heading').trigger('click');
+            }
+        })
+    } else {
+        $('#bl-my').removeClass("hidden");
+        if ($usuario.balance!=null) {
+            $('#reporte-body').html(jsrender($('#rd-reporte-us'), $usuario.balance));
+            $('#bl-my-total').html($usuario.balance[0].balance.format(2));
+        }
+        socket.sendMessage('balance-clientes', null, function (e, d) {
+            $('#reporte-body-client').html(jsrender($('#rd-reporte'), d));
+            var tc = 0;
+            d.forEach(function (item) {
+                tc = tc + item.balance;
+            });
+            $('#bl-clients-total').html(tc.format(2));
+            $('#bl-client-heading').trigger('click');
+        });
+    }
+}
+nav.paginas.addListener("reporte/balance",reporteBalance_nav);
 
 function sms_nav (p,args) {
     socket.sendMessage("sms-bandeja",null, function (e, d) {

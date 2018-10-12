@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="../theme/css/bootstrap-wysihtml5.css" />
     <link href="./css/custom.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- v180923 -->
     <!--[if lt IE 9]>
     <script src="../theme/js/html5shiv.js"></script>
     <script src="../theme/js/respond.min.js"></script>
@@ -80,9 +80,9 @@
                 <li class="nav-parent"><a href=""><i class="fa fa-sitemap"></i> <span>Bancas</span></a>
                     <ul class="children">
                         <li><a href="#bancas/bancas"><i class="fa fa-group"></i> <span>Bancas</span></a></li>
-                        <!--<li><a href="#bancas/transferir">
+                        <li><a href="#bancas/transferir">
                             <span class="pull-right badge badge-success">NUEVO</span>
-                            <i class="fa fa-exchange"></i> <span>Transferir</span></a></li>-->
+                            <i class="fa fa-exchange"></i> <span>Transferir</span></a></li>
                         <li><a href="#bancas/topes"><i class="fa fa-money"></i> <span>Topes</span></a></li>
                         <li><a href="#bancas/permisos">
                             <span class="pull-right badge badge-success">NUEVO</span>
@@ -103,14 +103,31 @@
                         <li><a href="#reporte/general"><i class="fa fa-desktop"></i> <span>General</span></a></li>
                         <li><a href="#reporte/grupo"><i class="fa fa-group"></i> <span>Grupo</span></a></li>
                         <li><a href="#reporte/taquilla"><i class="fa fa-user"></i> <span>Taquilla</span></a></li>
-                        <li><a href="#reporte/ventas">
+                        <li><a href="#reporte/ventas"><i class="fa fa-random"></i> <span>Ventas</span></a></li>
+                        <li><a href="#reporte/cobros">
                             <span class="pull-right badge badge-success">NUEVO</span>
-                            <i class="fa fa-random"></i> <span>Ventas</span></a></li>
+                            <i class="fa fa-percent"></i> <span>Cobros</span></a></li>
+                        <li><a href="#reporte/balance">
+                            <span class="pull-right badge badge-success">NUEVO</span>
+                            <i class="fa fa-balance-scale"></i> <span>Balance</span></a></li>
                     </ul>
                 </li>
 
                 <li><a href="#conexiones"><i class="fa fa-plug"></i> <span>Conexiones</span></a></li>
             </ul>
+
+            <div class="infosummary">
+                <h5 class="sidebartitle">Resumen Informativo</h5>
+                <ul>
+                    <li>
+                        <div class="datainfo">
+                            <h4>Mi Balance</h4>
+                            <span class="text-muted" id="menu-balance-date"></span>
+                            <h4 id="menu-balance-value"><i class="fa fa-dollar">0.00</i></h4>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div><!-- leftpanelinner -->
     </div><!-- leftpanel -->
 
@@ -184,6 +201,8 @@
                         </div>
                     </li>
                 </ul>
+
+
             </div><!-- header-right -->
 
         </div><!-- headerbar -->
@@ -213,6 +232,9 @@
 </script>
 <script type="text/x-jsrender" id="rd-taquilla-option">
     <option value="{{:taquillaID}}" class="text-uppercase">{{:nombre}}</option>
+</script>
+<script type="text/x-jsrender" id="rd-grupo-option">
+    <option value="{{:bancaID}}" class="text-uppercase">{{:nombre}}</option>
 </script>
 <script type="text/x-jsrender" id="rd-premio-ticket">
     <tr><td>TICKET</td><td>{{:ticketID}}</td></tr>

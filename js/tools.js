@@ -124,6 +124,17 @@ function findIndex (campo,valor,data) {
     }
     return -1;
 }
+function uniqueVal (source,search,field) {
+    //field = field==undefined?null:field;
+    var flags = [], output = [], l = source.length, i;
+    for( i=0; i<l; i++) {
+        if( flags[source[i][search]]) continue;
+        flags[source[i][search]] = true;
+        if (field==undefined) output.push(source[i]);
+        else output.push(source[i][field]);
+    }
+    return output;
+}
 function select2w (element,params) {
     params = params || {language:'es'};
     if (useSelect2) element.select2(params);
@@ -374,6 +385,9 @@ var _helpers = {
     collapse:function (s) { return s.split(" ").join(""); },
     sino: function (val) {
         return Boolean(val)?"si":"no";
+    },
+    abs: function (n) {
+        return Math.abs(n);
     }
 };
 

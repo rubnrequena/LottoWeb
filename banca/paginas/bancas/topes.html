@@ -5,6 +5,12 @@
     <div class="panel-body">
         <form class="form-horizontal" id="tope-nuevo">
             <div class="form-group">
+                <label class="col-sm-3 control-label">Avanzado</label>
+                <div class="col-sm-6">
+                    <div class="toggle activart toggle-success mt10"></div>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-3 control-label">Taquilla</label>
                 <div class="col-sm-6">
                     <select class="s2 form-control" name="taquillaID" id="taquilla">
@@ -18,17 +24,17 @@
                     <select class="s2 form-control" name="sorteo" id="sorteo"></select>
                 </div>
             </div>
-            <div class="form-group mb5">
+            <div class="form-group mb5 tp-avanzado hidden">
                 <label class="col-sm-3 control-label">Horario</label>
                 <div class="col-sm-3">
                     <input class="date now form-control" onfocus="blur()" id="sorteo-fecha">
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3 tp-avanzado hidden">
                     <select class="s2 form-control" name="sorteoID" id="sorteos"></select>
                     <div class="help-block" id="hlp-sorteos"></div>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group tp-avanzado hidden">
                 <label class="col-sm-3 control-label">Numero</label>
                 <div class="col-sm-6">
                     <select class="s2 form-control" name="elemento" id="elemento"></select>
@@ -37,7 +43,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Monto</label>
                 <div class="col-sm-6">
-                    <input type="number" name="monto" class="form-control" id="monto" step="any" required>
+                    <input type="number" name="monto" step="any" min="0" class="form-control" id="monto" required>
                 </div>
             </div>
             <div class="form-group">
@@ -85,10 +91,10 @@
         {{else}} <td>TODOS</td> {{/if}}
         <td>{{:~elm(elemento)}}</td>
         <td>{{:monto}}</td>
-        {{if compartido==1}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> BANCA</td>
-        {{else compartido==2}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> USUARIO</td>
+        {{if compartido==1}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> GRUPO</td>
+        {{else compartido==2}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> BANCA</td>
         {{else}}
-        <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> NO</td>
+        <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> INDIVIDUAL</td>
         {{/if}}
     </tr>
 </script>

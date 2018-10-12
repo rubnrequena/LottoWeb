@@ -1,13 +1,54 @@
 <div class="pageheader hidden-xs">
-    <h2><i class="fa fa-exchange"></i> Transferir Agencias</h2>
+    <h2><i class="fa fa-exchange"></i> Transferir</h2>
 </div>
 <div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize maximize">&plus;</a>
+        </div><!-- panel-btns -->
+        <h3 class="panel-title">GRUPOS</h3>
+    </div>
     <div class="panel-body">
-        <form id="tranferir" class="form-horizontal">
+        <form id="trf-grupo-form" class="form-horizontal">
             <div class="form-group">
                 <label class="mt10 col-sm-3 text-right">Desde</label>
                 <div class="col-sm-6">
-                    <select class="s2 form-control bnc" name="desde" id="dbancas"></select>
+                    <select class="s2 form-control bnc" id="desdebnc"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Grupo</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="bID"  id="trf-grupo" required></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Hasta</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control bnc" name="uID" id="hbancas"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" class="btn btn-block btn-darkblue"><i class="fa fa-check"></i> Transferir</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize maximize">&plus;</a>
+        </div><!-- panel-btns -->
+        <h3 class="panel-title">TAQUILLAS</h3>
+    </div>
+    <div class="panel-body" style="display: none;">
+        <form id="tranferirtaq" class="form-horizontal">
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Desde</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control bnc" name="desde" id="dgrupos"></select>
                 </div>
             </div>
             <div class="form-group">
@@ -19,12 +60,12 @@
             <div class="form-group">
                 <label class="mt10 col-sm-3 text-right">Hasta</label>
                 <div class="col-sm-6">
-                    <select class="s2 form-control bnc" name="hasta" id="hbancas"></select>
+                    <select class="s2 form-control bnc" name="hasta" id="hgrupos"></select>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3 ckbox ckbox-default">
-                        <input type="checkbox" class="fields" value="1" name="sorteo" id="sreporte" checked="checked">
+                    <input type="checkbox" class="fields" value="1" name="sorteo" id="sreporte" checked="checked">
                     <label for="sreporte">Transferir Reportes</label>
                 </div>
             </div>

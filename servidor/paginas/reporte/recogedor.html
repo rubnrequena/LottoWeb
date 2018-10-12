@@ -1,5 +1,5 @@
 <div class="pageheader hidden-xs">
-    <h2><i class="fa fa-area-chart"></i> Reporte General</h2>
+    <h2><i class="fa fa-area-chart"></i> Reporte Recogedor</h2>
 </div>
 <div id="print-img">
     <div class="panel">
@@ -19,8 +19,8 @@
                     <label class="col-sm-3 control-label">Agrupar</label>
                     <div class="col-sm-6">
                         <select class="s2 form-control" id="rp-agrupar">
-                            <option value="2">BANCAS</option>
-                            <option value="0">FECHA</option>
+                            <option value="0">BANCAS</option>
+                            <option value="1">FECHA</option>
                         </select>
                     </div>
                 </div>
@@ -103,9 +103,7 @@
                                 <h2 id="tj-banca" taq="{{:taquillaID}}" class="banca-celda">--</h2>
                             </div>
                         </div><!-- row -->
-
                         <div class="mb15"></div>
-
                         <div class="row">
                             <div class="col-xs-6">
                                 <small class="stat-label">Jugado</small>
@@ -164,7 +162,6 @@
                         <th>JUGADO</th>
                         <th>PREMIO</th>
                         <th>COMISION</th>
-                        <th>PARTICIPACION</th>
                         <th>TOTAL</th>
                     </tr>
                     </thead>
@@ -186,7 +183,7 @@
 </div>
 
 <script type="text/x-jsrender" id="rd-prtaq">
-    <h2 class="text-uppercase">REPORTE GENERAL: {{:~bn()}}</h2>
+    <h2 class="text-uppercase">REPORTE BANCA: {{:~bn()}}</h2>
     <h2>Desde: {{:inicio}} hasta {{:fin}}</h2>
 </script>
 <script type="text/x-jsrender" id="rd-total">
@@ -208,12 +205,11 @@
 </script>
 <script type="text/x-jsrender" id="rd-reporte">
     <tr>
-        <td class="text-uppercase"><a href="#reporte/banca|{{:id}}|{{:rango}}">{{:desc}}</a>
+        <td class="text-uppercase"><a href="#reporte/taquilla|{{:id}}|{{:rango}}">{{:desc}}</a>
             <span style="color:grey;font-size: 10px;"><span title="COMISION">{{:cb*100}}</span>|<span title="PARTICIPACION">{{:pb*100}}</span></span> </td>
         <td>{{:~formatNumber(jg,2)}}</td>
         <td>{{:~formatNumber(pr,2)}}</td>
-        <td>{{:~formatNumber(cm,2)}}</td>
-        <td>{{:~formatNumber(prt,2)}}</td>
+        <td>{{:~formatNumber(cmt,2)}}</td>
         <td>{{:~formatNumber(balance,2)}}</td>
     </tr>
 </script>

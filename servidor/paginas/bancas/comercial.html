@@ -19,13 +19,43 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Clave</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="clave">
+                    <input type="password" class="form-control" name="clave">
                 </div>
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
                 <label class="col-sm-3 control-label">Renta</label>
                 <div class="col-sm-6">
                     <input type="number" min="0" max="100" step="any" class="form-control" name="renta">
+                </div>
+            </div>-->
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Comision</label>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                            <span class="input-group-addon">
+                                <label class="mt5">
+                                    <input type="checkbox" id="alquiler">
+                                    <span>Alquiler</span>
+                                </label>
+                            </span>
+                        <input id="bn-comision" type="number" min="-100" step="any" max="100" class="form-control" name="comision" value="0" required>
+                        <span class="input-group-addon">%</span>
+                    </div>
+                    <div class="help-block">
+                        <span>Indique porcentaje de comision sobre la venta bruta</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Participacion</label>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <input id="us-participacion" type="number" min="0" step="any" max="100" class="form-control" name="participacion" value="0" required>
+                        <span class="input-group-addon">%</span>
+                    </div>
+                    <div class="help-block">
+                        <span>Indique porcentaje de participacion en ganacia/perdida</span>
+                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -67,7 +97,13 @@
                 <label class="col-sm-3 control-label">Comision</label>
                 <div class="col-sm-6">
                     <div class="input-group">
-                        <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required>
+                            <span class="input-group-addon">
+                                <label class="mt5">
+                                    <input type="checkbox">
+                                    <span>Alquiler</span>
+                                </label>
+                            </span>
+                        <input type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required>
                         <span class="input-group-addon">%</span>
                     </div>
                     <div class="help-block">
