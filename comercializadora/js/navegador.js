@@ -1293,11 +1293,10 @@ function reporteGeneral_nav (p,args) {
             j+=item.jg;
             pr+= item.pr;
             cm+= item.cm;
-            rn+= item.rt;
         });
 
         var total = {
-            j: j.format(2), pr: pr.format(2), b:(b-rn).format(2),cm:cm.format(2), r:rn.format(2)
+            j: j.format(2), pr: pr.format(2), b:b.format(2),cm:cm.format(2)
         };
         $('#bheader').html(jsrender($('#rd-total'),total));
 
@@ -1308,28 +1307,6 @@ function reporteGeneral_nav (p,args) {
 
         $('#tg-descuento').html((cm+rn).format(2));
         $('#tg-comision').html(cm.format(2));
-        $('#tg-renta').html(rn.format(2));
-
-        var rank, bnc;
-        //top jugado
-        rank = rpt.slice();
-        rank.sort(function (a, b) {
-            return b.jg- a.jg;
-        });
-        bnc = rank[0];
-        $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jg.format(2));
-        $('#tj-balance').html(bnc.balance.format(2));
-
-        //top ganancia
-        rank = rpt.slice();
-        rank.sort(function (a, b) {
-            return b.balance- a.balance;
-        });
-        bnc = rank[0];
-        $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jg.format(2));
-        $('#tg-balance').html(bnc.balance.format(2));
 
         $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
 
@@ -1390,7 +1367,7 @@ function reporteBanca_nav (p,args) {
 
     function updateView () {
         if (rpt.length==0) return;
-        var j=0, pr=0, pg=0, cm=0, rn= 0, b=0;
+        var j=0, pr=0, pg=0, cm=0, b=0;
         rpt.forEach(function (item) {
             item.balance = item.jg - item.pr - (item.cm || item.cmt) - item.prt;
             item.rango = f1[0].value+'|'+f2[0].value;
@@ -1398,43 +1375,19 @@ function reporteBanca_nav (p,args) {
             j+=item.jg;
             pr+= item.pr;
             cm+= item.cm || item.cmt;
-            rn+= item.rt;
         });
 
         var total = {
-            j: j.format(2), pr: pr.format(2), b:(b-rn).format(2),cm:cm.format(2), r:rn.format(2)
+            j: j.format(2), pr: pr.format(2), b:(b).format(2),cm:cm.format(2)
         };
         $('#bheader').html(jsrender($('#rd-total'),total));
 
         $('#mnt-jugado').html(j.format(2));
         $('#mnt-premios').html(pr.format(2));
         $('#mnt-pagos').html(pg.format(2));
-        $('#mnt-balance').html((b-rn).format(2));
+        $('#mnt-balance').html((b).format(2));
 
-        $('#tg-descuento').html((cm+rn).format(2));
         $('#tg-comision').html(cm.format(2));
-        $('#tg-renta').html(rn.format(2));
-
-        var rank, bnc;
-        //top jugado
-        rank = rpt.slice();
-        rank.sort(function (a, b) {
-            return b.jg- a.jg;
-        });
-        bnc = rank[0];
-        $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jg.format(2));
-        $('#tj-balance').html(bnc.balance.format(2));
-
-        //top ganancia
-        rank = rpt.slice();
-        rank.sort(function (a, b) {
-            return b.balance- a.balance;
-        });
-        bnc = rank[0];
-        $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jg.format(2));
-        $('#tg-balance').html(bnc.balance.format(2));
 
         $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
 
@@ -1764,18 +1717,27 @@ function reporteGrupo_nav (p,args) {
 nav.paginas.addListener('reporte/grupo',reporteGrupo_nav);
 
 function reporteVentas_nav (p,args) {
+    var _taqs=[];
     var bancas = $('#bancas'), hbtaq = $('#hb-taquilla'), taqs = $('#taquillas');
+    socket.addListener('taquillas',updateTaquillas);
 
-    bancas.html(jsrender($('#rd-banca-option'),$bancas));
+    bancas.html(jsrender($('#rd-usuario-option'),$bancas));
     bancas.select2("val",0);
     bancas.on("change", function () {
         hbtaq.html('<i class="fa fa-spinner fa-spin"></i> Espere, recibiendo taquillas..');
-        socket.sendMessage("taquillas", {bancaID:bancas.val()}, updateTaquillas);
+        socket.sendMessage("taquillas", {usuariol:bancas.val()});
     });
-    socket.sendMessage("taquillas", {bancaID:bancas.val()}, updateTaquillas);
+    socket.sendMessage("taquillas", {usuariol:bancas.val()});
     function updateTaquillas (e,d) {
         hbtaq.html('');
-        taqs.html(jsrender($('#rd-taquilla-option'),d));
+        _taqs = _taqs.concat(d);
+        if (d.hasOwnProperty("code")) {
+            taqs.html(jsrender($('#rd-taquillal-option'),_taqs));
+            if (args.length>=2) {
+                taqs.select2('val',args[1]);
+                $('#reporte').trigger("submit");
+            }
+        }
     }
 
     var rpt;
@@ -1923,10 +1885,10 @@ function reporteVentas_nav (p,args) {
         print.sendMessage("print",{data:_lineas,printer:1});
     });
 
-    if (args && args.length==1) {
+    if (args && args.length>=1) {
         var a = args[0].split("-");
         rf.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
-        $('#reporte').trigger("submit");
+        //$('#reporte').trigger("submit");
     }
 }
 nav.paginas.addListener('reporte/ventas',reporteVentas_nav);

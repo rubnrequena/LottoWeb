@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <div class="panel panel-dark panel-stat">
                 <div class="panel-heading">
                     <div class="stat">
@@ -47,105 +47,19 @@
                         <div class="mb15"></div>
 
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-xs-4">
                                 <small class="stat-label">Jugado</small>
                                 <h4 id="mnt-jugado">--</h4>
                             </div>
-
-                            <div class="col-xs-6">
+                            <div class="col-xs-4">
                                 <small class="stat-label">Premios</small>
                                 <h4 id="mnt-premios">--</h4>
                             </div>
-                        </div><!-- row -->
-                    </div><!-- stat -->
-
-                </div><!-- panel-heading -->
-            </div><!-- panel -->
-        </div><!-- col-sm-6 -->
-        <div class="col-sm-6">
-            <div class="panel panel-danger panel-stat">
-                <div class="panel-heading">
-                    <div class="stat">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <small class="stat-label">TOTAL</small>
-                                <h2 id="tg-descuento">--</h2>
-                            </div>
-                        </div><!-- row -->
-
-                        <div class="mb15"></div>
-
-                        <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-xs-4">
                                 <small class="stat-label">Comision</small>
                                 <h4 id="tg-comision">--</h4>
                             </div>
-                            <div class="col-xs-6">
-                                <small class="stat-label">Renta</small>
-                                <h4 id="tg-renta">--</h4>
-                            </div>
                         </div><!-- row -->
-
-                    </div><!-- stat -->
-
-                </div><!-- panel-heading -->
-            </div><!-- panel -->
-        </div><!-- col-sm-6 -->
-    </div>
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="panel panel-primary panel-stat">
-                <div class="panel-heading">
-                    <div class="stat">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <small class="stat-label">MAYOR JUGADA</small>
-                                <h2 id="tj-banca" taq="{{:taquillaID}}" class="banca-celda">--</h2>
-                            </div>
-                        </div><!-- row -->
-
-                        <div class="mb15"></div>
-
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <small class="stat-label">Jugado</small>
-                                <h4 id="tj-jugada">--</h4>
-                            </div>
-                            <div class="col-xs-6">
-                                <small class="stat-label">Balance</small>
-                                <h4 id="tj-balance">--</h4>
-                            </div>
-                        </div><!-- row -->
-
-                    </div><!-- stat -->
-
-                </div><!-- panel-heading -->
-            </div><!-- panel -->
-        </div><!-- col-sm-6 -->
-        <div class="col-sm-6">
-            <div class="panel panel-primary panel-stat">
-                <div class="panel-heading">
-                    <div class="stat">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <small class="stat-label">Mayor Ganancia</small>
-                                <h2 id="tg-banca" taq="{{:taquillaID}}" class="banca-celda">--</h2>
-                            </div>
-                        </div><!-- row -->
-
-                        <div class="mb15"></div>
-
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <small class="stat-label">Jugado</small>
-                                <h4 id="tg-jugada">--</h4>
-                            </div>
-                            <div class="col-xs-6">
-                                <small class="stat-label">Balance</small>
-                                <h4 id="tg-balance">--</h4>
-                            </div>
-                        </div><!-- row -->
-
                     </div><!-- stat -->
 
                 </div><!-- panel-heading -->
@@ -174,8 +88,6 @@
         </div>
     </div>
 </div>
-
-
 <div class="panel-footer hidden-print">
     <a class="btn btn-success" id="exportar"><i class="fa fa-file"></i> EXPORTAR</a>
     <select class="s2" id="formato">
@@ -184,7 +96,6 @@
         <option value="png">IMAGEN</option>
     </select>
 </div>
-
 <script type="text/x-jsrender" id="rd-prtaq">
     <h2 class="text-uppercase">REPORTE BANCA: {{:~bn()}}</h2>
     <h2>Desde: {{:inicio}} hasta {{:fin}}</h2>
