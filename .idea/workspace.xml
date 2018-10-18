@@ -2,78 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d7cd5e5c-9eac-4255-a9e6-a2fe75f44946" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/comercializadora/paginas/reporte/balance.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/servidor/paginas/reporte/balance.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/servidor/paginas/reporte/cobros-comercial.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/comercializadora/paginas/reporte/cobros.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/servidor/paginas/reporte/cobros.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/premiar/paginas/monitor.html" />
-      <change type="DELETED" beforePath="D:\Work\LotoVictoria\.idea\dictionaries\Ruben_Requena.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Work\LotoVictoria\.idea\inspectionProfiles\Project_Default.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Work\LotoVictoria\.idea\inspectionProfiles\profiles_settings.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Work\LotoVictoria\comercializadora\js\tools.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/taquilla/js/aio.js" afterPath="$PROJECT_DIR$/taquilla/js/aio.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/bancas/banca.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/bancas/banca.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/reporte/banca.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/reporte/banca.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/paginas/reporte/banca.html" afterPath="$PROJECT_DIR$/servidor/paginas/reporte/banca.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/bancas/bancas.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/bancas/bancas.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/theme/css/bootstrap-override.css" afterPath="$PROJECT_DIR$/theme/css/bootstrap-override.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/theme/css/bootstrap.min.css" afterPath="$PROJECT_DIR$/theme/css/bootstrap.min.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/premiar/paginas/sorteos/buscar.html" afterPath="$PROJECT_DIR$/premiar/paginas/sorteos/buscar.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/paginas/sorteos/buscar.html" afterPath="$PROJECT_DIR$/servidor/paginas/sorteos/buscar.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/paginas/bancas/comercial.html" afterPath="$PROJECT_DIR$/servidor/paginas/bancas/comercial.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/taquilla/js/compressed.js" afterPath="$PROJECT_DIR$/taquilla/js/compressed.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/css/custom.css" afterPath="$PROJECT_DIR$/comercializadora/css/custom.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/css/custom.css" afterPath="$PROJECT_DIR$/servidor/css/custom.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/banca/paginas/reporte/general.html" afterPath="$PROJECT_DIR$/banca/paginas/reporte/general.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/reporte/general.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/reporte/general.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/paginas/reporte/general.html" afterPath="$PROJECT_DIR$/servidor/paginas/reporte/general.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuario/paginas/reporte/general.html" afterPath="$PROJECT_DIR$/usuario/paginas/reporte/general.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/reporte/grupo.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/reporte/grupo.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuario/paginas/reporte/grupo.html" afterPath="$PROJECT_DIR$/usuario/paginas/reporte/grupo.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/banca/index.html" afterPath="$PROJECT_DIR$/banca/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/index.html" afterPath="$PROJECT_DIR$/comercializadora/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/premiar/index.html" afterPath="$PROJECT_DIR$/premiar/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/index.html" afterPath="$PROJECT_DIR$/servidor/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/taquilla/index.html" afterPath="$PROJECT_DIR$/taquilla/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuario/index.html" afterPath="$PROJECT_DIR$/usuario/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/taquilla/index.php" afterPath="$PROJECT_DIR$/taquilla/index.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/banca/paginas/inicio.html" afterPath="$PROJECT_DIR$/banca/paginas/inicio.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/inicio.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/inicio.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/taquilla/paginas/inicio.html" afterPath="$PROJECT_DIR$/taquilla/paginas/inicio.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuario/paginas/inicio.html" afterPath="$PROJECT_DIR$/usuario/paginas/inicio.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/js/main.js" afterPath="$PROJECT_DIR$/comercializadora/js/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/premiar/js/main.js" afterPath="$PROJECT_DIR$/premiar/js/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/paginas/reporte/midas.html" afterPath="$PROJECT_DIR$/servidor/paginas/reporte/midas.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/paginas/sorteos/monitor.html" afterPath="$PROJECT_DIR$/servidor/paginas/sorteos/monitor.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/banca/js/navegador.js" afterPath="$PROJECT_DIR$/banca/js/navegador.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/js/navegador.js" afterPath="$PROJECT_DIR$/comercializadora/js/navegador.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/premiar/js/navegador.js" afterPath="$PROJECT_DIR$/premiar/js/navegador.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/js/navegador.js" afterPath="$PROJECT_DIR$/servidor/js/navegador.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuario/js/navegador.js" afterPath="$PROJECT_DIR$/usuario/js/navegador.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/paginas/sorteos/premiar.html" afterPath="$PROJECT_DIR$/servidor/paginas/sorteos/premiar.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuario/paginas/sorteos/publicar.html" afterPath="$PROJECT_DIR$/usuario/paginas/sorteos/publicar.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/banca/paginas/reporte/sorteo.html" afterPath="$PROJECT_DIR$/banca/paginas/reporte/sorteo.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/theme/css/style.default.css" afterPath="$PROJECT_DIR$/theme/css/style.default.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/reporte/recogedor.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/reporte/recogedor.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/reporte/taquilla.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/reporte/taquilla.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/paginas/reporte/taquilla.html" afterPath="$PROJECT_DIR$/servidor/paginas/reporte/taquilla.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/tools.js" afterPath="$PROJECT_DIR$/js/tools.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/banca/paginas/bancas/topes.html" afterPath="$PROJECT_DIR$/banca/paginas/bancas/topes.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/usuario/paginas/bancas/topes.html" afterPath="$PROJECT_DIR$/usuario/paginas/bancas/topes.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/bancas/transferir.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/bancas/transferir.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/servidor/paginas/bancas/usuarios.html" afterPath="$PROJECT_DIR$/servidor/paginas/bancas/usuarios.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/js/vars.js" afterPath="$PROJECT_DIR$/comercializadora/js/vars.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/premiar/js/vars.js" afterPath="$PROJECT_DIR$/premiar/js/vars.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/taquilla/paginas/venta.html" afterPath="$PROJECT_DIR$/taquilla/paginas/venta.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/taquilla/paginas/ventamax.html" afterPath="$PROJECT_DIR$/taquilla/paginas/ventamax.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/comercializadora/paginas/reporte/ventas.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/reporte/ventas.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="D:\Work\LotoVictoria\comercializadora\paginas\bancas\grupo.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/bancas/transferirgrupo.html" />
-      <change type="MOVED" beforePath="D:\Work\LotoVictoria\comercializadora\paginas\bancas\taquillas.html" afterPath="$PROJECT_DIR$/comercializadora/paginas/bancas/grupo.html" />
-      <change type="MOVED" beforePath="D:\Work\LotoVictoria\usuario\paginas\bancas\banca.html" afterPath="$PROJECT_DIR$/usuario/paginas/bancas/grupo.html" />
-      <change type="MOVED" beforePath="D:\Work\LotoVictoria\usuario\paginas\bancas\bancas.html" afterPath="$PROJECT_DIR$/usuario/paginas/bancas/grupos.html" />
     </list>
     <ignored path="LotoVictoria.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -93,31 +30,7 @@
     <favorites_list name="LotoVictoria" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="inicio.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/taquilla/paginas/inicio.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="27" selection-start-line="0" selection-start-column="27" selection-end-line="0" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="usuario.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/servidor/paginas/bancas/usuario.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.5384617">
-              <caret line="44" column="10" selection-start-line="39" selection-start-column="4" selection-end-line="44" selection-end-column="10" />
-              <folding>
-                <element signature="n#div#1;n#!!top" expanded="false" />
-                <element signature="n#div#0;n#div#1;n#!!top" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -148,11 +61,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/servidor/paginas/reporte/cobros-comercial.html" />
-        <option value="$PROJECT_DIR$/premiar/js/main.js" />
-        <option value="$PROJECT_DIR$/taquilla/index.php" />
-        <option value="$PROJECT_DIR$/taquilla/js/compressed.js" />
-        <option value="$PROJECT_DIR$/taquilla/paginas/venta.html" />
         <option value="$PROJECT_DIR$/premiar/paginas/sorteos/buscar.html" />
         <option value="$PROJECT_DIR$/servidor/paginas/sorteos/buscar.html" />
         <option value="$PROJECT_DIR$/comercializadora/js/vars.js" />
@@ -189,16 +97,21 @@
         <option value="$PROJECT_DIR$/premiar/index.html" />
         <option value="$PROJECT_DIR$/comercializadora/paginas/reporte/cobros.html" />
         <option value="$PROJECT_DIR$/comercializadora/paginas/inicio.html" />
-        <option value="$PROJECT_DIR$/comercializadora/index.html" />
         <option value="$PROJECT_DIR$/comercializadora/paginas/reporte/balance.html" />
         <option value="$PROJECT_DIR$/servidor/paginas/reporte/balance.html" />
-        <option value="$PROJECT_DIR$/comercializadora/js/navegador.js" />
         <option value="$PROJECT_DIR$/comercializadora/js/main.js" />
         <option value="$PROJECT_DIR$/servidor/paginas/reporte/cobros.html" />
         <option value="$PROJECT_DIR$/servidor/index.html" />
         <option value="$PROJECT_DIR$/servidor/js/navegador.js" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/taquilla/paginas/inicio.html" />
+        <option value="$PROJECT_DIR$/comercializadora/paginas/reporte/general.html" />
+        <option value="$PROJECT_DIR$/comercializadora/paginas/reporte/banca.html" />
+        <option value="$PROJECT_DIR$/comercializadora/paginas/reporte/recogedor.html" />
+        <option value="$PROJECT_DIR$/comercializadora/paginas/reporte/taquilla.html" />
+        <option value="$PROJECT_DIR$/comercializadora/index.html" />
+        <option value="$PROJECT_DIR$/comercializadora/paginas/reporte/ventas.html" />
+        <option value="$PROJECT_DIR$/comercializadora/js/navegador.js" />
       </list>
     </option>
   </component>
@@ -257,6 +170,27 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LotoVictoria" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LotoVictoria" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="LotoVictoria" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="Scope">
         <subPane subId="Changed Files">
           <PATH>
@@ -344,81 +278,6 @@
         </subPane>
         <subPane subId="Default" />
       </pane>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LotoVictoria" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LotoVictoria" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LotoVictoria" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LotoVictoria" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LotoVictoria" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="servidor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LotoVictoria" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LotoVictoria" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="servidor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="paginas" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LotoVictoria" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LotoVictoria" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="servidor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="paginas" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="bancas" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -508,26 +367,26 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1296" height="776" extended-state="0" />
+    <frame x="-8" y="-8" width="1296" height="776" extended-state="1" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22421876" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22421876" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32934132" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -551,41 +410,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/banca/paginas/reporte/sorteo.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-19.461538">
-          <caret line="85" column="22" selection-start-line="85" selection-start-column="22" selection-end-line="85" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/comercializadora/css/custom.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="1" selection-start-line="24" selection-start-column="1" selection-end-line="24" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/servidor/css/custom.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6375">
-          <caret line="24" column="1" selection-start-line="24" selection-start-column="1" selection-end-line="24" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/servidor/paginas/sorteos/premiar.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="61" column="10" selection-start-line="61" selection-start-column="10" selection-end-line="61" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/premiar/paginas/sorteos/premiar.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.769231">
-          <caret line="60" column="14" selection-start-line="60" selection-start-column="14" selection-end-line="60" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/comercializadora/paginas/bancas/transferirgrupo.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.3076923">
@@ -618,13 +442,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-16.346153">
           <caret line="91" column="22" selection-start-line="91" selection-start-column="22" selection-end-line="91" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/comercializadora/paginas/reporte/general.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6123778">
-          <caret line="210" column="92" selection-start-line="210" selection-start-column="92" selection-end-line="210" selection-end-column="92" />
         </state>
       </provider>
     </entry>
@@ -818,13 +635,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/comercializadora/js/navegador.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="131" column="27" selection-start-line="131" selection-start-column="27" selection-end-line="131" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/tools.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -846,22 +656,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/comercializadora/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.41856676">
-          <caret line="126" column="30" selection-start-line="126" selection-start-column="30" selection-end-line="126" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/servidor/paginas/reporte/balance.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="27" column="38" selection-start-line="27" selection-start-column="38" selection-end-line="27" selection-end-column="38" />
-          <folding>
-            <element signature="n#style#0;n#div#1;n#div#1;n#!!top" expanded="true" />
-            <marker date="1539151036280" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1539151036280" expanded="true" signature="-1:-1" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -869,15 +667,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.39087948">
           <caret line="146" column="40" selection-start-line="146" selection-start-column="40" selection-end-line="146" selection-end-column="40" />
-          <folding>
-            <marker date="1539156942926" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1539156942926" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1539156942926" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1539156942926" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1539156942926" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1539156942926" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1539156942926" expanded="false" signature="-1:-1" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -885,11 +674,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="14" column="24" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
-          <folding>
-            <marker date="1539158105237" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1539158105237" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1539158105237" expanded="true" signature="-1:-1" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1371,9 +1155,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-14.807693">
           <caret line="73" column="4" selection-start-line="73" selection-start-column="4" selection-end-line="80" selection-end-column="80" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1381,13 +1162,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/servidor/paginas/bancas/usuario.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.5384617">
+        <state vertical-scroll-proportion="0.0">
           <caret line="44" column="10" selection-start-line="39" selection-start-column="4" selection-end-line="44" selection-end-column="10" />
           <folding>
             <element signature="n#div#1;n#!!top" expanded="false" />
@@ -1398,9 +1178,553 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/taquilla/paginas/inicio.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="27" selection-start-line="0" selection-start-column="27" selection-end-line="0" selection-end-column="27" />
+        <state vertical-scroll-proportion="-3.2692308">
+          <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/comercializadora/paginas/reporte/general.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.153846">
+          <caret line="51" column="49" selection-start-line="51" selection-start-column="49" selection-end-line="51" selection-end-column="49" />
+          <folding>
+            <element signature="n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#1;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#select#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#2;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#2;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#table#0;n#div#0;n#div#0;n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#thead#0;n#table#0;n#div#0;n#div#0;n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#0;n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#select#0;n#div#2;n#!!top" expanded="false" />
+            <element signature="n#script#0;n#!!top" expanded="false" />
+            <element signature="n#script#1;n#!!top" expanded="false" />
+            <element signature="n#script#2;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/comercializadora/paginas/reporte/banca.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.115385">
+          <caret line="57" column="48" selection-start-line="57" selection-start-column="48" selection-end-line="57" selection-end-column="48" />
+          <folding>
+            <element signature="n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#1;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#select#0;n#div#0;n#div#1;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#2;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#2;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#0;n#div#0;n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#table#0;n#div#0;n#div#0;n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#thead#0;n#table#0;n#div#0;n#div#0;n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#tr#0;n#thead#0;n#table#0;n#div#0;n#div#0;n#div#4;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#div#2;n#!!top" expanded="false" />
+            <element signature="n#select#0;n#div#2;n#!!top" expanded="false" />
+            <element signature="n#script#0;n#!!top" expanded="false" />
+            <element signature="n#script#1;n#!!top" expanded="false" />
+            <element signature="n#script#2;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/comercializadora/paginas/reporte/recogedor.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.6153846">
+          <caret line="67" column="31" selection-start-line="67" selection-start-column="31" selection-end-line="67" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/comercializadora/paginas/reporte/taquilla.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.9230769">
+          <caret line="78" column="63" selection-start-line="78" selection-start-column="63" selection-end-line="78" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/srsocket.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="138" column="54" selection-start-line="138" selection-start-column="46" selection-end-line="138" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/comercializadora/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.47557002">
+          <caret line="236" column="66" selection-start-line="236" selection-start-column="66" selection-end-line="236" selection-end-column="66" />
+          <folding>
+            <marker date="1539832408506" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1539832408506" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1539832408506" expanded="true" signature="-1:-1" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/comercializadora/paginas/reporte/ventas.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5846906">
+          <caret line="128" column="8" selection-start-line="128" selection-start-column="8" selection-end-line="128" selection-end-column="8" />
+          <folding>
+            <marker date="1539833003973" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1539833003973" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1539833003973" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1539833003973" expanded="true" signature="-1:-1" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/comercializadora/js/navegador.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5984375">
+          <caret line="1887" column="33" selection-start-line="1887" selection-start-column="33" selection-end-line="1887" selection-end-column="33" />
+          <folding>
+            <element signature="e#56#541#0" expanded="false" />
+            <element signature="e#307#344#0" expanded="false" />
+            <element signature="e#604#1269#0" expanded="false" />
+            <element signature="e#822#1265#0" expanded="false" />
+            <element signature="e#945#1085#0" expanded="false" />
+            <element signature="e#1091#1237#0" expanded="false" />
+            <element signature="n#!!block;n#login_nav#0" expanded="false" />
+            <element signature="e#1386#1785#0" expanded="false" />
+            <element signature="e#1543#1777#0" expanded="false" />
+            <element signature="n#!!block;n#inicio_nav#0" expanded="false" />
+            <element signature="e#1943#2034#0" expanded="false" />
+            <element signature="e#2096#2213#0" expanded="false" />
+            <element signature="e#2221#2665#0" expanded="false" />
+            <element signature="e#2703#4343#0" expanded="false" />
+            <element signature="e#2841#3168#0" expanded="false" />
+            <element signature="e#3196#3233#0" expanded="false" />
+            <element signature="e#3239#3394#0" expanded="false" />
+            <element signature="e#3306#3383#0" expanded="false" />
+            <element signature="e#3427#4337#0" expanded="false" />
+            <element signature="e#3491#4325#0" expanded="false" />
+            <element signature="e#3579#3599#0" expanded="false" />
+            <element signature="e#3605#4231#0" expanded="false" />
+            <element signature="e#3735#3888#0" expanded="false" />
+            <element signature="e#3919#4121#0" expanded="false" />
+            <element signature="e#4372#4532#0" expanded="false" />
+            <element signature="n#!!block;n#sorteoMonitor_nav#0" expanded="false" />
+            <element signature="e#4678#4988#0" expanded="false" />
+            <element signature="e#4859#4909#0" expanded="false" />
+            <element signature="e#5031#5341#0" expanded="false" />
+            <element signature="e#5212#5262#0" expanded="false" />
+            <element signature="e#5384#5688#0" expanded="false" />
+            <element signature="e#5565#5609#0" expanded="false" />
+            <element signature="e#5735#7275#0" expanded="false" />
+            <element signature="e#6010#7268#0" expanded="false" />
+            <element signature="e#6207#7258#0" expanded="false" />
+            <element signature="e#6328#6446#0" expanded="false" />
+            <element signature="e#6685#6740#0" expanded="false" />
+            <element signature="e#6790#6976#0" expanded="false" />
+            <element signature="e#7322#7368#0" expanded="false" />
+            <element signature="n#!!block;n#listarSorteos#0;n#!!block;n#sorteoMonitor_nav#0" expanded="false" />
+            <element signature="e#7476#7628#0" expanded="false" />
+            <element signature="n#!!block;n#sorteoBuscar_nav#0" expanded="false" />
+            <element signature="e#7783#8069#0" expanded="false" />
+            <element signature="e#7944#8062#0" expanded="false" />
+            <element signature="n#!!block;n#sorteoPublicar_nav#0" expanded="false" />
+            <element signature="e#8213#8526#0" expanded="false" />
+            <element signature="e#8242#8450#0" expanded="false" />
+            <element signature="e#8266#8415#0" expanded="false" />
+            <element signature="e#8758#8938#0" expanded="false" />
+            <element signature="e#9043#9941#0" expanded="false" />
+            <element signature="e#9294#9521#0" expanded="false" />
+            <element signature="e#9341#9511#0" expanded="false" />
+            <element signature="e#9435#9497#0" expanded="false" />
+            <element signature="e#9548#9739#0" expanded="false" />
+            <element signature="e#9663#9727#0" expanded="false" />
+            <element signature="e#9745#9935#0" expanded="false" />
+            <element signature="e#9812#9924#0" expanded="false" />
+            <element signature="n#!!block;n#sorteos_publicos#0;n#!!block;n#sorteoPublicar_nav#0" expanded="false" />
+            <element signature="n#!!block;n#updateView#0;n#!!block;n#sorteoPublicar_nav#0" expanded="false" />
+            <element signature="e#10209#10456#0" expanded="false" />
+            <element signature="e#10264#10444#0" expanded="false" />
+            <element signature="e#10287#10364#0" expanded="false" />
+            <element signature="e#10505#10783#0" expanded="false" />
+            <element signature="e#10717#10772#0" expanded="false" />
+            <element signature="n#!!block;n#remover_publicacion#0;n#!!block;n#sorteoPublicar_nav#0" expanded="false" />
+            <element signature="e#11029#11146#0" expanded="false" />
+            <element signature="n#!!block;n#updateTaquillas#0;n#!!block;n#sorteoPublicar_nav#0" expanded="false" />
+            <element signature="n#!!block;n#sorteoPremiar_nav#0" expanded="false" />
+            <element signature="e#11839#11885#0" expanded="false" />
+            <element signature="e#11924#11968#0" expanded="false" />
+            <element signature="e#12014#12872#0" expanded="false" />
+            <element signature="e#12186#12865#0" expanded="false" />
+            <element signature="e#12250#12362#0" expanded="false" />
+            <element signature="e#12383#12477#0" expanded="false" />
+            <element signature="n#!!block;n#listarSorteos#0;n#!!block;n#sorteoPremiar_nav#0" expanded="false" />
+            <element signature="e#12981#13157#0" expanded="false" />
+            <element signature="n#!!block;n#listarNumeros#0;n#!!block;n#sorteoPremiar_nav#0" expanded="false" />
+            <element signature="e#13395#13430#0" expanded="false" />
+            <element signature="e#13436#13577#0" expanded="false" />
+            <element signature="e#13499#13570#0" expanded="false" />
+            <element signature="n#!!block;n#bancasBancas_nav#0" expanded="false" />
+            <element signature="e#13747#13778#0" expanded="false" />
+            <element signature="e#13824#14601#0" expanded="false" />
+            <element signature="e#14131#14594#0" expanded="false" />
+            <element signature="e#14154#14429#0" expanded="false" />
+            <element signature="e#14435#14584#0" expanded="false" />
+            <element signature="n#!!block;n#updateBancas#0;n#!!block;n#bancasBancas_nav#0" expanded="false" />
+            <element signature="e#14663#15268#0" expanded="false" />
+            <element signature="e#15415#15724#0" expanded="false" />
+            <element signature="e#15532#15712#0" expanded="false" />
+            <element signature="e#15555#15632#0" expanded="false" />
+            <element signature="e#15776#16434#0" expanded="false" />
+            <element signature="e#16017#16423#0" expanded="false" />
+            <element signature="e#16050#16297#0" expanded="false" />
+            <element signature="e#16319#16409#0" expanded="false" />
+            <element signature="e#16513#16581#0" expanded="false" />
+            <element signature="e#16624#16672#0" expanded="false" />
+            <element signature="e#16723#17337#0" expanded="false" />
+            <element signature="e#16970#17301#0" expanded="false" />
+            <element signature="e#17065#17286#0" expanded="false" />
+            <element signature="e#17102#17268#0" expanded="false" />
+            <element signature="e#17387#17992#0" expanded="false" />
+            <element signature="e#17625#17956#0" expanded="false" />
+            <element signature="e#17720#17941#0" expanded="false" />
+            <element signature="e#17757#17923#0" expanded="false" />
+            <element signature="n#!!block;n#bancasBanca_nav#0" expanded="false" />
+            <element signature="e#18130#25493#0" expanded="false" />
+            <element signature="e#18351#18390#0" expanded="false" />
+            <element signature="e#18429#19418#0" expanded="false" />
+            <element signature="e#18647#18712#0" expanded="false" />
+            <element signature="e#18906#19406#0" expanded="false" />
+            <element signature="e#18982#19310#0" expanded="false" />
+            <element signature="e#19491#20325#0" expanded="false" />
+            <element signature="e#19816#20314#0" expanded="false" />
+            <element signature="e#19843#20133#0" expanded="false" />
+            <element signature="e#20139#20300#0" expanded="false" />
+            <element signature="e#20362#20841#0" expanded="false" />
+            <element signature="e#20619#20829#0" expanded="false" />
+            <element signature="e#20878#21428#0" expanded="false" />
+            <element signature="e#21098#21416#0" expanded="false" />
+            <element signature="e#21168#21322#0" expanded="false" />
+            <element signature="e#21472#21580#0" expanded="false" />
+            <element signature="e#21751#21979#0" expanded="false" />
+            <element signature="e#22072#22141#0" expanded="false" />
+            <element signature="e#22177#25487#0" expanded="false" />
+            <element signature="e#22272#22672#0" expanded="false" />
+            <element signature="e#22409#22658#0" expanded="false" />
+            <element signature="e#22455#22512#0" expanded="false" />
+            <element signature="e#22542#22600#0" expanded="false" />
+            <element signature="e#22766#22828#0" expanded="false" />
+            <element signature="e#22917#22993#0" expanded="false" />
+            <element signature="e#23040#23096#0" expanded="false" />
+            <element signature="e#23182#23469#0" expanded="false" />
+            <element signature="e#23245#23453#0" expanded="false" />
+            <element signature="e#23272#23361#0" expanded="false" />
+            <element signature="e#23525#24037#0" expanded="false" />
+            <element signature="e#23739#24022#0" expanded="false" />
+            <element signature="e#23776#23880#0" expanded="false" />
+            <element signature="e#23906#24004#0" expanded="false" />
+            <element signature="e#24092#24761#0" expanded="false" />
+            <element signature="e#24355#24717#0" expanded="false" />
+            <element signature="e#24454#24698#0" expanded="false" />
+            <element signature="e#24495#24676#0" expanded="false" />
+            <element signature="e#24815#25475#0" expanded="false" />
+            <element signature="e#25069#25431#0" expanded="false" />
+            <element signature="e#25168#25412#0" expanded="false" />
+            <element signature="e#25209#25390#0" expanded="false" />
+            <element signature="e#25499#25530#0" expanded="false" />
+            <element signature="n#!!block;n#bancasPermisos_nav#0" expanded="false" />
+            <element signature="e#25800#25884#0" expanded="false" />
+            <element signature="e#25832#25878#0" expanded="false" />
+            <element signature="e#26089#26616#0" expanded="false" />
+            <element signature="e#26204#26515#0" expanded="false" />
+            <element signature="e#26276#26504#0" expanded="false" />
+            <element signature="e#26394#26488#0" expanded="false" />
+            <element signature="e#26521#26610#0" expanded="false" />
+            <element signature="e#26676#26734#0" expanded="false" />
+            <element signature="n#!!block;n#updateView#0;n#!!block;n#bancasPermisos_nav#0" expanded="false" />
+            <element signature="e#26897#27431#0" expanded="false" />
+            <element signature="e#27054#27419#0" expanded="false" />
+            <element signature="e#27081#27324#0" expanded="false" />
+            <element signature="e#27508#27772#0" expanded="false" />
+            <element signature="e#27563#27760#0" expanded="false" />
+            <element signature="e#27587#27666#0" expanded="false" />
+            <element signature="e#27822#28156#0" expanded="false" />
+            <element signature="e#27962#28145#0" expanded="false" />
+            <element signature="n#!!block;n#bancasGrupo_nav#0" expanded="false" />
+            <element signature="e#28298#38414#0" expanded="false" />
+            <element signature="e#28546#28588#0" expanded="false" />
+            <element signature="e#28627#29588#0" expanded="false" />
+            <element signature="e#28841#28906#0" expanded="false" />
+            <element signature="e#29003#29576#0" expanded="false" />
+            <element signature="e#29079#29480#0" expanded="false" />
+            <element signature="e#29625#30104#0" expanded="false" />
+            <element signature="e#29882#30092#0" expanded="false" />
+            <element signature="e#30141#30687#0" expanded="false" />
+            <element signature="e#30357#30675#0" expanded="false" />
+            <element signature="e#30427#30581#0" expanded="false" />
+            <element signature="e#30731#30839#0" expanded="false" />
+            <element signature="e#30919#31711#0" expanded="false" />
+            <element signature="e#30998#31201#0" expanded="false" />
+            <element signature="e#31612#31699#0" expanded="false" />
+            <element signature="e#31764#32659#0" expanded="false" />
+            <element signature="e#32040#32647#0" expanded="false" />
+            <element signature="e#32088#32321#0" expanded="false" />
+            <element signature="e#32327#32633#0" expanded="false" />
+            <element signature="e#32699#37261#0" expanded="false" />
+            <element signature="e#32797#33197#0" expanded="false" />
+            <element signature="e#32934#33183#0" expanded="false" />
+            <element signature="e#32980#33037#0" expanded="false" />
+            <element signature="e#33067#33125#0" expanded="false" />
+            <element signature="e#33300#33362#0" expanded="false" />
+            <element signature="e#33450#33526#0" expanded="false" />
+            <element signature="e#33573#33629#0" expanded="false" />
+            <element signature="e#33717#34006#0" expanded="false" />
+            <element signature="e#33780#33990#0" expanded="false" />
+            <element signature="e#33808#33899#0" expanded="false" />
+            <element signature="e#34060#34516#0" expanded="false" />
+            <element signature="e#34301#34501#0" expanded="false" />
+            <element signature="e#34382#34483#0" expanded="false" />
+            <element signature="e#34636#34928#0" expanded="false" />
+            <element signature="e#34699#34912#0" expanded="false" />
+            <element signature="e#34727#34818#0" expanded="false" />
+            <element signature="e#34985#35442#0" expanded="false" />
+            <element signature="e#35225#35427#0" expanded="false" />
+            <element signature="e#35313#35409#0" expanded="false" />
+            <element signature="e#35521#36034#0" expanded="false" />
+            <element signature="e#35768#36019#0" expanded="false" />
+            <element signature="e#35804#35900#0" expanded="false" />
+            <element signature="e#35906#36001#0" expanded="false" />
+            <element signature="e#36089#36717#0" expanded="false" />
+            <element signature="e#36280#36673#0" expanded="false" />
+            <element signature="e#36385#36654#0" expanded="false" />
+            <element signature="e#36426#36632#0" expanded="false" />
+            <element signature="e#36771#37249#0" expanded="false" />
+            <element signature="e#36958#37203#0" expanded="false" />
+            <element signature="e#36995#37185#0" expanded="false" />
+            <element signature="e#37342#38406#0" expanded="false" />
+            <element signature="e#37763#38396#0" expanded="false" />
+            <element signature="e#37908#38380#0" expanded="false" />
+            <element signature="e#37945#38362#0" expanded="false" />
+            <element signature="e#38167#38340#0" expanded="false" />
+            <element signature="e#38420#38451#0" expanded="false" />
+            <element signature="n#!!block;n#bancasTaquilla_nav#0" expanded="false" />
+            <element signature="e#38628#40758#0" expanded="false" />
+            <element signature="e#38699#38888#0" expanded="false" />
+            <element signature="e#38720#38825#0" expanded="false" />
+            <element signature="e#38831#38878#0" expanded="false" />
+            <element signature="e#38941#39529#0" expanded="false" />
+            <element signature="e#39177#39518#0" expanded="false" />
+            <element signature="e#39240#39392#0" expanded="false" />
+            <element signature="e#39398#39504#0" expanded="false" />
+            <element signature="e#39580#40176#0" expanded="false" />
+            <element signature="e#39816#40164#0" expanded="false" />
+            <element signature="e#39879#40023#0" expanded="false" />
+            <element signature="e#40029#40150#0" expanded="false" />
+            <element signature="e#40208#40750#0" expanded="false" />
+            <element signature="e#40490#40739#0" expanded="false" />
+            <element signature="e#40547#40697#0" expanded="false" />
+            <element signature="e#41140#41261#0" expanded="false" />
+            <element signature="n#!!block;n#updateGrupos#0;n#!!block;n#bancasTransferir_nav#0" expanded="false" />
+            <element signature="e#41439#42012#0" expanded="false" />
+            <element signature="e#41545#41654#0" expanded="false" />
+            <element signature="e#41660#42006#0" expanded="false" />
+            <element signature="e#41734#41995#0" expanded="false" />
+            <element signature="e#41761#41903#0" expanded="false" />
+            <element signature="e#42267#42957#0" expanded="false" />
+            <element signature="e#42373#42482#0" expanded="false" />
+            <element signature="e#42488#42951#0" expanded="false" />
+            <element signature="e#42590#42940#0" expanded="false" />
+            <element signature="e#42617#42848#0" expanded="false" />
+            <element signature="n#!!block;n#bancasTopes_nav#0" expanded="false" />
+            <element signature="e#43447#43829#0" expanded="false" />
+            <element signature="e#43529#43821#0" expanded="false" />
+            <element signature="e#43746#43798#0" expanded="false" />
+            <element signature="e#44003#44255#0" expanded="false" />
+            <element signature="e#44333#44705#0" expanded="false" />
+            <element signature="e#44361#44545#0" expanded="false" />
+            <element signature="e#44418#44535#0" expanded="false" />
+            <element signature="e#44574#44699#0" expanded="false" />
+            <element signature="n#!!block;n#dsp_topes#0;n#!!block;n#bancasTopes_nav#0" expanded="false" />
+            <element signature="e#44801#44938#0" expanded="false" />
+            <element signature="e#44834#44928#0" expanded="false" />
+            <element signature="e#45055#45460#0" expanded="false" />
+            <element signature="e#45384#45448#0" expanded="false" />
+            <element signature="n#!!block;n#dsp_sorteos#0;n#!!block;n#bancasTopes_nav#0" expanded="false" />
+            <element signature="e#45516#45635#0" expanded="false" />
+            <element signature="e#45673#45730#0" expanded="false" />
+            <element signature="e#45942#46045#0" expanded="false" />
+            <element signature="e#46051#46160#0" expanded="false" />
+            <element signature="e#46114#46153#0" expanded="false" />
+            <element signature="e#46193#46489#0" expanded="false" />
+            <element signature="e#46411#46481#0" expanded="false" />
+            <element signature="e#46534#46885#0" expanded="false" />
+            <element signature="e#46734#46878#0" expanded="false" />
+            <element signature="n#!!block;n#reporteGeneral_nav#0" expanded="false" />
+            <element signature="e#47303#47652#0" expanded="false" />
+            <element signature="e#47550#47645#0" expanded="false" />
+            <element signature="n#!!block;n#updateView#0;n#!!block;n#reporteGeneral_nav#0" expanded="false" />
+            <element signature="e#47835#48072#0" expanded="false" />
+            <element signature="e#48096#48183#0" expanded="false" />
+            <element signature="n#!!block;n#prepareDownload#0;n#!!block;n#reporteGeneral_nav#0" expanded="false" />
+            <element signature="e#48947#49037#0" expanded="false" />
+            <element signature="e#49069#49131#0" expanded="false" />
+            <element signature="e#49137#49415#0" expanded="false" />
+            <element signature="e#49180#49403#0" expanded="false" />
+            <element signature="e#49228#49389#0" expanded="false" />
+            <element signature="e#49454#49710#0" expanded="false" />
+            <element signature="n#!!block;n#reporteBanca_nav#0" expanded="false" />
+            <element signature="e#50100#50482#0" expanded="false" />
+            <element signature="e#50380#50475#0" expanded="false" />
+            <element signature="n#!!block;n#updateView#0;n#!!block;n#reporteBanca_nav#0" expanded="false" />
+            <element signature="e#50658#50921#0" expanded="false" />
+            <element signature="e#50945#51034#0" expanded="false" />
+            <element signature="n#!!block;n#prepareDownload#0;n#!!block;n#reporteBanca_nav#0" expanded="false" />
+            <element signature="e#51743#51833#0" expanded="false" />
+            <element signature="e#51865#51927#0" expanded="false" />
+            <element signature="e#51933#52211#0" expanded="false" />
+            <element signature="e#51976#52199#0" expanded="false" />
+            <element signature="e#52024#52185#0" expanded="false" />
+            <element signature="e#52250#52498#0" expanded="false" />
+            <element signature="n#!!block;n#reporteRecogedor_nav#0" expanded="false" />
+            <element signature="e#52888#53272#0" expanded="false" />
+            <element signature="e#53170#53265#0" expanded="false" />
+            <element signature="n#!!block;n#updateView#0;n#!!block;n#reporteRecogedor_nav#0" expanded="false" />
+            <element signature="e#53455#53709#0" expanded="false" />
+            <element signature="e#53733#53836#0" expanded="false" />
+            <element signature="e#54329#54371#0" expanded="false" />
+            <element signature="e#54624#54676#0" expanded="false" />
+            <element signature="n#!!block;n#prepareDownload#0;n#!!block;n#reporteRecogedor_nav#0" expanded="false" />
+            <element signature="e#55261#55351#0" expanded="false" />
+            <element signature="e#55383#55445#0" expanded="false" />
+            <element signature="e#55451#55729#0" expanded="false" />
+            <element signature="e#55494#55717#0" expanded="false" />
+            <element signature="e#55542#55703#0" expanded="false" />
+            <element signature="e#55768#56016#0" expanded="false" />
+            <element signature="n#!!block;n#reporteTaquilla_nav#0" expanded="false" />
+            <element signature="e#56463#56756#0" expanded="false" />
+            <element signature="e#56643#56748#0" expanded="false" />
+            <element signature="e#56820#57133#0" expanded="false" />
+            <element signature="e#57014#57125#0" expanded="false" />
+            <element signature="e#57168#58765#0" expanded="false" />
+            <element signature="e#57338#58758#0" expanded="false" />
+            <element signature="e#57497#57687#0" expanded="false" />
+            <element signature="e#58120#58178#0" expanded="false" />
+            <element signature="e#58468#58528#0" expanded="false" />
+            <element signature="n#!!block;n#updateView#0;n#!!block;n#reporteTaquilla_nav#0" expanded="false" />
+            <element signature="e#58933#59154#0" expanded="false" />
+            <element signature="n#!!block;n#reporteGrupo_nav#0" expanded="false" />
+            <element signature="e#59593#59941#0" expanded="false" />
+            <element signature="e#59839#59934#0" expanded="false" />
+            <element signature="n#!!block;n#updateView#0;n#!!block;n#reporteGrupo_nav#0" expanded="false" />
+            <element signature="e#60102#60373#0" expanded="false" />
+            <element signature="e#60458#60548#0" expanded="false" />
+            <element signature="e#60701#60879#0" expanded="false" />
+            <element signature="e#60885#61071#0" expanded="false" />
+            <element signature="e#61277#61327#0" expanded="false" />
+            <element signature="e#61584#61636#0" expanded="false" />
+            <element signature="e#61973#62229#0" expanded="false" />
+            <element signature="e#63416#63577#0" expanded="false" />
+            <element signature="e#63461#63502#0" expanded="false" />
+            <element signature="e#63620#63707#0" expanded="false" />
+            <element signature="e#63751#63911#0" expanded="false" />
+            <element signature="e#63796#63836#0" expanded="false" />
+            <element signature="e#63952#64119#0" expanded="false" />
+            <element signature="e#64161#64322#0" expanded="false" />
+            <element signature="e#64206#64247#0" expanded="false" />
+            <element signature="e#64364#64998#0" expanded="false" />
+            <element signature="e#64614#64991#0" expanded="false" />
+            <element signature="e#64781#64981#0" expanded="false" />
+            <element signature="n#!!block;n#resetForm#0;n#!!block;n#reporteVentas_nav#0" expanded="false" />
+            <element signature="n#!!block;n#prefetch#0;n#!!block;n#reporteVentas_nav#0" expanded="false" />
+            <element signature="e#65221#65428#0" expanded="false" />
+            <element signature="e#65449#65916#0" expanded="false" />
+            <element signature="e#65557#65904#0" expanded="false" />
+            <element signature="e#65686#65890#0" expanded="false" />
+            <element signature="n#!!block;n#updateBody#0;n#!!block;n#reporteVentas_nav#0" expanded="false" />
+            <element signature="e#66050#66421#0" expanded="false" />
+            <element signature="e#66181#66379#0" expanded="false" />
+            <element signature="e#66519#66730#0" expanded="false" />
+            <element signature="e#67228#67474#0" expanded="false" />
+            <element signature="n#!!block;n#reporteCobros_nav#0" expanded="false" />
+            <element signature="e#68466#68541#0" expanded="false" />
+            <element signature="e#68575#73255#0" expanded="false" />
+            <element signature="e#68818#73248#0" expanded="false" />
+            <element signature="e#68871#68993#0" expanded="false" />
+            <element signature="e#69089#69345#0" expanded="false" />
+            <element signature="e#69270#69330#0" expanded="false" />
+            <element signature="e#69541#69591#0" expanded="false" />
+            <element signature="e#69946#70497#0" expanded="false" />
+            <element signature="e#70171#70316#0" expanded="false" />
+            <element signature="e#70338#70483#0" expanded="false" />
+            <element signature="e#70534#73238#0" expanded="false" />
+            <element signature="e#70573#73224#0" expanded="false" />
+            <element signature="e#70796#73204#0" expanded="false" />
+            <element signature="e#70888#71015#0" expanded="false" />
+            <element signature="e#71410#72358#0" expanded="false" />
+            <element signature="e#71552#72332#0" expanded="false" />
+            <element signature="e#71816#72302#0" expanded="false" />
+            <element signature="e#71935#72266#0" expanded="false" />
+            <element signature="e#71994#72228#0" expanded="false" />
+            <element signature="e#72557#73144#0" expanded="false" />
+            <element signature="e#72946#73116#0" expanded="false" />
+            <element signature="e#73299#73670#0" expanded="false" />
+            <element signature="e#73364#73595#0" expanded="false" />
+            <element signature="e#73714#74395#0" expanded="false" />
+            <element signature="e#73820#73858#0" expanded="false" />
+            <element signature="e#73920#74389#0" expanded="false" />
+            <element signature="e#74196#74377#0" expanded="false" />
+            <element signature="e#74428#74684#0" expanded="false" />
+            <element signature="n#!!block;n#reporteBalance_nav#0" expanded="false" />
+            <element signature="e#74819#75416#0" expanded="false" />
+            <element signature="e#74860#74914#0" expanded="false" />
+            <element signature="e#75028#75409#0" expanded="false" />
+            <element signature="e#75072#75111#0" expanded="false" />
+            <element signature="e#75117#75399#0" expanded="false" />
+            <element signature="e#75422#76068#0" expanded="false" />
+            <element signature="e#75503#75675#0" expanded="false" />
+            <element signature="e#75745#76060#0" expanded="false" />
+            <element signature="e#75884#75939#0" expanded="false" />
+            <element signature="n#!!block;n#sms_nav#0" expanded="false" />
+            <element signature="e#76222#77060#0" expanded="false" />
+            <element signature="e#76362#76587#0" expanded="false" />
+            <element signature="e#76430#76499#0" expanded="false" />
+            <element signature="e#76505#76577#0" expanded="false" />
+            <element signature="e#76642#76880#0" expanded="false" />
+            <element signature="e#76699#76769#0" expanded="false" />
+            <element signature="e#76954#77052#0" expanded="false" />
+            <element signature="n#!!block;n#smsNuevo_nav#0" expanded="false" />
+            <element signature="e#77484#77687#0" expanded="false" />
+            <element signature="e#77639#77680#0" expanded="false" />
+            <element signature="n#!!block;n#smsLeer_nav#0" expanded="false" />
+            <element signature="e#77810#78820#0" expanded="false" />
+            <element signature="e#77930#78269#0" expanded="false" />
+            <element signature="e#78158#78258#0" expanded="false" />
+            <element signature="e#78316#78641#0" expanded="false" />
+            <element signature="e#78581#78630#0" expanded="false" />
+            <element signature="e#78708#78813#0" expanded="false" />
+            <element signature="n#!!block;n#conexiones_nav#0" expanded="false" />
+            <element signature="e#79008#79187#0" expanded="false" />
+            <element signature="n#!!block;n#updateView#0;n#!!block;n#conexiones_nav#0" expanded="false" />
+            <element signature="e#79428#79493#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
