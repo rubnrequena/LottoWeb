@@ -46,6 +46,7 @@ function login_nav(p,arg) {
         var data = formControls(this);
         socket.sendMessage("login",data,function (e,d) {
             var recordar = $('#recordar').is(":checked");
+
             if (recordar) localStorage.setItem("srq_lot_prm_login",JSON.stringify(data));
         });
     });
@@ -216,10 +217,14 @@ nav.paginas.addListener("sorteos/premiar",sorteoPremiar_nav);
 function sorteoMonitor_nav(e,arg) {
     var fecha = $('#sfecha');
     var d = new Date();
-    var data; var dataForm;
+    var dataForm;
     var sorteos;
     var mntfiltro; var filtrado;
     var help = _helpers;
+    var hlp = copyTo(_helpers);
+
+    var data, jg, tt;
+    var ijg;
 
     $('#ord-num-num').click(function (e) {
         e.preventDefault(e);
@@ -247,16 +252,19 @@ function sorteoMonitor_nav(e,arg) {
     $('#monitor-form').submit(function (e) {
         e.preventDefault(e);
         $('.canReset').html('--');
-        var jg, tt;
-        help.premio = function (m) {
-            return (m*100/jg).format(2);
+        help.premio = function (m) { return (m*100/jg).format(2); };
+        help.ipremio = function (m) { return (m*100/ijg).format(2); };
+        help.gana = function (m) { return (m*100/jg)>100; };
+        help.pdist = function (n) { return (n*100/tt).format(2); };
+        hlp.ganador = function (n) {
+            var e = findBy("elementoID",n,$elementos);
+            return e? "#"+e.numero+' '+e.descripcion : '';
         };
-        help.gana = function (m) {
-            return (m*100/jg)>100;
+        hlp.iganador = function (n) {
+            var e = findBy("elementoID",n,$ielementos);
+            return e? "#"+e.numero+' '+e.descripcion : '';
         };
-        help.pdist = function (n) {
-            return (n*100/tt).format(2);
-        };
+
         dataForm = formControls(this);
         var f = formLock(this);
         socket.sendMessage("monitor",dataForm, function (e, d) {
@@ -289,12 +297,6 @@ function sorteoMonitor_nav(e,arg) {
 
             actualizarVista();
 
-            var hlp = copyTo(_helpers);
-            hlp.ganador = function (n) {
-                var e = findBy("elementoID",n,$elementos);
-                return e? "#"+e.numero+' '+e.descripcion : '';
-            };
-
             var idata = {
                 fecha:fecha.val(),
                 sorteo:findBy("sorteoID",dataForm.sorteoID,sorteos).sorteo
@@ -315,10 +317,61 @@ function sorteoMonitor_nav(e,arg) {
                     $('#gcomision').html(t3.format(2));
                     $('#srt_dia').html(jsrender($('#rd-sorteos-dia-row'), d.data, hlp));
                     $('#str-dia-stamp').html(d.time);
+
+                    var desc = findBy("sorteoID",dataForm.sorteoID,sorteos).descripcion;
+                    internacional_init(fecha.val(),idata.sorteo,desc);
                 }
             });
         })
     });
+
+    function internacional_init (fecha,sorteo,descripcion) {
+        intsocket.sendMessage("sorteos",{lista:fecha}, function (e, d) {
+            var dataForm = {
+                sorteoID:findBy("descripcion",descripcion,d).sorteoID
+            };
+            intsocket.sendMessage("monitor",dataForm, function (e, d) {
+                ijg=0;
+                d.n.forEach(function (item) {
+                    ijg+= item.jugada;
+                })
+                var x;
+                for (var i=0;i< data.n.length;i++) {
+                    x = findIndex("numero", data.n[i].numero,d.n);
+                    if (x>-1) {
+                        data.n[i].ijugada = d.n[x].jugada;
+                        data.n[i].ipremios = d.n[x].premios;
+                        data.n[i].itickets = d.n[x].tickets;
+                    } else {
+                        data.n[i].ijugada = "0";
+                        data.n[i].ipremios = "0";
+                        data.n[i].itickets = "0";
+                    }
+                }
+                actualizarVista();
+
+                var intdata = {fecha:fecha,sorteo:sorteo-1};
+                intsocket.sendMessage("inicio",intdata, function (e, d) {
+                    if (d.hasOwnProperty("code")) {
+
+                    } else {
+                        var t1=0,t2=0,t3=0;
+                        for (var i=0; i< d.data.length;i++) {
+                            t1+=d.data[i].jugado;
+                            t2+=d.data[i].premio;
+                            t3+=d.data[i].comision;
+                        };
+                        $('#int-gbalance').html((t1-(t2+t3)).format(2));
+                        $('#int-gjugada').html(t1.format(2));
+                        $('#int-gpremios').html(t2.format(2));
+                        $('#int-gcomision').html(t3.format(2));
+                        $('#int-srt_dia').html(jsrender($('#rd-int-sorteos-dia-row'), d.data, hlp));
+                        $('#int-str-dia-stamp').html(d.time);
+                    }
+                });
+            });
+        });
+    }
 
     $('#mnt-filtrar-tickets').submit(function (e) {
         e.preventDefault(e);

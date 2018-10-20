@@ -76,8 +76,9 @@
             </div><!-- panel-heading -->
         </div><!-- panel -->
     </div><!-- col-sm-6 -->
-
-    <div class="col-sm-5 col-md-5">
+</div><!-- row -->
+<div class="row">
+    <div class="col-sm-6 col-md-6">
         <div class="panel panel-success panel-stat">
             <div class="panel-heading">
                 <div class="stat">
@@ -106,7 +107,36 @@
             </div><!-- panel-heading -->
         </div><!-- panel -->
     </div><!-- col-sm-6 -->
-</div><!-- row -->
+    <div class="col-sm-6 col-md-6">
+        <div class="panel panel-danger panel-stat">
+            <div class="panel-heading">
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <small class="stat-label">Balance dia (INTERNACIONAL)</small>
+                            <h1 class="canReset" id="int-gbalance">--</h1>
+                        </div>
+                    </div><!-- row -->
+                    <div class="mb15"></div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <small class="stat-label">Venta</small>
+                            <h4 class="canReset" id="int-gjugada">--</h4>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Premios</small>
+                            <h4 class="canReset" id="int-gpremios">--</h4>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Comision</small>
+                            <h4 class="canReset" id="int-gcomision">--</h4>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+</div>
 <div class="panel">
     <div class="panel-body">
         <p>Actualizado el: <span id="ultact"></span></p>
@@ -114,6 +144,7 @@
             <li class="active"><a href="#vttaq" data-toggle="tab"><strong>BANCAS</strong></a></li>
             <li><a href="#vtnumeros" data-toggle="tab"><strong>NUMEROS</strong></a></li>
             <li><a href="#vtreporte" data-toggle="tab"><strong>REPORTE</strong></a></li>
+            <li><a href="#int-vtreporte" data-toggle="tab"><strong>REPORTE INT</strong></a></li>
         </ul>
         <div class="tab-content mb30">
             <div class="tab-pane active" id="vttaq">
@@ -167,6 +198,29 @@
                     </table>
                 </div><!-- table-responsive -->
                 <label class="pull-right" >Actualizado a las <span id="str-dia-stamp">--</span></label>
+            </div>
+            <div class="tab-pane" id="int-vtreporte">
+                <div class="table-responsive">
+                    <table class="table table-bordered mb30">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Sorteo</th>
+                            <th>Ganador</th>
+                            <th>Jugado</th>
+                            <th>Premios</th>
+                            <th>Comision</th>
+                            <th>Balance</th>
+                        </tr>
+                        </thead>
+                        <tbody id="int-srt_dia">
+                        <tr>
+                            <td><i class="fa fa-spinner fa-spin"></i> Espere.. cargando.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div><!-- table-responsive -->
+                <label class="pull-right" >Actualizado a las <span id="int-str-dia-stamp">--</span></label>
             </div>
         </div>
     </div>
@@ -261,18 +315,22 @@
         <td><a class="mnt-prm" href="#" num="{{:n}}"><i class="fa fa-flag-checkered"></i></a> </td>
         <td><a href="#{{:n}}" n="{{:n}}" class="mnt-historial"><i class="fa fa-history"></i></a> {{:numero}} {{:desc}} <i id="rn{{:n}}" class="fa fa-check hidden text-success"></i></td>
         <td>
-            <span class="label label-primary hidden-xs">{{:~formatNumber(pcj,2)}}%</span>
+            <span class="label label-default w40px">{{:ijugada}}</span>
             {{:~formatNumber(jugada,2)}}
         </td>
         <td>
+            <span class="label label-default w60px">{{:~ipremio(ipremios)}}%</span>
             {{if ~gana(premios)}}
-                <span class="label label-danger">{{:~premio(premios)}}%</span>
+                <span class="label label-danger w60px">{{:~premio(premios)}}%</span>
             {{else}}
-                <span class="label label-success">{{:~premio(premios)}}%</span>
+                <span class="label label-success w60px">{{:~premio(premios)}}%</span>
             {{/if}}
             {{:~formatNumber(premios,2)}}
         </td>
-        <td><a href="#{{:n}}" n="{{:n}}" class="mnt-vnt-tickets"><i class="fa fa-ticket"></i>{{:tickets}}</a></td>
+        <td>
+            <a href="#{{:n}}" n="{{:n}}" class="mnt-vnt-tickets text-muted "><i class="fa fa-ticket"></i>{{:itickets}}</a> |
+            <a href="#{{:n}}" n="{{:n}}" class="mnt-vnt-tickets"><i class="fa fa-ticket"></i>{{:tickets}}</a>
+        </td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-num-row">
@@ -299,6 +357,17 @@
 </script>
 <script type="text/x-jsrender" id="rd-tq-option">
     <option value="{{:tq}}" class="text-uppercase">{{:tqn}}</option>
+</script>
+<script type="text/x-jsrender" id="rd-int-sorteos-dia-row">
+    <tr>
+        <td><a href="#sorteo|{{:sorteoID}}">#{{:~padding(sorteoID,6)}}</a> </td>
+        <td>{{:descripcion}}</td>
+        <td>{{:~iganador(ganador)}}</td>
+        <td>{{:~formatNumber(jugado,2)}}</td>
+        <td>{{:~formatNumber(premio,2)}}</td>
+        <td>{{:~formatNumber(comision,2)}}</td>
+        <td>{{:~formatNumber(jugado-premio-comision,2)}}</td>
+    </tr>
 </script>
 <script type="text/x-jsrender" id="rd-sorteos-dia-row">
     <tr>

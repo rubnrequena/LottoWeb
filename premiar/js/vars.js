@@ -4,8 +4,9 @@
 
 // SOCKET
 var host = $.cookie("servidor") || location.hostname+":4020";
-//host = "srq.co.ve:4000";
 var socket = new Net("ws://"+host,false);
+var intsocket = new Net("ws://104.129.171.162:4040",false);
+//var intsocket = new Net("ws://"+host,false);
 
 //NAVEGADOR
 var nav = new Navegador();

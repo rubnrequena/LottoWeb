@@ -1,7 +1,9 @@
 socket.addListener(NetEvent.SOCKET_OPEN,socket_open);
 socket.addListener(NetEvent.SOCKET_CLOSE,socket_close);
 socket.addListener(NetEvent.LOGIN,socket_login);
-socket.addListener("init",socket_init);
+socket.addListener("init",function (e,d) {
+    $elementos = d.elem || [];
+});
 socket.connect();
 
 function socket_open(e) {
@@ -24,6 +26,19 @@ function socket_login(e,d) {
     if (d.code==1) {
         $usuario = d.usr;
         $('.main-usrname').html(d.usr.usuario);
+
+        if (d.usr.usuario=="ruletonkaiser") {
+            intsocket.addListener(NetEvent.SOCKET_OPEN, function (e,u) {
+                intsocket.sendMessage("login",{usr: d.usr.usuario,clv: d.usr.clave}, function (e, d) {
+                    notificacion("CONEXION INTERNACIONAL EXITOSA","Bienvenid@ "+ d.usr.usuario);
+                });
+            });
+            intsocket.addListener("init", function (e, d) {
+                $ielementos = d.elem || [];
+            });
+            intsocket.connect();
+        }
+
         nav.navUrl();
     } else {
         nav.navUrl("login");
@@ -31,7 +46,6 @@ function socket_login(e,d) {
 }
 function socket_init (e,d) {
     $sorteos = d.sorteos || [];
-    $elementos = d.elem || [];
     $bancas = d.bancas || [];
 }
 
