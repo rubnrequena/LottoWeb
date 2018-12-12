@@ -84,6 +84,53 @@
 </div>
 <div class="panel">
     <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize maximize">&plus;</a>
+        </div>
+        <span class="panel-title">OPCIONES DE COMISION</span>
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal" id="com-form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Sorteo</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="sorteo" id="sorteo" required></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Comision</label>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" required>
+                        <span class="input-group-addon">%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-6">
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar</button>
+                </div>
+            </div>
+        </form>
+        <hr>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>SORTEO</th>
+                    <th>COMISION</th>
+                </tr>
+                </thead>
+                <tbody id="com-tbody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
         <span class="panel-title">REMOVER TAQUILLA</span>
     </div>
     <div class="panel-body">
@@ -95,3 +142,11 @@
         </div>
     </div>
 </div>
+
+<script type="text/x-jsrender" id="rd-com-row">
+    <tr>
+        <td><a href="#remover-{{:comID}}" comID="{{:comID}}" class="comDL"><i class="fa fa-trash text-danger"></i></a></td>
+        <td>{{:~sorteo(sorteo)}}</td>
+        <td>{{:comision}}</td>
+    </tr>
+</script>

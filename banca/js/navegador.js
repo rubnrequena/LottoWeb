@@ -611,7 +611,7 @@ function bancasTaquilla_nav(p,args) {
             if (d) {
                 taquilla = d;
                 formSet($('#taquilla-nueva'), taquilla);
-
+                updateComision();
                 for (var m in d.meta) {
                     $('#'+m).val(d.meta[m]);
                 }
@@ -677,6 +677,45 @@ function bancasTaquilla_nav(p,args) {
                 nav.back();
             })
         });
+
+        //comision
+        var comisiones;
+        var sorteo = $('#sorteo'), comForm = $('#com-form'), comBody = $('#com-tbody');
+        sorteo.html(jsrender($('#rd-sorteos-option'),$sorteos));
+        sorteo.select2("val",0);
+        sorteo.trigger("change");
+        var hlp = copyTo(_helpers);
+        hlp.sorteo = function (s) {
+            return findBy("sorteoID",s,$sorteos).nombre;
+        }
+        comForm.submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            data.taquillaID = taquilla.taquillaID;
+            if (findBy("sorteo",data.sorteo,comisiones)) {
+                notificacion('VALOR DUPLICADO','El sorteo que esta intentando modificar ya existe, remueva el valor existente y vuelva a intentarlo.')
+                return;
+            }
+            socket.sendMessage('taquilla-comision-nv',data, function (e, d) {
+                updateComision(); //optimizar local
+            })
+        })
+        function updateComision () {
+            comBody.html('Cargando...');
+            socket.sendMessage('taquilla-comisiones', {taquillaID:taquilla.taquillaID}, function (e, d) {
+                comisiones = d || {};
+                if (d) {
+                    comBody.html(jsrender($('#rd-com-row'), d || {},hlp));
+                    $('.comDL').click(function (e) {
+                        e.preventDefault(e);
+                        var id = parseInt($(this).attr('comID'));
+                        socket.sendMessage('taquilla-comision-dl',{comID:id}, function (e, d) {
+                            updateComision(); //optimizar local
+                        })
+                    })
+                } else comBody.html('');
+            });
+        }
     }
 }
 nav.paginas.addListener("bancas/taquilla",bancasTaquilla_nav);
