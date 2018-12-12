@@ -20,7 +20,7 @@
                     <select class="s2 form-control" name="bancaID" id="bancas" required></select>
                 </div>
             </div>
-            <div class="form-group">
+            <!--<div class="form-group">
                 <label class="col-sm-3 control-label">Agrupar</label>
                 <div class="col-sm-6">
                     <select class="s2 form-control" id="rp-agrupar">
@@ -29,7 +29,7 @@
                         <option value="2">FECHA</option>
                     </select>
                 </div>
-            </div>
+            </div>-->
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
                     <button class="btn btn-darkblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
@@ -147,17 +147,7 @@
 </script>
 <script type="text/x-jsrender" id="rd-reporte">
     <tr>
-        <td class="text-uppercase">{{:desc}}</td>
-        <td>{{:~formatNumber(jugada,2)}}</td>
-        <td>{{:~formatNumber(comision,2)}}</td>
-        <td>{{:~formatNumber(pago,2)}}</td>
-        <td>{{:~formatNumber(jugada-pago-comision,2)}}</td>
-    </tr>
-</script>
-
-<script type="text/x-jsrender" id="rd-reporte2">
-    <tr>
-        <td class="text-uppercase">{{:desc}}</td>
+        <td class="text-uppercase"><a href="#reporte/taquilla|{{:id}}|{{:~historia()}}">{{:desc}}</a> </td>
         <td>{{:~formatNumber(jugada,2)}}</td>
         <td>{{:~formatNumber(comision,2)}}</td>
         <td>{{:~formatNumber(premio,2)}}</td>

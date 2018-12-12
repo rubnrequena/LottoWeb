@@ -27,13 +27,13 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-3 col-md-3">
+    <div class="col-sm-4 col-md-4">
         <div class="panel panel-primary panel-stat">
             <div class="panel-heading">
                 <div class="stat">
                     <div class="row">
                         <div class="col-xs-12">
-                            <small class="stat-label">Lider</small>
+                            <small class="stat-label">Lider (Bs)</small>
                             <h2 class="canReset" id='numLider'>--</h2>
                         </div>
                     </div><!-- row -->
@@ -57,7 +57,7 @@
                 <div class="stat">
                     <div class="row">
                         <div class="col-xs-12">
-                            <small class="stat-label">En juego</small>
+                            <small class="stat-label">En juego (Bs)</small>
                             <h2 class="canReset" id="jugada">--</h2>
                         </div>
                     </div><!-- row -->
@@ -71,6 +71,21 @@
                             <small class="stat-label">Jugada</small>
                             <h4 class="canReset" id="bnLider-jg">--</h4>
                         </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
+    <div class="col-sm-4 col-md-4">
+        <div class="panel panel-dark panel-stat">
+            <div class="panel-heading">
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <small class="stat-label">En juego (int)</small>
+                            <h2 class="canReset" id="ijugada">--</h2>
+                        </div>
+                        <div class="mb20"></div>
                     </div><!-- row -->
                 </div><!-- stat -->
             </div><!-- panel-heading -->
@@ -168,7 +183,8 @@
                             <th></th>
                             <th><a class="order-num btn btn-primary btn-sm" id="ord-num-num" href="#num">Numero <i class="fa fa-sort-amount-asc"></i></a></th>
                             <th><a class="order-num" id="ord-num-jg" href="#jgrupo">Jugado <i class="fa fa-sort-amount-desc"></i></a></th>
-                            <th><a class="order-num" id="ord-num-prm" href="#jbanca">Premio</a></th>
+                            <th>Premio (Bs)</th>
+                            <th>Premio (int)</th>
                             <th><a class="order-num" id="ord-num-ntk" href="#jbanca">Tickets</a></th>
                         </tr>
                         </thead>
@@ -312,14 +328,13 @@
 </script>
 <script type="text/x-jsrender" id="rd-vtnum-row">
     <tr>
-        <td><a class="mnt-prm" href="#" num="{{:n}}"><i class="fa fa-flag-checkered"></i></a> </td>
-        <td><a href="#{{:n}}" n="{{:n}}" class="mnt-historial"><i class="fa fa-history"></i></a> {{:numero}} {{:desc}} <i id="rn{{:n}}" class="fa fa-check hidden text-success"></i></td>
+        <td><a href="#{{:n}}" n="{{:n}}" class="mnt-historial"><i class="fa fa-history"></i><span title="{{:lastf}}" class="text-muted" id="nh{{:n}}" style="font-style: italic;">{{:lastd}}</span></a></td>
+        <td>{{:numero}} {{:desc}} <i id="rn{{:n}}" class="fa fa-check hidden text-success"></i></td>
         <td>
             <span class="label label-default w40px">{{:ijugada}}</span>
             {{:~formatNumber(jugada,2)}}
         </td>
         <td>
-            <span class="label label-default w60px">{{:~ipremio(ipremios)}}%</span>
             {{if ~gana(premios)}}
                 <span class="label label-danger w60px">{{:~premio(premios)}}%</span>
             {{else}}
@@ -328,7 +343,10 @@
             {{:~formatNumber(premios,2)}}
         </td>
         <td>
-            <a href="#{{:n}}" n="{{:n}}" class="mnt-vnt-tickets text-muted "><i class="fa fa-ticket"></i>{{:itickets}}</a> |
+            <span class="label label-default w60px">{{:~ipremio(ipremios)}}%</span> {{:~formatNumber(ipremios,2)}}
+        </td>
+        <td>
+            <a href="#{{:in}}" n="{{:in}}" class="mnt-vnt-itickets text-muted"><i class="fa fa-ticket"></i>{{:itickets}}</a> |
             <a href="#{{:n}}" n="{{:n}}" class="mnt-vnt-tickets"><i class="fa fa-ticket"></i>{{:tickets}}</a>
         </td>
     </tr>

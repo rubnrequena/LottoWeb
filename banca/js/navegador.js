@@ -24,17 +24,19 @@ nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
     select2w($('.s2'));
 
     // Minimize Button in Panels
-    jQuery('.minimize').click(function(){
-        var t = jQuery(this);
+    jQuery('.panel-heading').click(function(){
+        var t = jQuery(this).find('.minimize');
         var p = t.closest('.panel');
-        if(!jQuery(this).hasClass('maximize')) {
+        if(!t.hasClass('maximize')) {
             p.find('.panel-body, .panel-footer').slideUp(200);
             t.addClass('maximize');
             t.html('&plus;');
+            p.trigger('minimized.bs.panel');
         } else {
             p.find('.panel-body, .panel-footer').slideDown(200);
             t.removeClass('maximize');
             t.html('&minus;');
+            p.trigger('maximized.bs.panel');
         }
         return false;
     });
@@ -111,6 +113,49 @@ function inicio_nav(p,arg) {
             });
         }
     })
+    $('#bl-my').on("maximized.bs.panel",function (e) {
+        $('#info1').remove();
+    })
+    if ($balance) {
+        $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+        for (var i=0;i<$balance.length;i++) {
+            if ($balance[i].c==1) {
+                $('#bl-my-total').html($balance[i].balance.format(2));
+                break;
+            }
+        }
+
+        $('.bl-pagar').click(balance_pago_click);
+    }
+    function balance_pago_click (e) {
+        e.preventDefault(e);
+        var pago = $(this).attr('pago');
+        var bi = findBy("balID",pago,$balance);
+
+        var cp=0;
+        $balance.forEach(function (item) { if (item.cdo==0) cp++; })
+
+        if (cp<3) askme("PROCESAR PAGO #"+pago,jsrender($('#rd-procesar-pago'),bi),{
+            ok: function (result) {
+                var monto = parseFloat(result.monto)*-1;
+                var data = {
+                    desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
+                    monto:monto,
+                    resID:bi.resID
+                }
+                socket.sendMessage('balance-pago',data, function (e, d) {
+                    d.balance = "--";
+                    d.c=0;
+                    $balance.unshift(d);
+                    $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+                    $('.bl-pagar').click(balance_pago_click);
+                    notificacion('PAGO ENVIADO EXITOSAMENTE');
+                });
+                return true;
+            }
+        });
+        else notificacion('LIMITE DE PAGOS ALCANZADO', 'Estimado usuario, ya has alcanzado el limite de pagos sin confirmar, comuniquese con su administrador.')
+    }
 }
 
 function sorteoMonitor_nav() {

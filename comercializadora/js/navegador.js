@@ -129,10 +129,46 @@ function inicio_nav(p,arg) {
         }
     })
 
-    if ($usuario.balance) {
-        $('#reporte-body').html(jsrender($('#rd-reporte-us'), $usuario.balance));
-        $('#bl-my-total').html($usuario.balance[0].balance.format(2));
+    if ($balance) {
+        $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+        for (var i=0;i<$balance.length;i++) {
+            if ($balance[i].c==1) {
+                $('#bl-my-total').html($balance[i].balance.format(2));
+                break;
+            }
+        }
+        $('.bl-pagar').click(balance_pago_click);
     }
+
+    function balance_pago_click (e) {
+        e.preventDefault(e);
+        var pago = $(this).attr('pago');
+        var bi = findBy("balID",pago,$balance);
+
+        var cp=0;
+        $balance.forEach(function (item) { if (item.cdo==0) cp++; })
+
+        if (cp<=3) askme("PROCESAR PAGO #"+pago,jsrender($('#rd-procesar-pago'),bi),{
+            ok: function (result) {
+                var monto = parseFloat(result.monto)*-1;
+                var data = {
+                    desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
+                    monto:monto,
+                    resID:bi.resID
+                }
+                socket.sendMessage('balance-pago',data, function (e, d) {
+                    d.balance = "--";
+                   $balance.unshift(d);
+                    $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+                    $('.bl-pagar').click(balance_pago_click);
+                   notificacion('PAGO ENVIADO EXITOSAMENTE');
+                });
+                return true;
+            }
+        });
+        else notificacion('LIMITE DE PAGOS ALCANZADO', 'Estimado usuario, ya has alcanzado el limite de pagos sin confirmar, comuniquese con su administrador.')
+    }
+
 }
 
 function sorteoMonitor_nav() {
@@ -401,6 +437,7 @@ function bancasBancas_nav(p,args) {
         data.comision = data.comision / 100;
         data.participacion = data.participacion / 100;
         data.renta = $usuario.renta;
+        if ($('#alquiler').is(':checked')) data.comision = data.comision*-1;
         var form = formLock(this);
         socket.sendMessage("usuario-nuevo",data, function (e, d) {
             if (d>0) {
@@ -1303,9 +1340,9 @@ function reporteGeneral_nav (p,args) {
         $('#mnt-jugado').html(j.format(2));
         $('#mnt-premios').html(pr.format(2));
         $('#mnt-pagos').html(pg.format(2));
-        $('#mnt-balance').html((b-rn).format(2));
+        $('#mnt-balance').html((b).format(2));
 
-        $('#tg-descuento').html((cm+rn).format(2));
+        $('#tg-descuento').html((cm).format(2));
         $('#tg-comision').html(cm.format(2));
 
         $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
@@ -1939,11 +1976,10 @@ function reporteCobros_nav (p,args) {
 
             $('#tj-jugada').html(bnc.jg.format(2));
             $('#recaudo').html(cm.format(2));
-
             $('#trenta').html((j*$usuario.comision).format(2));
 
             $('#reporte-body').html(jsrender($('#rd-reporte'),d));
-
+            $('.cbr-bal').on('click', cbrbal_click);
 
             $('.cbr-folder').click(function (e) {
                 e.preventDefault(e);
@@ -1973,7 +2009,9 @@ function reporteCobros_nav (p,args) {
                         });
                         cm += cm2;
                         $('#rnt' + id).html(cm2.format(2));
-                        $('#renta').html(cm.format(2));
+
+                        $('#recaudo').html(cm.format(2));
+                        $('#trenta').html((j*$usuario.comision).format(2));
 
                         var b = jsrender($('#rd-reporte'), dgr);
                         $(b).insertAfter('#rdu' + id);
@@ -1999,16 +2037,7 @@ function reporteCobros_nav (p,args) {
                         $('#cbrfi'+id).switchClass('fa-folder-o','fa-folder');
 
                         $('.cbr-bal').off("click");
-                        $('.cbr-bal').on('click', function (ev) {
-                            ev.preventDefault(ev);
-                            var id = $(this).attr('usID');
-                            var m = parseFloat($(this).attr('monto'));
-                            var d = "COBRO SRQ SEMANA"+f1.val()+"|"+f2.val()+" "+$(this).attr('desc');
-                            socket.sendMessage('balance-add',{usID:id,monto:m,desc:d}, function (e, d) {
-                                $('#rd'+ d.usID).addClass('success');
-                                $(ev.target.parentElement).remove();
-                            });
-                        })
+                        $('.cbr-bal').on('click', cbrbal_click)
 
                         lazyLoad();
                     });
@@ -2016,6 +2045,17 @@ function reporteCobros_nav (p,args) {
             }
         })
     });
+
+    function cbrbal_click (ev) {
+        ev.preventDefault(ev);
+        var id = $(this).attr('usID');
+        var m = parseFloat($(this).attr('monto'));
+        var d = "COBRO SRQ SEMANA"+f1.val()+"|"+f2.val()+" "+$(this).attr('desc');
+        socket.sendMessage('balance-add',{usID:id,monto:m,desc:d,cdo:1}, function (e, d) {
+            $('#rd'+ d.usID).addClass('success');
+            $(ev.target.parentElement).remove();
+        });
+    }
 
     $('#rtp-desc-o').click(function (e) {
         e.preventDefault(e);
@@ -2042,7 +2082,7 @@ function reporteCobros_nav (p,args) {
             var id = $(item).attr('usID');
             var m = parseFloat($(item).attr('monto'));
             var d = "COBRO SRQ SEMANA "+f1.val()+"|"+f2.val()+", "+$(item).attr('desc');
-            socket.sendMessage('balance-add',{usID:id,monto:m,desc:d}, function (e, d) {
+            socket.sendMessage('balance-add',{usID:id,monto:m,desc:d,cdo:1}, function (e, d) {
                 $('#rd'+ d.usID).addClass('success');
                 if (lz.length>0) lzLoad(lz.shift())
                 else $('#cbr-procesar').prop("disabled",0);
@@ -2060,28 +2100,46 @@ function reporteCobros_nav (p,args) {
 nav.paginas.addListener("reporte/cobros",reporteCobros_nav);
 
 function reporteBalance_nav (p,args) {
+    var user, usData;
     if (args && args.length>0) {
         $('.bl-dreg').each(function () {
             $(this).removeClass('hidden');
+        });
+        $('.bl-greg').each(function () {
+            $(this).addClass('hidden');
         });
         $('#bl-my').addClass("hidden");
         socket.sendMessage('balance-us',{usID:args[0]}, function (e,d) {
             if (d.hasOwnProperty("code")) {
                 //vacio
             } else {
+                usData = d.bl || [];
+                user = d.us;
                 $('#bl-us-name').html(d.us.nombre);
                 $('#reporte-body-client').html(jsrender($('#rd-reporte-us'), d.bl));
                 $('#bl-clients-total').html(d.bl[0].balance.format(2));
-                $('#bl-client-heading').trigger('click');
+                $('#bl-client-heading').trigger('click')
+                $('.bl-pagar').click(balance_pago_click);
             }
-        })
+        });
+
     } else {
+        $('.bl-dreg').addClass('hidden');
+        $('.bl-greg').removeClass('hidden');
+
         $('#bl-my').removeClass("hidden");
-        if ($usuario.balance!=null) {
-            $('#reporte-body').html(jsrender($('#rd-reporte-us'), $usuario.balance));
-            $('#bl-my-total').html($usuario.balance[0].balance.format(2));
+        var reporte;
+        if ($balance!=null) {
+            $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+            for (var i=0;i<$balance.length;i++) {
+                if ($balance[i].c==1) {
+                    $('#bl-my-total').html($balance[i].balance.format(2));
+                    break;
+                }
+            }
         }
         socket.sendMessage('balance-clientes', null, function (e, d) {
+            reporte = d || [];
             $('#reporte-body-client').html(jsrender($('#rd-reporte'), d));
             var tc = 0;
             d.forEach(function (item) {
@@ -2089,6 +2147,147 @@ function reporteBalance_nav (p,args) {
             });
             $('#bl-clients-total').html(tc.format(2));
             $('#bl-client-heading').trigger('click');
+
+            var now = new Date;
+            var fin = now.format();
+            now.setTime(now.getTime()-86000000*7);
+            var inicio = now.format()
+            reporte_pagos(inicio,fin);
+            $('#desde').val(inicio);
+            $('#hasta').val(fin);
+        });
+
+        $('#bl-sort-desc').click(function (e) {
+            e.preventDefault(e);
+            var ord = parseInt($(this).attr('ord'));
+            ord = ord==0?-1:ord;
+            $(this).attr('ord',ord*-1);
+            reporte.sort(function (a, b) {
+                return a.desc.toLowerCase() < b.desc.toLowerCase()?ord:ord*-1;
+            })
+            $('#reporte-body-client').html(jsrender($('#rd-reporte'), reporte));
+        });
+        $('#bl-sort-monto').click(function (e) {
+            e.preventDefault(e);
+            var ord = parseInt($(this).attr('ord'));
+            ord = ord==0?-1:ord;
+            $(this).attr('ord',ord*-1);
+            reporte.sort(function (a, b) {
+                return a.balance < b.balance?ord:ord*-1;
+            })
+            $('#reporte-body-client').html(jsrender($('#rd-reporte'), reporte));
+        });
+
+        function reporte_pagos (inicio,fin) {
+            socket.sendMessage('balance-pagos',{'inicio':inicio,'fin':fin}, function (e, d) {
+                d = d || [];
+                $('#bl-pagos').html(jsrender($('#rd-reporte-pagos'),d));
+                var total=0;
+                d.forEach(function (item) {
+                    total+= item.monto;
+                });
+                $('#bl-pagos-total').html(total.format(2));
+
+                reporte_ppagos();
+            });
+        }
+        function reporte_ppagos () {
+            socket.sendMessage('balance-ppagos',null, function (e, balPend) {
+                $('#bl-ppagos').html(jsrender($('#rd-reporte-pend'),balPend));
+                var total=0;
+                balPend.forEach(function (item) {
+                    total+= item.monto;
+                });
+                $('#bl-ppagos-total').html(total.format(2));
+
+                $('.cf-pago').click(function (e) {
+                    e.preventDefault(e);
+                    var id = $(this).attr('bid');
+                    var pago = findBy("balID",id,balPend);
+                    askme("CONFIRMAR PAGO #"+pago.balID,jsrender($('#rd-procesar-pendiente'),pago),{
+                        ok: function (data) {
+                            $('#cf-label').html('Espere.. confirmando pago.');
+                            var b = findBy("balID",id,balPend);
+                            var data = {
+                                bID:id,
+                                usID: b.usID,
+                                monto:data.monto,
+                                cdo:data.cdo
+                            }
+                            socket.sendMessage('balance-confirmacion',data, function (e, d) {
+                                $('#md-ask').modal('hide');
+                                nav.url("reporte/balance",[b.usID]);
+                            })
+                            return false;
+                        }
+                    })
+                })
+            });
+        }
+    }
+    /*$('#bl-new-reg').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        var f = formLock(this);
+        balance_add(data.desc,data.monto);
+        formReset(f);
+    });*/
+    $('#bl-remover-registro').click(function () {
+        askme('REMOVER REGISTRO','Esta opcion le permite borrar el ultimo registro del balance, desea continuar?',{
+            ok: function (r) {
+                socket.sendMessage('balance-remover',{usID:user.usID}, function (e, d) {
+                    usData.shift();
+                    $('#reporte-body-client').html(jsrender($('#rd-reporte-us'), usData));
+                    if (usData.length>0)
+                        $('#bl-clients-total').html(d.bl[0].balance.format(2));
+                    else
+                        $('#bl-clients-total').html("0.00");
+                })
+                return true;
+            }
+        })
+    })
+    $('#bl-nuevo-registro').click(function () {
+        askme("NUEVO REGISTRO",jsrender($('#rd-balance-nuevo')),{ok: function (result) {
+            balance_add(result.desc,result.monto,1);
+        }});
+    })
+    $('#bl-fpagos').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        reporte_pagos(data.inicio,data.fin);
+    })
+
+    function balance_pago_click (e) {
+        e.preventDefault(e);
+        var pago = $(this).attr('pago');
+        var data = findBy("balID",pago,usData);
+        askme("CONFIRMAR PAGO #"+pago,jsrender($('#rd-procesar-pago'),data),{
+            ok: function (result) {
+                var monto = parseFloat(result.monto)*-1;
+                balance_add("PAGO:"+result.id+" B:"+result.origen+"-"+result.destino+" R:"+result.recibo+" F:"+result.fecha,monto,result.cdo);
+                return true;
+            }
+        });
+    }
+    function balance_add (descripcion,monto,confirmar) {
+        var data = {
+            desc:descripcion,
+            monto:monto,
+            usID:user.usID,
+            cdo:confirmar
+        }
+        socket.sendMessage('balance-add',data, function (e, d) {
+            if (usData.length>0) {
+                d.balance = d.monto + (usData[0].balance);
+            } else {
+                d.balance = d.monto
+            };
+            d.c = d.cdo;
+            usData.unshift(d);
+            $('#reporte-body-client').html(jsrender($('#rd-reporte-us'), usData));
+            $('#bl-clients-total').html(d.balance.format(2));
+            $('.bl-pagar').click(balance_pago_click);
         });
     }
 }

@@ -20,16 +20,24 @@
         </div>
     </div>
 </div>
-<div class="pageheader hidden-xs">
-    <h2><i class="fa fa-list"></i> Sorteos</h2>
-</div>
-<div class="panel">
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-4 col-sm-offset-4">
-                <select class="s2 form-control" id="prm-fsorteo"></select>
-            </div>
+<div class="panel padding10">
+    <div class="row">
+        <div class="col-md-2 col-sm-2 col-xs-2">Abierto</div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+            <select id="srt-abr">
+                <option value="1">SI</option>
+                <option value="0" selected>NO</option>
+            </select>
         </div>
+        <div class="col-md-2 col-sm-2 col-xs-2">Premiado</div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+            <select id="srt-prm">
+                <option value="1">SI</option>
+                <option value="0" selected>NO</option>
+            </select>
+        </div>
+    </div>
+    <div class="panel-body">
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>

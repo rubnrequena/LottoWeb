@@ -5,10 +5,23 @@ socket.addListener(NetEvent.SOCKET_OPEN,socket_open);
 socket.addListener(NetEvent.SOCKET_CLOSE,socket_close);
 socket.addListener(NetEvent.LOGIN,socket_login);
 socket.addListener("init",initialize);
+socket.addListener("balance-padre",balance_padre);
 socket.connect();
 
 $('#logolink').click(reload);
 
+function balance_padre (e,d) {
+    if (d) {
+        $balance = d;
+        $('#menu-balance-date').html(d[0].fecha);
+        for (var i=0;i<$balance.length;i++) {
+            if ($balance[i].c==1) {
+                $('#menu-balance-value').html('<i class="fa fa-dollar"></i> '+$balance[i].balance.format(2));
+                break;
+            }
+        }
+    }
+}
 function socket_open(e) {
     $('#conectando').fadeOut();
     var login = storage.getItem("loto_bnlogin");

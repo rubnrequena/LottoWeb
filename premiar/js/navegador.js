@@ -224,7 +224,7 @@ function sorteoMonitor_nav(e,arg) {
     var hlp = copyTo(_helpers);
 
     var data, jg, tt;
-    var ijg;
+    var ijg,isorteo, intData;
 
     $('#ord-num-num').click(function (e) {
         e.preventDefault(e);
@@ -295,33 +295,57 @@ function sorteoMonitor_nav(e,arg) {
 
             $("#ventas-body").html(jsrender($('#rd-ventas-row'),d.t));
 
-            actualizarVista();
-
             var idata = {
                 fecha:fecha.val(),
                 sorteo:findBy("sorteoID",dataForm.sorteoID,sorteos).sorteo
             };
-            socket.sendMessage("inicio",idata, function (e, d) {
-                if (d.hasOwnProperty("code")) {
 
-                } else {
-                    var t1=0,t2=0,t3=0;
-                    for (var i=0; i< d.data.length;i++) {
-                        t1+=d.data[i].jugado;
-                        t2+=d.data[i].premio;
-                        t3+=d.data[i].comision;
-                    };
-                    $('#gbalance').html((t1-(t2+t3)).format(2));
-                    $('#gjugada').html(t1.format(2));
-                    $('#gpremios').html(t2.format(2));
-                    $('#gcomision').html(t3.format(2));
-                    $('#srt_dia').html(jsrender($('#rd-sorteos-dia-row'), d.data, hlp));
-                    $('#str-dia-stamp').html(d.time);
+            socket.sendMessage('sorteo-num-hist',{srt:idata.sorteo}, function (e, d) {
+                var n;
+                d.forEach(function (item) {
+                    n = findBy('n',item.id,data.n);
+                    if (n) {
+                        n.lastd = dayLeft(item.f)+"d";
+                        n.lastf = item.f;
+                    }
+                    //$('#nh'+item.id).html(dayLeft(item.f)+"d").attr('title',item.f);
+                })
 
-                    var desc = findBy("sorteoID",dataForm.sorteoID,sorteos).descripcion;
-                    internacional_init(fecha.val(),idata.sorteo,desc);
+                function dayLeft (d) {
+                    var _now = new Date().format().split("-");
+                    var now = new Date(_now[0],_now[1]-1,_now[2]);
+                    var da = d.split("-");
+                    var dd = new Date(da[0],da[1]-1,da[2]);
+                    return (now.getTime()-dd.getTime())/86400000;
                 }
-            });
+
+                actualizarVista();
+                reporteInicio();
+            })
+
+            function reporteInicio() {
+                socket.sendMessage("inicio",idata, function (e, d) {
+                    if (d.hasOwnProperty("code")) {
+
+                    } else {
+                        var t1=0,t2=0,t3=0;
+                        for (var i=0; i< d.data.length;i++) {
+                            t1+=d.data[i].jugado;
+                            t2+=d.data[i].premio;
+                            t3+=d.data[i].comision;
+                        };
+                        $('#gbalance').html((t1-(t2+t3)).format(2));
+                        $('#gjugada').html(t1.format(2));
+                        $('#gpremios').html(t2.format(2));
+                        $('#gcomision').html(t3.format(2));
+                        $('#srt_dia').html(jsrender($('#rd-sorteos-dia-row'), d.data, hlp));
+                        $('#str-dia-stamp').html(d.time);
+
+                        var desc = findBy("sorteoID",dataForm.sorteoID,sorteos).descripcion;
+                        internacional_init(fecha.val(),idata.sorteo,desc);
+                    }
+                });
+            }
         })
     });
 
@@ -330,7 +354,10 @@ function sorteoMonitor_nav(e,arg) {
             var dataForm = {
                 sorteoID:findBy("descripcion",descripcion,d).sorteoID
             };
+            isorteo = dataForm.sorteoID;
             intsocket.sendMessage("monitor",dataForm, function (e, d) {
+                if (d.n==null) { notificacion('SIN VENTAS REGISTRADAS','SERVIDOR INTERNACIONAL'); return; }
+                intData = d.n;
                 ijg=0;
                 d.n.forEach(function (item) {
                     ijg+= item.jugada;
@@ -339,6 +366,7 @@ function sorteoMonitor_nav(e,arg) {
                 for (var i=0;i< data.n.length;i++) {
                     x = findIndex("numero", data.n[i].numero,d.n);
                     if (x>-1) {
+                        data.n[i].in = d.n[x].n;
                         data.n[i].ijugada = d.n[x].jugada;
                         data.n[i].ipremios = d.n[x].premios;
                         data.n[i].itickets = d.n[x].tickets;
@@ -348,6 +376,9 @@ function sorteoMonitor_nav(e,arg) {
                         data.n[i].itickets = "0";
                     }
                 }
+
+                $("#ijugada").html(ijg.format(2));
+
                 actualizarVista();
 
                 var intdata = {fecha:fecha,sorteo:sorteo-1};
@@ -461,6 +492,7 @@ function sorteoMonitor_nav(e,arg) {
             e.preventDefault(e);
             var num = $(this).attr("n");
             socket.sendMessage("sorteo-monitor-vnt",{numero:num,sorteo:dataForm.sorteoID}, function (e, result) {
+                if (result==null) { notificacion("NO HAY TICKETS DISPONIBLES"); return; }
                 mntfiltro = result;
                 var us = uniqueVal(result,"us");
                 var bn = uniqueVal(result,"bc");
@@ -481,6 +513,49 @@ function sorteoMonitor_nav(e,arg) {
                 $('#md-tickets-body').html(jsrender($('#rd-num-ticket'),result));
                 actualizarVista_tickets(result);
                 var ns = findBy("n",num, data.n);
+                $('#md-tnum').html(ns.numero+" "+ns.desc);
+
+                $('#md-tktable').css("max-height","400px");
+                $('#md-numventas').modal();
+
+                function uniqueVal (source,field,full) {
+                    full = full==undefined?true:full;
+                    var flags = [], output = [], l = source.length, i;
+                    for( i=0; i<l; i++) {
+                        if( flags[source[i][field]]) continue;
+                        flags[source[i][field]] = true;
+                        if (full) output.push(source[i]);
+                        else output.push(source[i][field]);
+                    }
+                    return output;
+                }
+            });
+        });
+        $('.mnt-vnt-itickets').click(function (e) {
+            e.preventDefault(e);
+            var num = $(this).attr("n");
+            intsocket.sendMessage("sorteo-monitor-vnt",{numero:num,sorteo:isorteo}, function (e, result) {
+                if (result==null) { notificacion("NO HAY TICKETS DISPONIBLES"); return; }
+                mntfiltro = result;
+                var us = uniqueVal(result,"us");
+                var bn = uniqueVal(result,"bc");
+                var tq = uniqueVal(result,"tq");
+
+                us.unshift({us:0,usn:"TODAS"});
+                bn.unshift({bc:0,bnc:"TODAS"});
+                tq.unshift({tq:0,tqn:"TODAS"});
+
+                var s2us = $('#mnt-ventas-us'), s2bc = $('#mnt-ventas-bc'), s2tq = $('#mnt-ventas-tq');
+                s2us.html(jsrender($('#rd-us-option'),us));
+                s2us.select2('val',0);
+                s2bc.html(jsrender($('#rd-bn-option'),bn));
+                s2bc.select2('val',0);
+                s2tq.html(jsrender($('#rd-tq-option'),tq));
+                s2tq.select2('val',0);
+
+                $('#md-tickets-body').html(jsrender($('#rd-num-ticket'),result));
+                actualizarVista_tickets(result);
+                var ns = findBy("n",num, intData);
                 $('#md-tnum').html(ns.numero+" "+ns.desc);
 
                 $('#md-tktable').css("max-height","400px");

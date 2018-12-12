@@ -32,10 +32,12 @@ nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
             p.find('.panel-body, .panel-footer').slideUp(200);
             t.addClass('maximize');
             t.html('&plus;');
+            p.trigger('minimized.bs.panel');
         } else {
             p.find('.panel-body, .panel-footer').slideDown(200);
             t.removeClass('maximize');
             t.html('&minus;');
+            p.trigger('maximized.bs.panel');
         }
         return false;
     });
@@ -129,6 +131,52 @@ function inicio_nav(p,arg) {
             });
         }
     })
+    $('#bl-my').on("maximized.bs.panel",function (e) {
+        $('#info1').remove();
+    });
+
+    if ($balance) {
+        $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+        for (var i=0;i<$balance.length;i++) {
+            if ($balance[i].c==1) {
+                $('#bl-my-total').html($balance[i].balance.format(2));
+                break;
+            }
+        }
+
+        $('.bl-pagar').click(balance_pago_click);
+    }
+    function balance_pago_click (e) {
+        e.preventDefault(e);
+        var pago = $(this).attr('pago');
+        var bi = findBy("balID",pago,$balance);
+
+        var cp=0;
+        $balance.forEach(function (item) {
+            if (item.c==0) cp++;
+        })
+
+        if (cp<3) askme("PROCESAR PAGO #"+pago,jsrender($('#rd-procesar-pago'),bi),{
+            ok: function (result) {
+                var monto = parseFloat(result.monto)*-1;
+                var data = {
+                    desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
+                    monto:monto,
+                    resID:bi.resID
+                }
+                socket.sendMessage('balance-pago',data, function (e, d) {
+                    d.balance = "--";
+                    d.c=0;
+                    $balance.unshift(d);
+                    $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+                    $('.bl-pagar').click(balance_pago_click);
+                    notificacion('PAGO ENVIADO EXITOSAMENTE');
+                });
+                return true;
+            }
+        });
+        else notificacion('LIMITE DE PAGOS ALCANZADO', 'Estimado usuario, ya has alcanzado el limite de pagos sin confirmar, comuniquese con su administrador.')
+    }
 }
 
 function sorteoMonitor_nav() {
@@ -1144,20 +1192,18 @@ function reporteGeneral_nav (p,args) {
     var f2 = $('#reporte-fecha2');
     var fdata;
     var reporte = $('#reporte');
-    var premios = $('#prm-select'), grp = $('#rp-agrupar');
     var rpt; var hlp = {bn:function () { return $usuario.nombre;  }};
     $('#reporte').submit(function (e) {
         e.preventDefault(e);
         fdata = formControls(this);
         var f = formLock(this);
         $('#pheader').html(jsrender($('#rd-prtaq'),fdata,hlp));
-        socket.sendMessage("reporte-usuario",{s:fdata,g:grp.val()}, function (e, d) {
+        socket.sendMessage("reporte-usuario",{s:fdata,g:0}, function (e, d) {
             formLock(f,false);
             rpt = d || [];
             updateView();
         })
     });
-    premios.change(updateView);
 
     function updateView () {
         if (rpt.length==0) return;
@@ -1184,9 +1230,9 @@ function reporteGeneral_nav (p,args) {
         $('#mnt-jugado').html(j.format(2));
         $('#mnt-premios').html(pr.format(2));
         $('#mnt-pagos').html(pg.format(2));
-        $('#mnt-balance').html((b-rn).format(2));
+        $('#mnt-balance').html(b.format(2));
 
-        $('#tg-descuento').html((cm+rn).format(2));
+        $('#tg-descuento').html(cm.format(2));
         $('#tg-comision').html(cm.format(2));
         $('#tg-renta').html(rn.format(2));
 
@@ -1217,10 +1263,10 @@ function reporteGeneral_nav (p,args) {
         }
         $('#reporte-body').html(jsrender($('#rd-reporte2'),rpt,hlp));
 
-        prepareDownload();
+        //prepareDownload();
     }
 
-    var formato = $('#formato');
+    /*var formato = $('#formato');
     formato.change(prepareDownload);
     function prepareDownload() {
         var a = document.getElementById("exportar");
@@ -1239,7 +1285,7 @@ function reporteGeneral_nav (p,args) {
                 }
             });
         }
-    }
+    }*/
 
     if (args && args.length>0) {
         var a = args[0].split("-");
@@ -1255,9 +1301,8 @@ function reporteTaquilla_nav (p,args) {
     var f1 = $('#reporte-fecha1');
     var f2 = $('#reporte-fecha2');
     var reporte = $('#reporte');
-    var premios = $('#prm-select');
     var hbtaq = $('#hb-taquilla');
-    var rpt;
+    var taq;
 
     var bancas = $('#bancas');
     bancas.html(jsrender($('#rd-banca-option'),$bancas));
@@ -1274,82 +1319,66 @@ function reporteTaquilla_nav (p,args) {
         e.preventDefault(e);
         var data = formControls(this);
         var f = formLock(this);
+        if (taq) data.taquillaID = taq;
         socket.sendMessage("reporte-taquilla",data, function (e, d) {
             formLock(f,false);
             d = d || [];
-            rpt = d;
             var j=0, pg= 0, pr = 0, cm=0;
             d.forEach(function (item) {
-                item.balance = item.jugada-item.premio;
                 j+=item.jugada;
-                pg+=item.pago;
                 pr+=item.premio;
 				cm+=item.comision;
             });
 
             $('#mnt-jugado').html(j.format(2));
             $('#mnt-premios').html(pr.format(2));
-            $('#mnt-pagos').html(pg.format(2));
             $('#mnt-balance').html((j-pr-cm).format(2));
-
-
-            $('#tg-descuento').html((cm).format(2));
             $('#tg-comision').html(cm.format(2));
 
-            var rank, bnc;
-            //top jugado
-            rank = d.slice();
-            rank.sort(function (a, b) {
-                return b.jugada- a.jugada;
-            });
-            bnc = rank[0];
-            $('#tj-banca').html(bnc.descripcion);
-            $('#tj-jugada').html(bnc.jugada.format(2));
-            $('#tj-balance').html(bnc.balance.format(2));
+            $('#reporte-body').html(jsrender($('#rd-reporte'),d));
 
-            //top ganancia
-            rank = d.slice();
-            rank.sort(function (a, b) {
-                return b.balance- a.balance;
-            });
-            bnc = rank[0];
-            $('#tg-banca').html(bnc.descripcion);
-            $('#tg-jugada').html(bnc.jugada.format(2));
-            $('#tg-balance').html(bnc.balance.format(2));
-
-            updateView();
+            if (taq) {
+                socket.sendMessage('taquilla',{id:taq}, function (e, d) {
+                    $('#rp-title').append('<span>'+ d.nombre+'</span>')
+                })
+            }
         })
     });
-    premios.change(updateView);
-
-    function updateView () {
-        $('#reporte-body').html(jsrender($('#rd-reporte'),rpt));
-    }
 
     if (args && args.length>0) {
-        var a = args[0].split("-");
-        var b = args[1].split("-");
+        taq = args[0];
+        $('.rp-grupo').remove();
+        var a = args[1].split("-");
+        var b = args[2].split("-");
         f1.datepicker('setDate',new Date(a[0],parseInt(a[1])-1,a[2]));
         f2.datepicker('setDate',new Date(b[0],parseInt(b[1])-1,b[2]));
+        reporte.submit();
     }
 }
 nav.paginas.addListener("reporte/taquilla",reporteTaquilla_nav);
 
 function reporteGrupo_nav (p,args) {
+    var hlp = {
+        bn:function () { return $usuario.nombre;},
+        historia: function () {
+            return f1.val()+"|"+f2.val();
+        }
+    };
+    copyTo(_helpers,hlp);
     var bancas = $('#bancas');
     bancas.html(jsrender($('#rd-banca-option'),$bancas));
 
     var f1 = $('#reporte-fecha1');
     var f2 = $('#reporte-fecha2');
     var reporte = $('#reporte');
-    var grp = $('#rp-agrupar');
-    var rpt; var hlp = {bn:function () { return $usuario.nombre;  }};
+    var rpt;
+
     $('#reporte').submit(function (e) {
         e.preventDefault(e);
         var data = formControls(this);
         var f = formLock(this);
         $('#pheader').html(jsrender($('#rd-prtaq'),data,hlp));
-        socket.sendMessage("reporte-banca",{s:data,g:grp.val()}, function (e, d) {
+        socket.sendMessage("reporte-banca",{s:data,g:0}, function (e, d) {
             formLock(f,false);
             rpt = d || [];
             updateView();
@@ -1392,30 +1421,9 @@ function reporteGrupo_nav (p,args) {
         $('#tg-comision').html(cm.format(2));
         $('#tg-comisionBanca').html(cmb.format(2));
 
-        var rank, bnc;
-        //top jugado
-        rank = rpt.slice();
-        rank.sort(function (a, b) {
-            return b.jugada- a.jugada;
-        });
-        bnc = rank[0];
-        $('#tj-banca').html(bnc.desc);
-        $('#tj-jugada').html(bnc.jugada.format(2));
-        $('#tj-balance').html(bnc.balance.format(2));
-
-        //top ganancia
-        rank = rpt.slice();
-        rank.sort(function (a, b) {
-            return b.balance- a.balance;
-        });
-        bnc = rank[0];
-        $('#tg-banca').html(bnc.desc);
-        $('#tg-jugada').html(bnc.jugada.format(2));
-        $('#tg-balance').html(bnc.balance.format(2));
-
         $('#bheader').html(jsrender($('#rd-total'),total));
 
-        $('#reporte-body').html(jsrender($('#rd-reporte2'),rpt));
+        $('#reporte-body').html(jsrender($('#rd-reporte'),rpt,hlp));
     }
 
     if (args && args.length>0) {

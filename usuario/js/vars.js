@@ -25,3 +25,4 @@ var $usuario;
 var $elementos;
 var $bancas;
 var $taquillas;
+var $balance;

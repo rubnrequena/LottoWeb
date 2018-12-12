@@ -35,10 +35,15 @@ function socket_login(e,d) {
 		$('.mn-usuario').html($usuario.usuario);
 
         socket.sendMessage('balance-padre',null, function (e, d) {
-            $usuario.balance = d;
-            if ($usuario.balance) {
+            $balance = d;
+            if ($balance) {
                 $('#menu-balance-date').html(d[0].fecha);
-                $('#menu-balance-value').html('<i class="fa fa-dollar"></i> '+d[0].balance.format(2));
+                for (var i=0;i<$balance.length;i++) {
+                    if ($balance[i].c==1) {
+                        $('#menu-balance-value').html('<i class="fa fa-dollar"></i> '+$balance[i].balance.format(2));
+                        break;
+                    }
+                }
             }
             nav.navUrl();
         });

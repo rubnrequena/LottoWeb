@@ -65,6 +65,6 @@ $('.logout').click(function (e) {
     $elementos=null;
     $bancas=null;
     $usuarios=null;
-    storage.removeItem("srq_lot_srv_login");
+    $storage.removeItem("srq_lot_srv_login");
     nav.nav('login');
 });

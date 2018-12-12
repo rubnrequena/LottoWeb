@@ -25,13 +25,19 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Clave</label>
                 <div class="col-sm-6">
-                    <input class="form-control toLower" name="clave" autocomplete="off" required>
+                    <input type="password" class="form-control" name="clave" required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Comision</label>
                 <div class="col-sm-6">
                     <div class="input-group">
+                            <span class="input-group-addon">
+                                <label class="mt5">
+                                    <input type="checkbox" id="alquiler">
+                                    <span>Alquiler</span>
+                                </label>
+                            </span>
                         <input id="bn-comision" type="number" min="-100" step="any" max="100" class="form-control" name="comision" value="0" required>
                         <span class="input-group-addon">%</span>
                     </div>

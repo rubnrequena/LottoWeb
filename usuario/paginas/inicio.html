@@ -1,13 +1,31 @@
-<style>
-    tbody>tr:last-child { font-weight: bold; }
-</style>
 <div class="pageheader">
     <h2><i class="fa fa-home"></i> Panel de Control</h2>
 </div>
-<div class="panel panel-danger">
-    <div class="panel-heading heading-condensed"><span class="panel-title">AVISO IMPORTANTE</span></div>
-    <div class="panel-body">
-        <h3>Estimado usuario, el equipo SRQ le notifica que esta prohibida la publicación del sistema por medios públicos (Mercadolibre, Youtube) sin previa autorización de su administrador. El incumplimiento de la misma incurrirá en la suspensión del servicio.</h3>
+<div class="mb10"></div>
+<div class="panel panel-dark" id="bl-my">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize maximize">+</a>
+            <span id="info1">Click para mas detalles</span>
+        </div>
+        <h3 class="panel-title">Cuentas por pagar | <i class="fa fa-dollar"></i> <span id="bl-my-total">0.00</span></h3>
+    </div>
+    <div class="panel-body" style="display: none;">
+        <span class="text-danger"><i class="fa fa-info-circle"></i> Utilize el boton <i class="fa fa-money text-primary"></i> para informar el pago correspondiente.</span>
+        <div class="table-responsive">
+            <table id="tb" class="table table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>REF</th>
+                    <th>FECHA</th>
+                    <th>DESCRIPCION</th>
+                    <th>Monto</th>
+                    <th>Balance</th>
+                </tr>
+                </thead>
+                <tbody id="reporte-body"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 <div class="panel">
@@ -21,216 +39,24 @@
         </div>
     </div>
 </div>
-<!--<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-dark widget-messaging">
-            <div class="panel-heading heading-condensed"><span class="panel-title">NOVEDADES</span></div>
-            <div class="panel-body">
-                <ul>
-                    <li>
-                        <small class="pull-right label label-primary">06 Marzo, 2017</small>
-                        <h4 class="sender">CODIGO DE SEGURIDAD EN TICKET</h4>
-                        <small>A partir del 06/03/17 se solicitar&aacute; un <label class="label label-info">codigo de seguridad</label> de 4 digitos, para <label class="label label-info">pagar</label> o <label class="label label-info">anular</label> un ticket, este codigo solo quedar&aacute; impreso en el ticket del cliente.
-                            <p><label class="label label-warning"><i class="fa fa-info"></i> IMPORTANTE:</label> Tickets impresos antes de la fecha, podran ser procesados obviando el codigo de seguridad.</p>
-                        </small>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-primary">06 Marzo, 2017</small>
-                        <h4 class="sender">TECLA <i class="fa fa-plus"></i> YA NO ES NECESARIA</h4>
-                        <small>
-                            A partir del 06/03/17, ya dejara de ser necesario el uso de la tecla <label class="label label-default"><i class="fa fa-plus"></i></label> para cambiar entre campos, puede cambiar de un campo a otro solo usando la tecla <label class="label label-default">INTRO</label> despues de haber hecho su seleccion,
-                            para seleccionar varias opciones del mismo campo puede usar las teclas <label class="label label-default"><i class="fa fa-arrow-down"></i></label> <label class="label label-default"><i class="fa fa-arrow-up"></i></label> o escribir el numero, animal o fruta deseada.
-                        </small>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-primary">06 Marzo, 2017</small>
-                        <h4 class="sender">REPORTE DE VENTAS</h4>
-                        <small>
-                            El <a href="#reporte/ventas"> Reporte de ventas</a> a sido mejorado para ofrecer una mejor perspectiva y control de las ventas.
-                        </small>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-primary">06 Marzo, 2017</small>
-                        <h4 class="sender">REPETIR JUGADA</h4>
-                        <small>
-                            La funcion de repetir jugada esta de vuelta!.
-                        </small>
-                    </li>
-                    <a href="#novedades">
-                        <li>
-                            <h4 class="sender text-right"><i class="fa fa-search-plus"></i>VER TODAS...</h4>
-                        </li>
-                    </a>
-                </ul>
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="md-ask">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                <h4 class="modal-title"></h4>
             </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel panel-dark widget-messaging">
-            <div class="panel-heading heading-condensed"><span class="panel-title">PLANES 2017</span></div>
-            <div class="panel-body">
-                <ul>
-                    <li>
-                        <small class="pull-right label label-warning">Experimental</small>
-                        <h4 class="sender">SRTOPE<i class="fa fa-trademark"></i>: SU TOPE INTELIGENTE </h4>
-                        <small>
-                            SRTOPE<i class="fa fa-trademark"></i> esta dise&ntilde;ado viene a proteger sus fondos, este tope se activara de manera programada al detectar alguna anormalidad en las ventas de cada sorteo, le permitira bloquear o reducir el cupo disponible monitoreando las ventas por usted.
-                        </small>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-warning">Experimental</small>
-                        <h4 class="sender">USUARIO PREPAGO.</h4>
-                        <small>Establecer una plataforma que permita a usuarios independientes realizar sus propias ventas desde su casa o dispositivo movil, limitando sus apuestas por medio de un saldo PRE-PAGADO.</small>
-                        <p><label class="label label-warning">IMPORTANTE:</label> El banquero es responsable de la recarga y/o retiro del saldo disponible de cada cliente.</p>
-                    </li>
-                    <li>
-                        <small class="pull-right">&#45;&#45;</small>
-                        <h4 class="sender">Chat Banca-Agencia.</h4>
-                        <small>Permitirá establecer un sistema de mensajes entre el banquero y las agencias.</small>
-                    </li>
-                    <li>
-                        <small class="pull-right">&#45;&#45;</small>
-                        <h4 class="sender">Cerrar y abrir sorteos.</h4>
-                        <small>Permitirá al banquero cerrar/abrir un sorteo especifico, siempre y cuando no haya cumplido su horario de cierre.</small>
-                    </li>
-                </ul>
+            <div class="modal-body">
             </div>
-        </div>
-    </div>
-</div>-->
-<div class="row">
-    <div class="col-sm-12">
-        <div class="panel panel-info widget-messaging">
-            <div class="panel-heading heading-condensed"><span class="panel-title">AVISOS</span></div>
-            <div class="panel-body">
-                <ul>
-                    <li>
-                        <small class="pull-right label label-success">31 Octubre, 2017</small>
-                        <h4 class="sender">NUEVO SORTEO, LA GRANJITA <a class="btn btn-success btn-xs" href="#sorteos/publicar">Activar aqui</a> </h4>
-                        <span>Sitio web: <a href="http://lagranjitaonline.com" target="_blank"><i class="fa fa-link"></i>LaGranjita</a></span>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-success">10 Septiembre, 2017</small>
-                        <h4 class="sender">NUEVO SORTEO, LOTERIA ACTIVA <a class="btn btn-success btn-xs" href="#sorteos/publicar">Activar aqui</a> </h4>
-                        <span>Twitter: <a href="https://twitter.com/loteriactiva?lang=es" target="_blank">@loteriactiva</a>, Facebook: <a href="https://facebook.com/LoteriActiva/" target="_blank">LoteriActiva</a> </span>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-success">10 Septiembre, 2017</small>
-                        <h4 class="sender">NUEVO SORTEO, RULETA ACTIVA ORIENTE <a class="btn btn-success btn-xs" href="#sorteos/publicar">Activar aqui</a> </h4>
-                        <span>Sorteo oficial de la Loteria de Oriente, Edo. Monagas</span>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-success">26 Enero, 2017</small>
-                        <h4 class="sender">NUEVO SORTEO, FRUTA ACTIVA <a class="btn btn-success btn-xs" href="#sorteos/publicar">Activar aqui</a> </h4>
-                        <span>Sorteo oficial de la Ruleta Activa</span>
-                    </li>
-                </ul>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <button class="btn btn-danger" data-dismiss="modal">CANCELAR</button>
+                    <button class="btn btn-dark md-ask-ok" form="bl-form">CONFIRMAR</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<!--<div class="row">
-    <div class="col-sm-12">
-        <div class="panel panel-success widget-messaging">
-            <div class="panel-heading heading-condensed"><span class="panel-title">SORTEOS DISPONIBLES</span></div>
-            <div class="panel-body">
-                <ul>
-                    <li>
-                        <small class="pull-right">
-                            <a class=" btn btn-primary btn-xs" target="_blank" href="https://twitter.com/ruletactiva?lang=es"><i class="fa fa-link"></i> RESULTADOS</a>
-                        </small>
-                        <h4 class="sender"><a target="_blank" href="https://twitter.com/ruletactiva?lang=es"><i class="fa fa-link"></i> RULETA ACTIVA</a> </h4>
-                        <span>
-                            Horarios:<br/>
-                            <span class="badge badge-info">8 Sorteos</span>
-                            <span class="badge">10:00 AM</span>
-                            <span class="badge">11:00 AM</span>
-                            <span class="badge">12:00 M</span>
-                            <span class="badge">01:00 PM</span>
-                            <span class="badge">04:00 PM</span>
-                            <span class="badge">05:00 PM</span>
-                            <span class="badge">06:00 PM</span>
-                            <span class="badge">07:00 PM</span>
-                            <br/>Pagos:<br/>
-                            <span class="badge badge-primary">1X30</span>
-                            <span class="badge badge-primary">10X300</span>
-                            <span class="badge badge-primary">100X3000</span>
-                        </span>
-                    </li>
-                    <li>
-                        <small class="pull-right">
-                            <a class=" btn btn-primary btn-xs" target="_blank" href="https://twitter.com/frutactivaofic?lang=es"><i class="fa fa-link"></i> RESULTADOS</a>
-                        </small>
-                        <h4 class="sender"><a target="_blank" href="https://twitter.com/frutactivaofic?lang=es"><i class="fa fa-link"></i> FRUTA ACTIVA</a> </h4>
-                        <span>
-                            Horarios:<br/>
-                            <span class="badge badge-info">8 Sorteos</span>
-                            <span class="badge">10:00 AM</span>
-                            <span class="badge">11:00 AM</span>
-                            <span class="badge">12:00 M</span>
-                            <span class="badge">01:00 PM</span>
-                            <span class="badge">04:00 PM</span>
-                            <span class="badge">05:00 PM</span>
-                            <span class="badge">06:00 PM</span>
-                            <span class="badge">07:00 PM</span>
-                            <br/>Pagos:<br/>
-                            <span class="badge badge-primary">1X30</span>
-                            <span class="badge badge-primary">10X300</span>
-                            <span class="badge badge-primary">100X3000</span>
-                        </span>
-                    </li>
-                    <li>
-                        <small class="pull-right">
-                            <a class=" btn btn-primary btn-xs" target="_blank" href="https://twitter.com/lagranruleta?lang=es"><i class="fa fa-link"></i> RESULTADOS</a>
-                        </small>
-                        <h4 class="sender"><a target="_blank" href="https://twitter.com/lagranruleta?lang=es"><i class="fa fa-link"></i> GRAN RULETA</a> </h4>
-                        <span>
-                            Horarios:<br/>
-                            <span class="badge badge-info">10 Sorteos</span>
-                            <span class="badge">09:30 AM</span>
-                            <span class="badge">10:30 AM</span>
-                            <span class="badge">11:30 AM</span>
-                            <span class="badge">12:30 M</span>
-                            <span class="badge">01:30 PM</span>
-                            <span class="badge">03:30 PM</span>
-                            <span class="badge">04:30 PM</span>
-                            <span class="badge">05:30 PM</span>
-                            <span class="badge">06:30 PM</span>
-                            <span class="badge">07:30 PM</span>
-                            <br/>Pagos:<br/>
-                            <span class="badge badge-primary">1X32</span>
-                            <span class="badge badge-primary">10X320</span>
-                            <span class="badge badge-primary">100X3200</span>
-                        </span>
-                    </li>
-                    <li>
-                        <small class="pull-right">
-                            <a class=" btn btn-primary btn-xs" target="_blank" href="https://twitter.com/tufrutactiva?lang=es"><i class="fa fa-link"></i> RESULTADOS</a>
-                        </small>
-                        <h4 class="sender"><a target="_blank" href="https://twitter.com/tufrutactiva?lang=es"><i class="fa fa-link"></i>TU FRUTA ACTIVA</a> </h4>
-                        <span>
-                            Horarios:<br/>
-                            <span class="badge badge-info">8 Sorteos</span>
-                            <span class="badge">10:00 AM</span>
-                            <span class="badge">11:00 AM</span>
-                            <span class="badge">12:00 M</span>
-                            <span class="badge">01:00 PM</span>
-                            <span class="badge">04:00 PM</span>
-                            <span class="badge">05:00 PM</span>
-                            <span class="badge">06:00 PM</span>
-                            <span class="badge">07:00 PM</span>
-                            <br/>Pagos:<br/>
-                            <span class="badge badge-primary">1X30</span>
-                            <span class="badge badge-primary">10X300</span>
-                            <span class="badge badge-primary">100X3000</span>
-                        </span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>-->
 
 <script type="text/x-jsrender" id="rd-sorteos-dia1-row">
     <tr>
@@ -278,4 +104,115 @@
             </table>
         </div><!-- table-responsive -->
         <label class="pull-right" >Actualizado a las <span id="str-dia-stamp">--</span></label>
+</script>
+<script type="text/x-jsrender" id="rd-reporte-us">
+    {{if c==1}}
+    <tr>
+        {{else}}
+    <tr class="danger">
+        {{/if}}
+        <td>
+            {{if monto>0}}
+            <a href="#pago{{:balID}}" pago="{{:balID}}" class="bl-pagar"><i class="fa fa-money"></i> {{:~padding(balID,4)}}</a>
+            {{else}}
+            <i class="fa fa-money"></i> {{:~padding(balID,4)}}
+            {{/if}}
+        </td>
+        <td>{{:fecha}}</td>
+        <td>{{:desc}}</td>
+        <td>{{:~formatNumber(monto,2)}}</td>
+        <td class="text-right">{{if c==1}} {{:~formatNumber(balance,2)}} {{else}} -- {{/if}}</td>
+    </tr>
+</script>
+<script type="text/x-jsrender" id="rd-procesar-pago">
+    <form id="bl-form" class="ask-form">
+        <div class="form-group">
+            <input type="hidden" class="form-control" value="{{:balID}}" name="id">
+        </div>
+        <div class="form-group">
+            <label class="control-label">Fecha</label>
+            <input class="date now form-control" onfocus="blur()" name="fecha" required>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label class="control-label">BANCO ORIGEN</label>
+                <select class="form-control s2 bl-bancos" id="bl-prc-banco" name="origen">
+                    <option value="" selected="selected"></option>
+                    <option value="0156">100%BANCO</option>
+                    <option value="0196">ABN AMRO BANK</option>
+                    <option value="0172">BANCAMIGA BANCO MICROFINANCIERO, C.A.</option>
+                    <option value="0171">BANCO ACTIVO BANCO COMERCIAL, C.A.</option>
+                    <option value="0166">BANCO AGRICOLA</option>
+                    <option value="0175">BANCO BICENTENARIO</option>
+                    <option value="0128">BANCO CARONI, C.A. BANCO UNIVERSAL</option>
+                    <option value="0001">BANCO CENTRAL DE VENEZUELA.</option>
+                    <option value="0164">BANCO DE DESARROLLO DEL MICROEMPRESARIO</option>
+                    <option value="0102">BANCO DE VENEZUELA S.A.I.C.A.</option>
+                    <option value="0114">BANCO DEL CARIBE C.A.</option>
+                    <option value="0149">BANCO DEL PUEBLO SOBERANO C.A.</option>
+                    <option value="0163">BANCO DEL TESORO</option>
+                    <option value="0176">BANCO ESPIRITO SANTO, S.A.</option>
+                    <option value="0115">BANCO EXTERIOR C.A.</option>
+                    <option value="0173">BANCO INTERNACIONAL DE DESARROLLO, C.A.</option>
+                    <option value="0105">BANCO MERCANTIL C.A.</option>
+                    <option value="0191">BANCO NACIONAL DE CREDITO</option>
+                    <option value="0116">BANCO OCCIDENTAL DE DESCUENTO.</option>
+                    <option value="0138">BANCO PLAZA</option>
+                    <option value="0108">BANCO PROVINCIAL BBVA</option>
+                    <option value="0104">BANCO VENEZOLANO DE CREDITO S.A.</option>
+                    <option value="0168">BANCRECER S.A. BANCO DE DESARROLLO</option>
+                    <option value="0134">BANESCO</option>
+                    <option value="0177">BANFANB</option>
+                    <option value="0146">BANGENTE</option>
+                    <option value="0174">BANPLUS BANCO COMERCIAL C.A</option>
+                    <option value="0190">CITIBANK.</option>
+                    <option value="0157">DELSUR BANCO UNIVERSAL</option>
+                    <option value="0151">FONDO COMUN</option>
+                    <option value="0601">INSTITUTO MUNICIPAL DE CRÉDITO POPULAR</option>
+                    <option value="0169">MIBANCO BANCO DE DESARROLLO, C.A.</option>
+                    <option value="0137">SOFITASA</option>
+                </select>
+            </div>
+            <div class="form-group col-sm-6">
+                <label class="control-label">BANCO DESTINO</label>
+                <select class="form-control s2 bl-bancos" id="bl-prc-banco" name="destino">
+                    <option value="" selected="selected"></option>
+                    <option value="0156">100%BANCO</option>
+                    <option value="0196">ABN AMRO BANK</option>
+                    <option value="0172">BANCAMIGA BANCO MICROFINANCIERO, C.A.</option>
+                    <option value="0171">BANCO ACTIVO BANCO COMERCIAL, C.A.</option>
+                    <option value="0166">BANCO AGRICOLA</option>
+                    <option value="0175">BANCO BICENTENARIO</option>
+                    <option value="0128">BANCO CARONI, C.A. BANCO UNIVERSAL</option>
+                    <option value="0001">BANCO CENTRAL DE VENEZUELA.</option>
+                    <option value="0164">BANCO DE DESARROLLO DEL MICROEMPRESARIO</option>
+                    <option value="0102">BANCO DE VENEZUELA S.A.I.C.A.</option>
+                    <option value="0114">BANCO DEL CARIBE C.A.</option>
+                    <option value="0149">BANCO DEL PUEBLO SOBERANO C.A.</option>
+                    <option value="0163">BANCO DEL TESORO</option><option value="0176">BANCO ESPIRITO SANTO, S.A.</option>
+                    <option value="0115">BANCO EXTERIOR C.A.</option><option value="0173">BANCO INTERNACIONAL DE DESARROLLO, C.A.</option>
+                    <option value="0105">BANCO MERCANTIL C.A.</option><option value="0191">BANCO NACIONAL DE CREDITO</option>
+                    <option value="0116">BANCO OCCIDENTAL DE DESCUENTO.</option><option value="0138">BANCO PLAZA</option>
+                    <option value="0108">BANCO PROVINCIAL BBVA</option><option value="0104">BANCO VENEZOLANO DE CREDITO S.A.</option>
+                    <option value="0168">BANCRECER S.A. BANCO DE DESARROLLO</option><option value="0134">BANESCO</option>
+                    <option value="0177">BANFANB</option><option value="0146">BANGENTE</option>
+                    <option value="0174">BANPLUS BANCO COMERCIAL C.A</option>
+                    <option value="0190">CITIBANK.</option>
+                    <option value="0157">DELSUR BANCO UNIVERSAL</option>
+                    <option value="0151">FONDO COMUN</option>
+                    <option value="0601">INSTITUTO MUNICIPAL DE CRÉDITO POPULAR</option>
+                    <option value="0169">MIBANCO BANCO DE DESARROLLO, C.A.</option>
+                    <option value="0137">SOFITASA</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Recibo</label>
+            <input type="text" class="form-control" id="bl-prc-recibo" name="recibo">
+        </div>
+        <div class="form-group">
+            <label class="control-label">Monto</label>
+            <input type="number" class="form-control" form="" step="any" id="bl-prc-monto" name="monto" value="{{:monto}}" required>
+        </div>
+    </form>
 </script>

@@ -10,7 +10,7 @@
     <link href="../theme/css/jquery.gritter.css" rel="stylesheet">
     <link href="./css/custom.css" rel="stylesheet">
 
-    <!-- v181010 -->
+    <!-- v181028 -->
     <!--[if lt IE 9]>
     <script src="../theme/js/html5shiv.js"></script>
     <script src="../theme/js/respond.min.js"></script>
@@ -242,6 +242,26 @@
         {{/if}}
     </tr>
 </script>
+
+<script type="text/x-jsrender" id="rd-usermenu">
+    <div>
+        <div class="row">
+            <button class="btn btn-darkblue btn-lg md-ask-ok" data-menu="0" data-usid="{{:usID}}"><i class="fa fa-user fa-x4"></i><span class="hidden-xs"> Usuario</span></button>
+        </div>
+        <hr>
+        <div class="row">
+            <label class="control-label">Reportes</label><br>
+            <button class="btn btn-success btn-lg md-ask-ok"><i class="fa fa-line-chart"></i><span class="hidden-xs"> General</span></button>
+            <button class="btn btn-success btn-lg md-ask-ok"><i class="fa fa-balance-scale"></i><span class="hidden-xs"> Gestor pagos</span></button>
+        </div>
+        <hr>
+        <div class="row">
+            <label class="control-label">Acciones</label><br>
+            <button class="btn btn-maroon btn-lg md-ask-ok"><i class="fa fa-power-off"></i><span class="hidden-xs" > Activar</span></button>
+            <button class="btn btn-danger-alt btn-lg md-ask-ok pull-right"><i class="fa fa-trash"></i><span class="hidden-xs" > Papelera</span></button>
+        </div>
+    </div>
+</script>
 <!--JSRENDER END-->
 
 <!--MODALS-->
@@ -286,6 +306,18 @@
         </div>
     </div>
 </div>
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="md-ask-menu">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
 <!--MODALS END-->
 
 <script src="../theme/js/jquery-1.11.1.min.js"></script>
@@ -306,6 +338,7 @@
 <script src="../js/srsocket.js?@version"></script>
 <script src="../js/srnav.js?@version"></script>
 <script src="../js/tools.js?@version"></script>
+<script src="../js/modal.js?@version"></script>
 
 <script src="js/bracket.js?@version"></script>
 <script src="js/modals.js?@version"></script>

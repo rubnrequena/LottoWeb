@@ -1,14 +1,15 @@
 <div class="pageheader mb10">
     <h2><i class="fa fa-home"></i> Panel de Control</h2>
 </div>
-<div class="panel bl-preg panel-dark" id="bl-my">
+<div class="panel panel-dark" id="bl-my">
     <div class="panel-heading">
         <div class="panel-btns">
             <a href="" class="minimize maximize">+</a>
         </div>
-        <h3 class="panel-title">Mi Balance | <i class="fa fa-dollar"></i> <span id="bl-my-total">0.00</span></h3>
+        <h3 class="panel-title">Cuentas por pagar | <i class="fa fa-dollar"></i> <span class="my-saldo" id="bl-my-total">0.00</span></h3>
     </div>
     <div class="panel-body" style="display: none;">
+        <span class="text-danger"><i class="fa fa-info-circle"></i> Utilize el boton <i class="fa fa-money text-primary"></i> para informar el pago correspondiente.</span>
         <div class="table-responsive">
             <table id="tb" class="table table-hover table-condensed">
                 <thead>
@@ -25,12 +26,6 @@
         </div>
     </div>
 </div>
-<!--<div class="panel panel-danger">
-    <div class="panel-heading heading-condensed"><span class="panel-title">AVISO IMPORTANTE</span></div>
-    <div class="panel-body">
-        <h3>Estimado usuario, el equipo SRQ le notifica que esta prohibida la publicación del sistema por medios públicos (Mercadolibre, Youtube) sin previa autorización de su administrador. El incumplimiento de la misma incurrirá en la suspensión del servicio.</h3>
-    </div>
-</div>-->
 <div class="panel">
     <div class="panel-heading hidden-xs">
         <div class="panel-title">SORTEOS DEL DIA</div>
@@ -42,37 +37,25 @@
         </div>
     </div>
 </div>
-<!--<div class="row">
-    <div class="col-sm-12">
-        <div class="panel panel-info widget-messaging">
-            <div class="panel-heading heading-condensed"><span class="panel-title">AVISOS</span></div>
-            <div class="panel-body">
-                <ul>
-                    <li>
-                        <small class="pull-right label label-success">31 Octubre, 2017</small>
-                        <h4 class="sender">NUEVO SORTEO, LA GRANJITA <a class="btn btn-success btn-xs" href="#sorteos/publicar">Activar aqui</a> </h4>
-                        <span>Sitio web: <a href="http://lagranjitaonline.com" target="_blank"><i class="fa fa-link"></i>LaGranjita</a></span>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-success">10 Septiembre, 2017</small>
-                        <h4 class="sender">NUEVO SORTEO, LOTERIA ACTIVA <a class="btn btn-success btn-xs" href="#sorteos/publicar">Activar aqui</a> </h4>
-                        <span>Twitter: <a href="https://twitter.com/loteriactiva?lang=es" target="_blank">@loteriactiva</a>, Facebook: <a href="https://facebook.com/LoteriActiva/" target="_blank">LoteriActiva</a> </span>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-success">10 Septiembre, 2017</small>
-                        <h4 class="sender">NUEVO SORTEO, RULETA ACTIVA ORIENTE <a class="btn btn-success btn-xs" href="#sorteos/publicar">Activar aqui</a> </h4>
-                        <span>Sorteo oficial de la Loteria de Oriente, Edo. Monagas</span>
-                    </li>
-                    <li>
-                        <small class="pull-right label label-success">26 Enero, 2017</small>
-                        <h4 class="sender">NUEVO SORTEO, FRUTA ACTIVA <a class="btn btn-success btn-xs" href="#sorteos/publicar">Activar aqui</a> </h4>
-                        <span>Sorteo oficial de la Ruleta Activa</span>
-                    </li>
-                </ul>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="md-ask">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <button class="btn btn-danger" data-dismiss="modal">CANCELAR</button>
+                    <button class="btn btn-dark md-ask-ok" form="bl-form">CONFIRMAR</button>
+                </div>
             </div>
         </div>
     </div>
-</div>-->
+</div>
 
 <script type="text/x-jsrender" id="rd-sorteos-dia1-row">
     <tr>
@@ -122,11 +105,113 @@
         <label class="pull-right" >Actualizado a las <span id="str-dia-stamp">--</span></label>
 </script>
 <script type="text/x-jsrender" id="rd-reporte-us">
+    {{if c==1}}
     <tr>
-        <td>{{:~padding(balID,4)}}</td>
+    {{else}}
+    <tr class="danger">
+    {{/if}}
+        <td>
+            {{if monto>0}}
+            <a href="#pago{{:balID}}" pago="{{:balID}}" class="bl-pagar"><i class="fa fa-money"></i> {{:~padding(balID,4)}}</a>
+            {{else}}
+            <i class="fa fa-money"></i> {{:~padding(balID,4)}}
+            {{/if}}
+        </td>
         <td>{{:fecha}}</td>
         <td>{{:desc}}</td>
-        <td>{{:~formatNumber(monto,2)}}</td>
-        <td>{{:~formatNumber(balance,2)}}</td>
+        <td class="text-right">{{:~formatNumber(monto,2)}}</td>
+        <td class="text-right">{{if c==1}} {{:~formatNumber(balance,2)}} {{else}} -- {{/if}}</td>
     </tr>
+</script>
+<script type="text/x-jsrender" id="rd-procesar-pago">
+    <form id="bl-form" class="ask-form">
+        <div class="form-group">
+            <input type="hidden" class="form-control" value="{{:balID}}" name="id">
+        </div>
+        <div class="form-group">
+            <label class="control-label">Fecha</label>
+            <input class="date now form-control" onfocus="blur()" name="fecha" required>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label class="control-label">BANCO ORIGEN</label>
+                <select class="form-control s2 bl-bancos" id="bl-prc-banco" name="origen">
+                    <option value="" selected="selected"></option>
+                    <option value="0156">100%BANCO</option>
+                    <option value="0196">ABN AMRO BANK</option>
+                    <option value="0172">BANCAMIGA BANCO MICROFINANCIERO, C.A.</option>
+                    <option value="0171">BANCO ACTIVO BANCO COMERCIAL, C.A.</option>
+                    <option value="0166">BANCO AGRICOLA</option>
+                    <option value="0175">BANCO BICENTENARIO</option>
+                    <option value="0128">BANCO CARONI, C.A. BANCO UNIVERSAL</option>
+                    <option value="0001">BANCO CENTRAL DE VENEZUELA.</option>
+                    <option value="0164">BANCO DE DESARROLLO DEL MICROEMPRESARIO</option>
+                    <option value="0102">BANCO DE VENEZUELA S.A.I.C.A.</option>
+                    <option value="0114">BANCO DEL CARIBE C.A.</option>
+                    <option value="0149">BANCO DEL PUEBLO SOBERANO C.A.</option>
+                    <option value="0163">BANCO DEL TESORO</option>
+                    <option value="0176">BANCO ESPIRITO SANTO, S.A.</option>
+                    <option value="0115">BANCO EXTERIOR C.A.</option>
+                    <option value="0173">BANCO INTERNACIONAL DE DESARROLLO, C.A.</option>
+                    <option value="0105">BANCO MERCANTIL C.A.</option>
+                    <option value="0191">BANCO NACIONAL DE CREDITO</option>
+                    <option value="0116">BANCO OCCIDENTAL DE DESCUENTO.</option>
+                    <option value="0138">BANCO PLAZA</option>
+                    <option value="0108">BANCO PROVINCIAL BBVA</option>
+                    <option value="0104">BANCO VENEZOLANO DE CREDITO S.A.</option>
+                    <option value="0168">BANCRECER S.A. BANCO DE DESARROLLO</option>
+                    <option value="0134">BANESCO</option>
+                    <option value="0177">BANFANB</option>
+                    <option value="0146">BANGENTE</option>
+                    <option value="0174">BANPLUS BANCO COMERCIAL C.A</option>
+                    <option value="0190">CITIBANK.</option>
+                    <option value="0157">DELSUR BANCO UNIVERSAL</option>
+                    <option value="0151">FONDO COMUN</option>
+                    <option value="0601">INSTITUTO MUNICIPAL DE CRÉDITO POPULAR</option>
+                    <option value="0169">MIBANCO BANCO DE DESARROLLO, C.A.</option>
+                    <option value="0137">SOFITASA</option>
+                </select>
+            </div>
+            <div class="form-group col-sm-6">
+                <label class="control-label">BANCO DESTINO</label>
+                <select class="form-control s2 bl-bancos" id="bl-prc-banco" name="destino">
+                    <option value="" selected="selected"></option>
+                    <option value="0156">100%BANCO</option>
+                    <option value="0196">ABN AMRO BANK</option>
+                    <option value="0172">BANCAMIGA BANCO MICROFINANCIERO, C.A.</option>
+                    <option value="0171">BANCO ACTIVO BANCO COMERCIAL, C.A.</option>
+                    <option value="0166">BANCO AGRICOLA</option>
+                    <option value="0175">BANCO BICENTENARIO</option>
+                    <option value="0128">BANCO CARONI, C.A. BANCO UNIVERSAL</option>
+                    <option value="0001">BANCO CENTRAL DE VENEZUELA.</option>
+                    <option value="0164">BANCO DE DESARROLLO DEL MICROEMPRESARIO</option>
+                    <option value="0102">BANCO DE VENEZUELA S.A.I.C.A.</option>
+                    <option value="0114">BANCO DEL CARIBE C.A.</option>
+                    <option value="0149">BANCO DEL PUEBLO SOBERANO C.A.</option>
+                    <option value="0163">BANCO DEL TESORO</option><option value="0176">BANCO ESPIRITO SANTO, S.A.</option>
+                    <option value="0115">BANCO EXTERIOR C.A.</option><option value="0173">BANCO INTERNACIONAL DE DESARROLLO, C.A.</option>
+                    <option value="0105">BANCO MERCANTIL C.A.</option><option value="0191">BANCO NACIONAL DE CREDITO</option>
+                    <option value="0116">BANCO OCCIDENTAL DE DESCUENTO.</option><option value="0138">BANCO PLAZA</option>
+                    <option value="0108">BANCO PROVINCIAL BBVA</option><option value="0104">BANCO VENEZOLANO DE CREDITO S.A.</option>
+                    <option value="0168">BANCRECER S.A. BANCO DE DESARROLLO</option><option value="0134">BANESCO</option>
+                    <option value="0177">BANFANB</option><option value="0146">BANGENTE</option>
+                    <option value="0174">BANPLUS BANCO COMERCIAL C.A</option>
+                    <option value="0190">CITIBANK.</option>
+                    <option value="0157">DELSUR BANCO UNIVERSAL</option>
+                    <option value="0151">FONDO COMUN</option>
+                    <option value="0601">INSTITUTO MUNICIPAL DE CRÉDITO POPULAR</option>
+                    <option value="0169">MIBANCO BANCO DE DESARROLLO, C.A.</option>
+                    <option value="0137">SOFITASA</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Recibo</label>
+            <input type="text" class="form-control" id="bl-prc-recibo" name="recibo">
+        </div>
+        <div class="form-group">
+            <label class="control-label">Monto</label>
+            <input type="number" class="form-control" form="" step="any" id="bl-prc-monto" name="monto" value="{{:monto}}" required>
+        </div>
+    </form>
 </script>

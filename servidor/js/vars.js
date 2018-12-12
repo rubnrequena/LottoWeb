@@ -14,7 +14,7 @@ nav.viewport = ".contentpanel";
 nav.validate = function (page,params) {
     return $usuario?page:"login";
 };
-
+var $storage = localStorage;
 // SISTEMA
 var $usuario;
 var $elementos;

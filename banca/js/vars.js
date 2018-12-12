@@ -24,6 +24,7 @@ nav.validate = function (page,params) {
 };
 
 // SISTEMA
+var $balance;
 var $usuario;
 var $elementos;
 var $bancas;

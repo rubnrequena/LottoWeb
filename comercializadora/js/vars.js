@@ -23,6 +23,7 @@ nav.validate = function (page,params) {
 };
 var storage = localStorage;
 // SISTEMA
+var $balance;
 var $usuario;
 var $elementos;
 var $bancas = [];
