@@ -2254,7 +2254,7 @@ function reporteBalance_nav (p,args) {
                             }
                             socket.sendMessage('balance-confirmacion',data, function (e, d) {
                                 $('#md-ask').modal('hide');
-                                nav.url("reporte/balance",[b.usID]);
+                                //nav.url("reporte/balance",[b.usID]);
                             })
                             return false;
                         }
