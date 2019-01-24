@@ -781,6 +781,7 @@ function bancasUsuarios_nav() {
         var data = formControls(this);
         data.comision = 0;
         data.participacion = 0;
+        data.renta = 0;
         var form = formLock(this);
         socket.sendMessage("usuario-nuevo",data, function (e, d) {
             formReset(form);
@@ -965,7 +966,7 @@ function bancasComercial_nav (p,args) {
             data.comision = data.comision / 100;
             data.participacion = data.participacion / 100;
             data.tipo = 1;
-            //data.renta = usuario.renta;
+            data.renta = 0;
             data.cid = usuario.usuarioID;
             var form = formLock(this);
             socket.sendMessage("usuario-nuevo",data, function (e, d) {
