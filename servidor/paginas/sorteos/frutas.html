@@ -1,5 +1,5 @@
 <div class="pageheader hidden-xs">
-    <h2><i class="fa fa-list"></i> Frutas</h2>
+    <h2><i class="fa fa-list"></i> Numeros</h2>
 </div>
 <div class="panel">
     <div class="panel-body">
@@ -26,13 +26,26 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Adicional</label>
                     <div class="col-sm-6">
-                        <input type="number" min="0" max="99" step="1" value="0" class="form-control" id="adicional" name="adicional" required>
+                        <input type="number" min="0" max="999" step="1" value="0" class="form-control" id="adicional" name="adicional" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-6 col-sm-offset-3">
                         <button type="submit" class="btn btn-darkblue btn-block"> Confirmar</button>
                     </div>
+                </div>
+            </form>
+            <hr>
+            <label>ASIGNAR ZODIACO</label>
+            <form id="fzodiaco" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Adicional</label>
+                    <div class="col-sm-6">
+                        <input type="number" min="0" max="999" step="1" value="0" class="form-control" name="adicional" required>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" id="btnzodiaco" class="btn btn-darkblue btn-block"><i class="fa fa-plus"></i> Agregar Zodiaco</button>
                 </div>
             </form>
         </div>

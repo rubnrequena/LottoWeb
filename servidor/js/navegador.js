@@ -15,7 +15,7 @@ nav.paginas.addListener(Navegador.ENTER, function (p,a) {
     $('.s2-elementos').html(jsrender($('#rd-elemento-option'),$elementos));
 });
 nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
-    select2w($('.s2'),{allowClear:true});
+    select2w($('.s2'),{allowClear:true,minimumResultsForSearch: 5});
 
     // Minimize Button in Panels
     jQuery('.panel-heading').click(function(){
@@ -349,83 +349,132 @@ function sorteoBuscar_nav(p,args) {
             srts = d || [];
             update_sorteosView();
         })
-
-
     })
     function update_sorteosView() {
-        $('#sorteos-body').html(jsrender($('#rd-sorteo-row'),srts,help));
+        var bsorteo = $('#buscar-sorteos');
+        var s = uniqueVal(srts,"sorteo");
+        var smin = [];
+        s.forEach(function (item) {
+            smin.push(findBy("sorteoID",item.sorteo,$sorteos));
+        })
+        bsorteo.html(jsrender($('#rd-operadora-option'),smin));
+        bsorteo.select2('val',"");
+        bsorteo.val("");
+        bsorteo.select2("open");
 
-        var toggles = $('.ttgl');
-        toggles.each(function (index) {
-            var me = $(this);
-            me.toggles({
-                text:{
-                    on:"SI",
-                    off:"NO"
-                },
-                on:me.data('activa'),
-                click:true
-            });
-        });
-        toggles.on("toggle", function (e,act) {
-            var data = {
-                sorteo:$(e.target).data('target'),
-                abierta:act
-            };
-            socket.sendMessage("sorteo-editar",data, function (e, d) {
-                console.log(e,d);
-            })
-        });
+        $('.bfiltro').change(function () {
+            bsorteo.trigger("change");
+        })
 
-        select2w($('.s3'),{allowClear:true});
-        $('select.sorteosel').each(function (idx,item) {
-            var s = $(item).data('select');
-            $(item).val(s);
-            $(item).select2('val',s);
-        });
-        $('.sorteosel').change(function (ev) {
-            var val = ev.target.value; var e = $(this); var sorteo = e.data('sorteo');
-            var el = findBy("elementoID",val,$elementos);
-            var sr = findBy("sorteoID",sorteo,d);
-            var r = confirm('Confirma que desea registrar #'+sr.sorteoID+' '+sr.descripcion+' #'+el.numero+' '+el.descripcion);
-            if (r) {
-                var data = {
-                    sorteoID: sorteo,
-                    elemento: val
-                };
-                premiar(data,e);
-            } else {
-                e.select2('val',e.data('select'));
-                e.val(e.data('select'));
+        bsorteo.change(function (ev) {
+            var sorteo = ev.target.value;
+            var sorteos = exploreBy("sorteo",sorteo,srts);
+            //cargar elementos
+            var elm = findBy("sorteo",sorteo,$elementos);
+            if (elm) initUI();
+            else {
+                socket.sendMessage("elementos",{sorteo:sorteo}, function (e, d) {
+                    $elementos = $elementos.concat(d);
+                    initUI();
+                })
+            }
+
+            function initUI() {
+                //filtros
+                var ab = $('#srt-abr').val();
+                var prm = $('#srt-prm').val();
+                var flt = $('#srt-flt').val();
+            
+                var fsorteos = sorteos.filter(function (item) {
+                    var a,b;
+                    if (flt==0) return true;
+                    else {
+                        if (ab==1) a = item.abierta==true;
+                        else a = item.abierta == false;
+
+                        if (prm==1) b = item.g?true:false;
+                        else b = item.g==null;
+
+                        return a&&b;
+                    }
+                })
+
+                //init
+                $('#sorteos-body').html(jsrender($('#rd-sorteo-row'),fsorteos,help));
+
+                var toggles = $('.ttgl');
+                toggles.each(function (index) {
+                    var me = $(this);
+                    me.toggles({
+                        text:{
+                            on:"SI",
+                            off:"NO"
+                        },
+                        on:me.data('activa'),
+                        click:true
+                    });
+                });
+                toggles.on("toggle", function (e,act) {
+                    var data = {
+                        sorteo:$(e.target).data('target'),
+                        abierta:act
+                    };
+                    socket.sendMessage("sorteo-editar",data, function (e, d) {
+                        console.log(e,d);
+                    })
+                });
+
+                select2w($('.s3'),{allowClear:true});
+                $('select.sorteosel').each(function (idx,item) {
+                    var s = $(item).data('select');
+                    $(item).val(s);
+                    $(item).select2('val',s);
+                });
+                $('.sorteosel').change(function (ev) {
+                    var val = ev.target.value; var e = $(this); var sorteo = e.data('sorteo');
+                    var el = findBy("elementoID",val,$elementos);
+                    var sr = findBy("sorteoID",sorteo,srts);
+                    var r = confirm('Confirma que desea registrar #'+sr.sorteoID+' '+sr.descripcion+' #'+el.numero+' '+el.descripcion);
+                    if (r) {
+                        var data = {
+                            sorteoID: sorteo,
+                            elemento: val
+                        };
+                        premiar(data,e);
+                    } else {
+                        e.select2('val',e.data('select'));
+                        e.val(e.data('select'));
+                    }
+                });
+            }
+            function premiar (data,elm) {
+                socket.sendMessage("sorteo-premiar", data, function (e, d) {
+                    var el;
+                    if (d.code==1) {
+                        el = findBy("elementoID",data.elemento,$elementos);
+                        notificacion('SORTEO PREMIADO', 'SORTEO #' + data.sorteoID + " PREMIADO<p>GANADOR: #" + el.numero +" "+ el.descripcion +"</p>");
+                    } else if (d.code==0) {
+                        el = findBy("elementoID",data.elemento,$elementos);
+                        notificacion('[JV] SOLICITUD ACEPTADA', 'SORTEO #' + data.sorteoID + "<p>GANADOR: #" + el.numero +" "+ el.descripcion +"</p>");
+                    }
+                    else if (d.code==4) {
+                        notificacion("SORTEOS","SORTEO #"+data.sorteoID+" YA ESTA PREMIADO",'growl-danger');
+                        var r = confirm('Este sorteo ya esta premiado, desea reiniciarlo');
+                        if (r) {
+                            socket.sendMessage("sorteo-reiniciar", {sorteoID:data.sorteoID}, function (e, d) {
+                                notificacion("SORTEOS", "SORTEO #" + data.sorteoID + " REINICIADO SATISFACTORIAMENTE");
+                                if (confirm('DESEA VOLVER A PREMIAR CON EL NUMERO SELECCIONADO?')) premiar(data,elm);
+                            });
+                        } else {
+                            elm.select2("val",elm.data('select'));
+                            elm.select2("val",elm.data('select'));
+                        }
+                    }
+                    else if (d.code==3) notificacion("SORTEOS","SORTEO #"+data.sorteoID+" PREMIADO, PERO SIN VENTAS REGISTRADAS",'growl-danger');
+                    else if (d.code==5) notificacion("SOLICITUD RECHAZADA"," SORTEO #"+data.sorteoID+" SOLICITUD DUPLICADA",'growl-danger');
+                });
             }
         });
-        function premiar (data,elm) {
-            socket.sendMessage("sorteo-premiar", data, function (e, d) {
-                var el;
-                if (d.code==1) {
-                    el = findBy("elementoID",data.elemento,$elementos);
-                    notificacion('SORTEO PREMIADO', 'SORTEO #' + data.sorteoID + " PREMIADO<p>GANADOR: #" + el.numero +" "+ el.descripcion +"</p>");
-                } else if (d.code==0) {
-                    el = findBy("elementoID",data.elemento,$elementos);
-                    notificacion('[JV] SOLICITUD ACEPTADA', 'SORTEO #' + data.sorteoID + "<p>GANADOR: #" + el.numero +" "+ el.descripcion +"</p>");
-                }
-                else if (d.code==4) {
-                    notificacion("SORTEOS","SORTEO #"+data.sorteoID+" YA ESTA PREMIADO",'growl-danger');
-                    var r = confirm('Este sorteo ya esta premiado, desea reiniciarlo');
-                    if (r) {
-                        socket.sendMessage("sorteo-reiniciar", {sorteoID:data.sorteoID}, function (e, d) {
-                            notificacion("SORTEOS", "SORTEO #" + data.sorteoID + " REINICIADO SATISFACTORIAMENTE");
-                            if (confirm('DESEA VOLVER A PREMIAR CON EL NUMERO SELECCIONADO?')) premiar(data,elm);
-                        });
-                    } else {
-                        elm.select2("val",elm.data('select'));
-                        elm.select2("val",elm.data('select'));
-                    }
-                }
-                else if (d.code==3) notificacion("SORTEOS","SORTEO #"+data.sorteoID+" PREMIADO, PERO SIN VENTAS REGISTRADAS",'growl-danger');
-                else if (d.code==5) notificacion("SOLICITUD RECHAZADA"," SORTEO #"+data.sorteoID+" SOLICITUD DUPLICADA",'growl-danger');
-            });
-        }
     }
     function filtrar (item) {
         var a = $('#srt-abr').value;
@@ -550,8 +599,6 @@ function sorteoFrutas_nav (p,arg) {
             sorteo.select2("val","");
         });
     }
-
-
     sorteo.change(function () {
        elementos();
     });
@@ -568,14 +615,32 @@ function sorteoFrutas_nav (p,arg) {
         })
     });
 
+    var id, el;
     function elementos() {
-        var id = sorteo.val();
-        var el = $elementos.filter(function (item) {
-            return item.sorteo==id;
-        });
-        $('#elementos-body').html(jsrender($('#elemento-row'),el));
+        id = sorteo.val();
+        socket.sendMessage('elementos',{sorteo:id}, function (e, d) {
+            el = d;
+            $('#elementos-body').html(jsrender($('#elemento-row'),d));
+        })
     }
-    elementos();
+
+    $('#fzodiaco').submit(function (e) {
+        e.preventDefault(e);
+        var d = formControls(this);
+        var z = ["CP","AC","PI","AR","TA","GE","CN","LE","VI","LI","ES","SA"];
+        var data = []; var l=100;
+        for (var i=0;i<el.length;i++) {
+            for (var j=0;j<z.length;j++) {
+                data.push({
+                    numero:el[i].numero+z[j],
+                    descripcion:el[i].numero+"-"+j
+                });
+            }
+        }
+        socket.sendMessage("elemento-nuevo-zodiaco", {sorteo:id,numeros:data,adicional: d.adicional}, function (e, d) {
+            notificacion('SORTEO ZODIACALIZADO');
+        });
+    })
 }
 nav.paginas.addListener("sorteos/frutas",sorteoFrutas_nav);
 

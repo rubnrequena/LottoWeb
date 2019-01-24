@@ -1,9 +1,7 @@
 socket.addListener(NetEvent.SOCKET_OPEN,socket_open);
 socket.addListener(NetEvent.SOCKET_CLOSE,socket_close);
 socket.addListener(NetEvent.LOGIN,socket_login);
-socket.addListener("init",function (e,d) {
-    $elementos = d.elem || [];
-});
+socket.addListener("init",socket_init);
 socket.connect();
 
 function socket_open(e) {
@@ -46,7 +44,6 @@ function socket_login(e,d) {
 }
 function socket_init (e,d) {
     $sorteos = d.sorteos || [];
-    $bancas = d.bancas || [];
 }
 
 var hlp = {

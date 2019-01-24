@@ -30,8 +30,7 @@
                     <form id="vnt-venta" class="mb15">
                         <div class="form-group">
                             <label>Sorteos</label>
-                            <select class="s2a form-control" id="vnt-sorteos" multiple="multiple" name="sorteos"
-                                    required></select>
+                            <select class="s2a form-control" id="vnt-sorteos" multiple="multiple" name="sorteos" required></select>
                         </div>
                         <div class="form-group">
                             <div class="row">
@@ -45,6 +44,10 @@
                                     <input class="form-control" id="vnt-monto" name="monto" type="number" min="0.01" max="999999" step="any" autocomplete="off">
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-group hidden" id="fg-zodiaco">
+                            <label>Zodiacos</label>
+                            <select class="s2a form-control" id="vnt-zodiaco" multiple="multiple" name="zodiaco"></select>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-darkblue btn-block"><i class="fa fa-plus"></i> AGREGAR</button>
@@ -237,4 +240,8 @@
             <li><a id="print-ws" href="#ws"><i class="fa fa-whatsapp"></i> Whatsapp</a></li>
         </ul>
     </div>
+</script>
+
+<script type="text/x-jsrender" id="rd-zodiaco-option">
+    <option value="{{:zID}}">{{:desc}}</option>
 </script>

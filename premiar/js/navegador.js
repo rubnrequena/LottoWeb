@@ -15,7 +15,7 @@ nav.paginas.addListener(Navegador.ENTER, function (p,a) {
     $('.s2-elementos').html(jsrender($('#rd-elemento-option'),$elementos));
 });
 nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
-    select2w($('.s2'),{allowClear:true});
+    select2w($('.s2'),{allowClear:true,minimumResultsForSearch: 5});
 
     // Minimize Button in Panels
     jQuery('.minimize').click(function(){
@@ -79,47 +79,131 @@ function sorteoBuscar_nav(p,args) {
             return s;
         }
     };
+    var srts = [];
+
+    var toggles = $('.tgl');
+    toggles.each(function (index) {
+        var me = $(this);
+        me.toggles({
+            text:{
+                on:"SI",
+                off:"NO"
+            },
+            on:me.data('activo'),
+            click:true
+        });
+    });
+    toggles.on("toggle", function (e,act) {
+        update_sorteosView();
+    });
+
     $('#sorteo-buscar').submit(function (e) {
         e.preventDefault(e);
         var data = formControls(this);
         var f = formLock(this);
         socket.sendMessage("sorteos",data, function (e, d) {
             formLock(f,false);
-            $('#sorteos-body').html(jsrender($('#rd-sorteo-row'),d || [],help));
+            srts = d || [];
+            update_sorteosView();
+        })
+    })
+    function update_sorteosView() {
+        var bsorteo = $('#buscar-sorteos');
+        var s = uniqueVal(srts,"sorteo");
+        var smin = [];
+        s.forEach(function (item) {
+            smin.push(findBy("sorteoID",item.sorteo,$sorteos));
+        })
+        bsorteo.html(jsrender($('#rd-operadora-option'),smin));
+        bsorteo.select2('val',"");
+        bsorteo.val("");
+        bsorteo.select2("open");
 
-            select2w($('.s3'),{allowClear:true,placeholder: {
-                id: '-1', // the value of the option
-                text: 'Select an option'
-            }});
-            $('select.sorteosel').each(function (idx,item) {
-                var s = $(item).data('select');
-                $(item).select2('val',s);
-                $(item).val(s);
-            });
-            $('.sorteosel').change(function (ev) {
-                var val = ev.target.value; var e = $(this); var sorteo = e.data('sorteo');
-                var el = findBy("elementoID",val,$elementos);
-                var sr = findBy("sorteoID",sorteo,d);
-                var r = confirm('Confirma que desea registrar #'+sr.sorteoID+' '+sr.descripcion+' #'+el.numero+' '+el.descripcion);
-                if (r) {
+        $('.bfiltro').change(function () {
+            bsorteo.trigger("change");
+        })
+
+        bsorteo.change(function (ev) {
+            var sorteo = ev.target.value;
+            var sorteos = exploreBy("sorteo",sorteo,srts);
+            //cargar elementos
+            var elm = findBy("sorteo",sorteo,$elementos);
+            if (elm) initUI();
+            else {
+                socket.sendMessage("elementos",{sorteo:sorteo}, function (e, d) {
+                    $elementos = $elementos.concat(d);
+                    initUI();
+                })
+            }
+
+            function initUI() {
+                //filtros
+                var ab = $('#srt-abr').val();
+                var prm = $('#srt-prm').val();
+                var flt = $('#srt-flt').val();
+
+                var fsorteos = sorteos.filter(function (item) {
+                    var a,b;
+                    if (flt==0) return true;
+                    else {
+                        if (ab==1) a = item.abierta==true;
+                        else a = item.abierta == false;
+
+                        if (prm==1) b = item.g?true:false;
+                        else b = item.g==null;
+
+                        return a&&b;
+                    }
+                })
+
+                //init
+                $('#sorteos-body').html(jsrender($('#rd-sorteo-row'),fsorteos,help));
+
+                var toggles = $('.ttgl');
+                toggles.each(function (index) {
+                    var me = $(this);
+                    me.toggles({
+                        text:{
+                            on:"SI",
+                            off:"NO"
+                        },
+                        on:me.data('activa'),
+                        click:true
+                    });
+                });
+                toggles.on("toggle", function (e,act) {
                     var data = {
-                        sorteoID: sorteo,
-                        elemento: val
+                        sorteo:$(e.target).data('target'),
+                        abierta:act
                     };
-                    premiar(data,e);
-                } else {
-                    e.select2('val',e.data('select'));
-                    e.val(e.data('select'));
-                }
-            });
+                    socket.sendMessage("sorteo-editar",data, function (e, d) {
+                        console.log(e,d);
+                    })
+                });
 
-            var srts = uniqueVal(d,"sorteo");
-            srts.forEach(function (item) {
-                var s = String(item.descripcion).split(" ").slice(0,-1).join(" ");
-                item.descripcion = s;
-            })
-            $('#prm-fsorteo').html(jsrender($('#rd-operadora-option'),srts));
-
+                select2w($('.s3'),{allowClear:true});
+                $('select.sorteosel').each(function (idx,item) {
+                    var s = $(item).data('select');
+                    $(item).val(s);
+                    $(item).select2('val',s);
+                });
+                $('.sorteosel').change(function (ev) {
+                    var val = ev.target.value; var e = $(this); var sorteo = e.data('sorteo');
+                    var el = findBy("elementoID",val,$elementos);
+                    var sr = findBy("sorteoID",sorteo,srts);
+                    var r = confirm('Confirma que desea registrar #'+sr.sorteoID+' '+sr.descripcion+' #'+el.numero+' '+el.descripcion);
+                    if (r) {
+                        var data = {
+                            sorteoID: sorteo,
+                            elemento: val
+                        };
+                        premiar(data,e);
+                    } else {
+                        e.select2('val',e.data('select'));
+                        e.val(e.data('select'));
+                    }
+                });
+            }
             function premiar (data,elm) {
                 socket.sendMessage("sorteo-premiar", data, function (e, d) {
                     var el;
@@ -132,7 +216,7 @@ function sorteoBuscar_nav(p,args) {
                     }
                     else if (d.code==4) {
                         notificacion("SORTEOS","SORTEO #"+data.sorteoID+" YA ESTA PREMIADO",'growl-danger');
-                        var r = confirm('Este sorteo ya esta premiado, desea reiniciarlo?');
+                        var r = confirm('Este sorteo ya esta premiado, desea reiniciarlo');
                         if (r) {
                             socket.sendMessage("sorteo-reiniciar", {sorteoID:data.sorteoID}, function (e, d) {
                                 notificacion("SORTEOS", "SORTEO #" + data.sorteoID + " REINICIADO SATISFACTORIAMENTE");
@@ -140,14 +224,26 @@ function sorteoBuscar_nav(p,args) {
                             });
                         } else {
                             elm.select2("val",elm.data('select'));
+                            elm.select2("val",elm.data('select'));
                         }
                     }
                     else if (d.code==3) notificacion("SORTEOS","SORTEO #"+data.sorteoID+" PREMIADO, PERO SIN VENTAS REGISTRADAS",'growl-danger');
                     else if (d.code==5) notificacion("SOLICITUD RECHAZADA"," SORTEO #"+data.sorteoID+" SOLICITUD DUPLICADA",'growl-danger');
                 });
             }
-        })
-    })
+        });
+    }
+    function filtrar (item) {
+        var a = $('#srt-abr').value;
+        var p = $('#srt-prm').value;
+        item.gid = item.gid||0;
+        console.log(item.abierta,a,item.gid,p);
+        if (item.abierta==a && item.gid==p) {
+
+            return true;
+        }
+        else return false;
+    }
 }
 nav.paginas.addListener("sorteos/buscar",sorteoBuscar_nav);
 

@@ -17,7 +17,7 @@ nav.validate = function (page,params) {
 var $storage = localStorage;
 // SISTEMA
 var $usuario;
-var $elementos;
+var $elementos = [];
 var $bancas;
 var $usuarios;
 var $sorteos;

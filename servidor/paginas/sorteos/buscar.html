@@ -21,17 +21,36 @@
     </div>
 </div>
 <div class="panel padding10">
-    <div class="row">
+    <form class="form-horizontal">
+        <div class="form-group">
+            <div class="form-group">
+                <label class="mt10 col-sm-3 text-right">Sorteo</label>
+                <div class="col-sm-6">
+                    <select name="sorteoID" class="s2 form-control" id="buscar-sorteos" data-placeholder="No hay sorteos para la fecha" required>
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row mt10">
+        <div class="col-md-2 col-sm-2 col-xs-2">Filtrar</div>
+        <div class="col-md-1 col-sm-1 col-xs-1">
+            <select id="srt-flt" class="bfiltro s2">
+                <option value="1">SI</option>
+                <option value="0" selected>NO</option>
+            </select>
+        </div>
         <div class="col-md-2 col-sm-2 col-xs-2">Abierto</div>
-        <div class="col-md-4 col-sm-4 col-xs-4">
-            <select id="srt-abr">
+        <div class="col-md-1 col-sm-1 col-xs-1">
+            <select id="srt-abr" class="bfiltro s2">
                 <option value="1">SI</option>
                 <option value="0" selected>NO</option>
             </select>
         </div>
         <div class="col-md-2 col-sm-2 col-xs-2">Premiado</div>
-        <div class="col-md-4 col-sm-4 col-xs-4">
-            <select id="srt-prm">
+        <div class="col-md-1 col-sm-1 col-xs-1">
+            <select id="srt-prm" class="bfiltro s2">
                 <option value="1">SI</option>
                 <option value="0" selected>NO</option>
             </select>
@@ -58,7 +77,7 @@
         <td><a href="#sorteo|{{:sorteoID}}">{{:~padding(sorteoID,6)}}</a></td>
         <td><span class="text-uppercase">{{:descripcion}}</span></td>
         <td>
-            <select id="s{{:sorteoID}}" class="s3 form-control sorteosel" data-sorteo="{{:sorteoID}}" data-select="{{:gid}}">
+            <select id="s{{:sorteoID}}" class="s3 form-control sorteosel" data-srt="{{:sorteo}}" data-sorteo="{{:sorteoID}}" data-select="{{:gid}}">
                 {{:~sorteos(sorteo)}}
             </select>
         </td>
@@ -66,5 +85,5 @@
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-operadora-option">
-    <option value="{{:sorteo}}" class="text-uppercase">{{:descripcion}}</option>
+    <option value="{{:sorteoID}}" class="text-uppercase">{{:nombre}}</option>
 </script>

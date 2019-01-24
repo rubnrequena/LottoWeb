@@ -56,7 +56,6 @@ var init = function () {
     var $servidor = {};
     var $meta = {};
 
-
 //ACTIVIDADES
     var $actividad = {
         LOGIN:1,
@@ -420,7 +419,7 @@ var init = function () {
                 storage.removeItem("lastTk");
                 btnImprimir.prop("disabled",vendiendo);
                 if (d.hasOwnProperty("code")) {
-                    if (d.code==5) notificacion("SORTEOS INVÁLIDOS",sorteosInvalidos(d.sorteos));
+                    if (d.code==5) notificacion("SORTEOS INVï¿½LIDOS",sorteosInvalidos(d.sorteos));
                     else if (d.code==6) {
                         notificacion("TOPE TAQUILLA EXEDIDO",topeExedido(d.elementos));
                         d.elementos.forEach(ajustarAtope);
@@ -564,7 +563,9 @@ var init = function () {
         }
         function elementoSorteo (sorteo,numero) {
             for (var i=0;i<$elementos.length;i++) {
-                if ($elementos[i].s==sorteo && $elementos[i].n==numero) return $elementos[i].id;
+                if ($elementos[i].s==sorteo && $elementos[i].n==numero)  {
+                    return $elementos[i].id;
+                }
             }
             return -1;
         }
@@ -607,20 +608,39 @@ var init = function () {
                 if (n>0 && n<10) numero = "0"+n;
                 data.sorteos.forEach(function (sorteo) {
                     var srt = findBy("sorteoID",sorteo,$sorteos);
-                    var num = elementoSorteo(srt.sorteo,numero);
-                    if (num>-1) {
-                        var idx = elementoCesto(sorteo, num);
-                        if (idx > -1) cesto[idx].monto += cono_sel(data.monto);
-                        else {
-                            cesto.push({
-                                numero: num,
-                                monto: cono_sel(data.monto),
-                                sorteoID: sorteo
-                            });
+                    var num;
+                    if (srt.zodiacal==0) {
+                        num = elementoSorteo(srt.sorteo,numero);
+                        addNum(num,sorteo);
+                    }
+                    else {
+                        var zs = vntzodiaco.select2('val');
+                        if (zs.length>0) {
+                            for (var i=0;i<zs.length;i++) {
+                                num = elementoSorteo(srt.sorteo,numero+zs[i]);
+                                addNum(num,sorteo);
+                            }
+                        } else{
+                            num = elementoSorteo(srt.sorteo,numero);
+                            addNum(num,sorteo);
                         }
                     }
                 });
             });
+
+            function addNum (num,sorteo) {
+                if (num>-1) {
+                    var idx = elementoCesto(sorteo, num);
+                    if (idx > -1) cesto[idx].monto += cono_sel(data.monto);
+                    else {
+                        cesto.push({
+                            numero: num,
+                            monto: cono_sel(data.monto),
+                            sorteoID: sorteo
+                        });
+                    }
+                }
+            }
 
             function cono_sel(n) {
                 n = (n>1000)?n/100000:n;
@@ -651,6 +671,16 @@ var init = function () {
                 num.html(jsrender($('#rd-elemento-option'),$numeros));
             }
             num.select2("val",null).trigger("change");
+
+            var z = $('#fg-zodiaco');
+            z.addClass("hidden");
+            e.val.forEach(function (item) {
+                var s = findBy("sorteoID",item,$sorteos);
+                if (s.zodiacal==1) {
+                    z.removeClass("hidden");
+                    return;
+                }
+            });
         });
         $('#vnt-dia').click(function (e) {
             var d = new Date($servidor.hora);
@@ -777,7 +807,6 @@ var init = function () {
         $(document).on("keydown", onKeyDown);
 
         function onKeyDown (e) {
-            console.log("tecla",e.which);
             if (e.altKey) {
                 if (e.which>=96 && e.which<=105) {
                     e.preventDefault(e);
@@ -1117,6 +1146,26 @@ var init = function () {
             }
             return b;
         }
+
+        //zodiaco
+        var vntzodiaco = $('#vnt-zodiaco');
+        var zdata = [
+            {zID:"",desc:"TODOS"},
+            {zID:"CP",desc:"CAPRICORNIO"},
+            {zID:"AC",desc:"ACUARIO"},
+            {zID:"PI",desc:"PISCIS"},
+            {zID:"AR",desc:"ARIES"},
+            {zID:"TA",desc:"TAURO"},
+            {zID:"GE",desc:"GEMINIS"},
+            {zID:"CN",desc:"CANCER"},
+            {zID:"LE",desc:"LEO"},
+            {zID:"VI",desc:"VIRGO"},
+            {zID:"LI",desc:"LIBRA"},
+            {zID:"ES",desc:"ESCORPION"},
+            {zID:"SA",desc:"SAGITARIO"}
+        ];
+        vntzodiaco.html(jsrender($('#rd-zodiaco-option'),zdata));
+
         //test
         if (args && args.length>0) {
             var repeat = args[1] || 10;
@@ -1742,30 +1791,51 @@ var init = function () {
         }
         $usuario = d.taq;
         $('.username').html($usuario.nombre);
-        $elementos = d.elementos;
+
+        function validarElementos (hash,cb) {
+            var localHash = storage.getItem("srq.taq.helementos");
+            if (localHash==hash) {
+                loadLocal();
+                cb();
+            } else {
+                notificacion("Espere...",'<p id="ntf-cargaelem"><i class="fa fa-spinner fa-spin"></i> Recibiendo listado animales</p>');
+                var elm=[];
+                socket.addListener('elementos-init',function (e, d) {
+                    if (d=='end') {
+                        storage.setItem("srq.taq.helementos",hash);
+                        storage.setItem("srq.taq.elementos",JSON.stringify(elm))
+                        $('#ntf-cargaelem').html('<i class="fa fa-check"></i> Lista de animales recibido');
+                        socket.removeListeners(e);
+                        loadLocal();
+                        cb();
+                    } else elm = elm.concat(d);
+                });
+                socket.sendMessage('elementos-init',null);
+            }
+        }
+
+        //$elementos = d.elementos;
         $sorteos = d.sorteos;
         $numeros = d.numeros;
 
         $servidor.hora = d.time;
-
-        nav.navUrl();
+        function loadLocal() {
+            $elementos = JSON.parse(storage.getItem("srq.taq.elementos"));
+            var n, a;
+            var z = ["CAPRICORNIO","ACUARIO","PISCIS","ARIES","TAURO","GEMINIS","CANCER","LEO","VIRGO","LIBRA","ESCORPIO","SAGITARIO"];
+            for (var i=0;i< $elementos.length;i++) {
+                a = $elementos[i].d.split("-");
+                if ($elementos[i].n.length>2) {
+                    n = exploreBy("s",$elementos[i].s,$elementos);
+                    n = findBy("n",a[0],n,$elementos[i].s);
+                    $elementos[i].d = n.d+"-"+z[a[1]];
+                }
+            }
+        }
+        validarElementos(d.elementos, function () {
+            nav.navUrl();
+        });
     }
-
-    //herramienta conversion
-    $('#cbsf').submit(function (e) {
-
-        e.preventDefault(e);
-        var data = formControls(this);
-        var x = parseFloat(data.n)/100000;
-        $('#cbsfr').html(x.format(2));
-    });
-
-    $('#cbss').submit(function (e) {
-        e.preventDefault(e);
-        var data = formControls(this);
-        var x = parseFloat(data.n)*100000;
-        $('#cbssr').html(x.format(0));
-    });
 //UI
 //ANULAR
 
