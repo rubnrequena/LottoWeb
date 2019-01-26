@@ -171,6 +171,10 @@ function inicio_nav(p,arg) {
 
 }
 
+function suspendido_nav (p,args) {
+
+}
+nav.paginas.addListener("suspendido",suspendido_nav);
 function sorteoMonitor_nav() {
     var d = new Date();
     listarSorteos(d.format());

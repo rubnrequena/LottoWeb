@@ -34,7 +34,6 @@
             <table id="tb" class="table table-hover table-condensed">
                 <thead>
                 <tr>
-                    <th class="bl-dreg hidden">REF</th>
                     <th>FECHA</th>
                     <th><a href="#" class="bl-greg" id="bl-sort-desc" ord="0"><i class="fa fa-sort"></i></a> DESCRIPCION</th>
                     <th class="bl-dreg hidden">MONTO</th>
@@ -134,7 +133,6 @@
     {{else}}
     <tr>
     {{/if}}
-        <td><a href="#"  class="umenu"><i class="fa fa-list"></i></a> </td>
         <td>{{:fecha}}</td>
         <td class="text-uppercase"><a href="#reporte/balance|{{:usID}}">{{:desc}}</a> </td>
         <td>{{:~formatNumber(balance,2)}}</td>
@@ -166,6 +164,7 @@
 </script>
 <script type="text/x-jsrender" id="rd-reporte-pend">
     <tr>
+        <td><a class="bpend-rem" href="#{{:balID}}" balID="{{:balID}}"><i class="fa fa-trash"></i></a> </td>
         <td><a href="#" balid="{{:balID}}" class="bl-rmv-pend"><i class="fa fa-remove text-danger"></i></a></td>
         <td>
             <a href="#" bid="{{:balID}}" class="cf-pago">#{{:~padding(balID,4)}}</a>
@@ -279,6 +278,7 @@
     </form>
 </script>
 <script type="text/x-jsrender" id="rd-procesar-pendiente">
+
     <span>Descripcion:</span>
     <h4>{{:desc}}</h4>
     <form id="bl-form" class="ask-form">

@@ -19,7 +19,11 @@ var nav = new Navegador();
 nav.folder = "paginas";
 nav.viewport = ".contentpanel";
 nav.validate = function (page,params) {
-    return $usuario?page:"login";
+   if (page=="suspendido") {
+       nav.viewport = "body";
+       return "suspendido";
+   }
+   return $usuario?page:"login";
 };
 var storage = localStorage;
 // SISTEMA

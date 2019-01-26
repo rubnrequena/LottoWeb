@@ -1,0 +1,77 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-clock-o"></i> Suspensiones</h2>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize maximize">&plus;</a>
+        </div>
+        <h3 class="panel-title">Registrar nueva condicion</h3>
+    </div>
+    <div class="panel-body" style="display: none;">
+        <form class="form-horizontal" id="suspnvo-form">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Usuario</label>
+                <div class="col-sm-6">
+                    <select id="sup-comer" class="s2 form-control" name="sID"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Banca</label>
+                <div class="col-sm-6">
+                    <select id="sup-banca" class="s2 form-control" name="bID"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Limite</label>
+                <div class="col-sm-6">
+                    <input type="number" min="1" max="365" step="1" class="form-control" name="limite">
+                    <div class="help-block"><span class="text-info">Cantidad de dias maximo a esperar por el pago</span></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Monto Minimo</label>
+                <div class="col-sm-6">
+                    <input type="number" min="0" max="999999999" step="1" class="form-control" name="minMonto">
+                    <div class="help-block"><span class="text-info">Monto minimo necesario para suspender</span></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize">&minus;</a>
+        </div>
+        <h3 class="panel-title">Condiciones programadas</h3>
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th width="60%">Nombre</th>
+                        <th width="20%">Limite</th>
+                        <th width="20%">Monto Minimo</th>
+                    </tr>
+                </thead>
+                <tbody id="cond-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/x-jsrender" id="rd-cond-row">
+    <tr id="r{{:sID}}">
+        <td><a href="#" usID="{{:sID}}" class="text-danger sprem"><i class="fa fa-trash"></i></a> </td>
+        <td>{{:nombre}}</td>
+        <td>{{:limite}}</td>
+        <td>{{:minMonto}}</td>
+    </tr>
+</script>

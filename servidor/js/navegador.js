@@ -883,6 +883,58 @@ function bancasUsuario_nav(p,args) {
 }
 nav.paginas.addListener("bancas/usuario",bancasUsuario_nav);
 
+function bancasSuspender_nav (p,args) {
+    var ltSuspender = []
+    var cm = $('#sup-comer'), cbody = $('#cond-body');
+    var bn = $('#sup-banca');
+    cm.change(function () {
+        bn.html('')
+        socket.sendMessage('usuarios', {comercial:cm.val()}, function (e, d) {
+           bn.html(jsrender($('#rd-usuario-option'),d));
+           bn.select2("val","")
+        });
+    })
+    $('#suspnvo-form').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        if (data.hasOwnProperty("bID")) {
+            data.sID = "u"+data.bID;
+            delete data.bID;
+        } else data.sID = "c"+data.sID;
+        var form = formLock(this)
+        socket.sendMessage("usuario-suspnvo",data, function (e, d) {
+            formLock(form,false)
+            cbody.html("");
+            getLista();
+        });
+    });
+    function getLista () {
+        socket.sendMessage("usuario-listaSuspender", null, function (e, d) {
+            ltSuspender = d;
+            cbody.html(jsrender($('#rd-cond-row'), d));
+
+            $('.sprem').click(function (e) {
+                e.preventDefault(e);
+                var id = $(this).attr("usID");
+                var c = confirm("SEGURO DESEA REMOVER ESTA CONDICION?")
+                if (c) {
+                    socket.sendMessage("usuario-susprem", {usID: id}, function (e, d) {
+                        var i = findBy("sID", id, ltSuspender)
+                        $('#r' + id).remove();
+                    });
+                }
+            })
+
+            socket.sendMessage("comerciales", null, function (e, d) {
+                cm.html(jsrender($('#rd-usuario-option'), d));
+                cm.select2("val", "");
+                bn.select2("val","");
+            })
+        })
+    }; getLista();
+}
+nav.paginas.addListener("bancas/suspensiones",bancasSuspender_nav);
+
 function bancasComercial_nav (p,args) {
     var usuario, bancas, taquillas,usuarios = $('#usuarios');
 
