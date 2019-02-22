@@ -39,6 +39,14 @@ function reload () {
 function socket_login(e,d) {
     if (d.hasOwnProperty("code")) {
         if (d.code==2) notificacion("DATOS INVALIDOS","Verifique los datos introducidos y vuelva a intentar.","growl-danger");
+        if (d.code==505) {
+            notificacion("USUARIO SUSPENDIDO", "<p>Este usuario se encuentra suspendido, para mas informacion haga click en el boton.</p>" +
+                "<button id='uInfo' class='btn btn-darkblue'><i class='fa fa-info'></i> Leer Mas</button>", null, true);
+            $('#uInfo').click(function (e) {
+                //nav.nav("404",null,null,$('body'));
+                nav.nav("suspendido", d,null,"body");
+            });
+        }
         else notificacion("INICIO DE SESION FALLIDO","Razon desconocida, consulte con su administrador.","growl-danger");
     } else {
         $usuario = d.us;

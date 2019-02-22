@@ -69,9 +69,21 @@
 </div>
 <script type="text/x-jsrender" id="rd-cond-row">
     <tr id="r{{:sID}}">
-        <td><a href="#" usID="{{:sID}}" class="text-danger sprem"><i class="fa fa-trash"></i></a> </td>
-        <td>{{:nombre}}</td>
-        <td>{{:limite}}</td>
+        <td style="padding-right: 20px;">
+            <a href="#{{:sID}}" usID="{{:sID}}" class="text-danger sprem"><i class="fa fa-trash"></i></a>
+        </td>
+        {{if c=="u" }}
+        <td class="text-uppercase">
+            <a href="#bancas/banca|{{:id}}"><i class="fa fa-user text-success"></i></a>
+            <span style="padding-left: 20px"><a href="#reporte/balance|{{:sID}}">{{:nombre}}</a></span>
+        </td>
+        {{else}}
+        <td class="text-uppercase">
+            <a href="#bancas/comercial|{{:id}}"><i class="fa fa-user text-success"></i></a>
+            <span style="padding-left: 10px"><a href="#reporte/balance|{{:sID}}">{{:nombre}}</a></span>
+        </td>
+        {{/if}}
+        <td>{{:limite}} <span class="text-muted"><i>{{if limite>1}} dias {{else}} dia {{/if}}</i></span></td>
         <td>{{:minMonto}}</td>
     </tr>
 </script>

@@ -17,6 +17,7 @@ var nav = new Navegador();
 nav.folder = "paginas";
 nav.viewport = ".contentpanel";
 nav.validate = function (page,params) {
+    if (page=="suspendido") return page;
     return $usuario?page:"login";
 };
 var storage = localStorage;

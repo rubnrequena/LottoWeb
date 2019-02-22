@@ -292,7 +292,9 @@ function sorteoPublicar_nav(p,args) {
                 return tq?tq.nombre:"ERROR: TAQ NO ENCONTRADA, ID:"+id;
             }
             else return "TODAS"; },
-        srt: function (id) { return findBy("sorteoID",id,$sorteos) }
+        srt: function (id) { 
+            return findBy("sorteoID",id,$sorteos) 
+        }
     };
     var bancas = $('#bancas'), taqs = $('#taquillas'), sorteos = $('#sorteos'), htaq = $('#hb-taquilla');
 
@@ -1771,3 +1773,44 @@ function bancasRelacionPremio_nav (p,args) {
     })
 }
 nav.paginas.addListener('bancas/relacionpremio',bancasRelacionPremio_nav);
+
+function suspendido_nav (p,args) {
+    var detalle = $('#suspDetalle')
+    var suspPayBtn = $('#suspPayBtn');
+    if (args.hasOwnProperty("info")) {
+        var deuda = args.info[0].balance;
+        detalle.html('Tiene una deuda pendiente de <b>'+deuda+'</b>');
+
+        var bi = args.info[0].balID;
+
+        var cp=0;
+        args.forEach(function (item) {
+            if (item.c==0) cp++;
+        })
+
+        function reqPago () {
+            if (cp<3) askme("PROCESAR PAGO #"+pago,jsrender($('#rd-procesar-pago'),bi),{
+                ok: function (result) {
+                    var monto = parseFloat(result.monto)*-1;
+                    var data = {
+                        desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
+                        monto:monto,
+                        resID:bi.resID
+                    }
+                    socket.sendMessage('balance-pago',data, function (e, d) {
+                        d.balance = "--";
+                        d.c=0;
+                        $balance.unshift(d);
+                        $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+                        $('.bl-pagar').click(balance_pago_click);
+                        notificacion('PAGO ENVIADO EXITOSAMENTE');
+                    });
+                    return true;
+                }
+            });
+        }
+    } else {
+        suspPayBtn.style("visible","none");
+    }
+}
+nav.paginas.addListener('suspendido',suspendido_nav);

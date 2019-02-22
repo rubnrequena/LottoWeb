@@ -525,10 +525,8 @@ function sorteoNuevo_nav(p,arg) {
             updSorteos();
         });
     });
-
     function updSorteos () {
         var id = parseInt(sorteo.val());
-        console.log(id);
         var s = sorteos.filter(function (item) {
             return item.sorteo==id;
         });
@@ -543,6 +541,18 @@ function sorteoNuevo_nav(p,arg) {
             });
         });
     }
+
+    $('#remsorteo').click(function (e) {
+        e.preventDefault(e);
+        var id = $('#sorteos').select2('val');
+        var s = findBy("sorteoID",id,$sorteos);
+        var c = confirm('Seguro desea eliminar el sorteo '+ s.nombre);
+        if (c) {
+            socket.sendMessage('sorteo-remover',{sID:id}, function (e,d) {
+                if (d=="1") notificacion("Sorteo "+ s.nombre+" eliminado...","","growl-success");
+            })
+        }
+    })
 }
 nav.paginas.addListener("sorteos/nuevo",sorteoNuevo_nav);
 
@@ -633,7 +643,7 @@ function sorteoFrutas_nav (p,arg) {
             for (var j=0;j<z.length;j++) {
                 data.push({
                     numero:el[i].numero+z[j],
-                    descripcion:el[i].numero+"-"+j
+                    descripcion:el[i].descripcion+"-"+z[j]
                 });
             }
         }
@@ -910,6 +920,12 @@ function bancasSuspender_nav (p,args) {
     });
     function getLista () {
         socket.sendMessage("usuario-listaSuspender", null, function (e, d) {
+            d = d || [];
+            d.sort(function (a, b) {
+                if(a.c < b.c) { return 1; }
+                if(a.c > b.c) { return -1; }
+                return 0;
+            });
             ltSuspender = d;
             cbody.html(jsrender($('#rd-cond-row'), d));
 
@@ -2337,6 +2353,16 @@ function reporteBalance_nav (p,args) {
                 if (usData.length>0) {
                     $('#reporte-body').html(jsrender($('#rd-reporte-us'), usData));
                     $('#bl-clients-total').html(usData[0].balance.format(2));
+                    $('.balIDmap').hover(function () {
+                        var $bid = $(this).attr("balID");
+                        $('.hoverRow').removeClass("success warning");
+                        usData.forEach(function (n, item, data) {
+                            if (n.desc.indexOf("PAGO:"+$bid)>-1) {
+                                $('#bidr'+ n.balID).addClass("success");
+                                $("#bidr"+ $bid).addClass("warning");
+                            }
+                        })
+                    })
                 } else {
                     $('#bl-clients-total').html('0.00');
                 }
@@ -2344,13 +2370,40 @@ function reporteBalance_nav (p,args) {
                 $('.bl-pagar').click(balance_pago_click);
             });
         }
+
     } else {
         $('.bl-dreg').addClass('hidden');
         $('.bl-greg').removeClass('hidden');
-        var reporte;
+        var reporte; var oreporte;
         socket.sendMessage('balance-general', null, function (e, d) {
-            reporte = d || [];
-            $('#reporte-body').html(jsrender($('#rd-reporte'), d));
+            oreporte = d || [];
+            reporte = oreporte.filter(filtrarSuspendidos);
+            updateView();
+        });
+
+        var toggles = $('.toggle');
+        toggles.each(function (index) {
+            var me = $(this);
+            me.toggles({
+                text:{
+                    on:"SI",
+                    off:"NO"
+                },
+                on:$config.balance.filtrar,
+                click:true
+            });
+        });
+        toggles.on("toggle", function (e,act) {
+            $config.balance.filtrar = act; saveConfig();
+            updateView();
+        });
+        function filtrarSuspendidos (item) {
+            return item.activo == 3;
+        }
+        function updateView() {
+            if ($config.balance.filtrar) reporte = oreporte.filter(filtrarSuspendidos);
+            else reporte = oreporte;
+            $('#reporte-body').html(jsrender($('#rd-reporte'), reporte));
 
             $('.umenu').click(function (ev) {
                 ev.preventDefault(ev);
@@ -2360,7 +2413,7 @@ function reporteBalance_nav (p,args) {
             });
 
             var tc = 0;
-            d.forEach(function (item) {
+            reporte.forEach(function (item) {
                 tc = tc + item.balance;
             });
             $('#bl-clients-total').html(tc.format(2));
@@ -2372,7 +2425,33 @@ function reporteBalance_nav (p,args) {
             reporte_pagos(inicio,fin);
             $('#desde').val(inicio);
             $('#hasta').val(fin);
-        });
+
+            //suspender
+            $('.bl-suspender').click(function (e) {
+                e.preventDefault(e);
+                var usID = $(this).attr('usID');
+                var ID = usID.substr(1);
+                var act = parseInt($(this).attr("usAc"))==0?3:0;
+                var cf = confirm("Confirma desea suspender/restaurar usuario?");
+                if (cf) {
+                    $('#bl-us'+usID).html('<i class="fa fa-spinner fa-spin"></i>');
+                    socket.sendMessage("usuario-editar",{usuarioID:ID,activo:act}, function (e, d) {
+                        var u = findBy("usID",usID,reporte);
+                        if (d.code==1) {
+                            u.activo = act;
+                            updateView();
+                        }
+                        else notificacion("ERROR","OCURRIO UN ERROR AL SUSPENDER A "+ u.nombre);
+                    })
+                }
+            });
+
+
+            $('.menuUsuario').click(function (e) {
+                e.preventDefault(e);
+                alert("asdasdasd");
+            });
+        }
 
         $('#bl-sort-desc').click(function (e) {
             e.preventDefault(e);
@@ -2397,14 +2476,14 @@ function reporteBalance_nav (p,args) {
 
         function reporte_pagos (inicio,fin) {
             socket.sendMessage('balance-pagos',{'inicio':inicio,'fin':fin}, function (e, d) {
-                if (!d) return;
-                $('#bl-pagos').html(jsrender($('#rd-reporte-pagos'),d));
-                var total=0;
-                d.forEach(function (item) {
-                    total+= item.monto;
-                });
-                $('#bl-pagos-total').html(total.format(2));
-
+                if (d) {
+                    $('#bl-pagos').html(jsrender($('#rd-reporte-pagos'), d));
+                    var total = 0;
+                    d.forEach(function (item) {
+                        total += item.monto;
+                    });
+                    $('#bl-pagos-total').html(total.format(2));
+                } else $('#bl-pagos-total').html("0.00");
                 reporte_ppagos();
             });
         }
@@ -2413,44 +2492,49 @@ function reporteBalance_nav (p,args) {
                 updateView();
 
                 function updateView () {
-                    $('#bl-ppagos').html(jsrender($('#rd-reporte-pend'),balPend));
-                    var total=0;
-                    balPend.forEach(function (item) {
-                        total+= item.monto;
-                    });
-                    $('#bl-ppagos-total').html(total.format(2));
-                    $('.cf-pago').click(function (e) {
-                        e.preventDefault(e);
-                        var id = $(this).attr('bid');
-                        var pago = findBy("balID",id,balPend);
-                        askme("CONFIRMAR PAGO #"+pago.balID,jsrender($('#rd-procesar-pendiente'),pago),{
-                            ok: function (data) {
-                                $('#cf-label').html('Espere.. confirmando pago.');
-                                var b = findBy("balID",id,balPend);
-                                var data = {
-                                    bID:id,
-                                    usID: b.usID,
-                                    monto:data.monto
+                    if (balPend) {
+                        var total=0;
+                        balPend.forEach(function (item) {
+                            total += item.monto;
+                        });
+                        $('#bl-ppagos').html(jsrender($('#rd-reporte-pend'),balPend));
+                        $('#bl-ppagos-total').html(total.format(2));
+                        $('.cf-pago').click(function (e) {
+                            e.preventDefault(e);
+                            var id = $(this).attr('bid');
+                            var pago = findBy("balID", id, balPend);
+                            askme("CONFIRMAR PAGO #" + pago.balID, jsrender($('#rd-procesar-pendiente'), pago), {
+                                ok: function (data) {
+                                    $('#cf-label').html('Espere.. confirmando pago.');
+                                    var b = findBy("balID", id, balPend);
+                                    var data = {
+                                        bID: id,
+                                        usID: b.usID,
+                                        monto: data.monto
+                                    }
+                                    socket.sendMessage('balance-confirmacion', data, function (e, d) {
+                                        $('#md-ask').modal('hide');
+                                        //TODO actualizar balance
+                                    })
+                                    return false;
                                 }
-                                socket.sendMessage('balance-confirmacion',data, function (e, d) {
-                                    $('#md-ask').modal('hide');
-                                    nav.url("reporte/balance",[b.usID]);
-                                })
-                                return false;
-                            }
+                            })
                         })
-                    })
-                    $('.bl-rmv-pend').click(function (e) {
-                        e.preventDefault(e);
-                        var id = $(this).attr('balID');
-                        socket.sendMessage('balance-remover-pend',{bID:id}, function (e, d) {
-                            if (confirm('Confirma remover pago pendiente?')) {
-                                var idx = findIndex("balID", id, balPend);
-                                balPend.splice(idx, 1);
-                                updateView();
-                            }
-                        })
-                    });
+                        $('.bl-rmv-pend').click(function (e) {
+                            e.preventDefault(e);
+                            var id = $(this).attr('balID');
+                            socket.sendMessage('balance-remover-pend', {bID: id}, function (e, d) {
+                                if (confirm('Confirma remover pago pendiente?')) {
+                                    var idx = findIndex("balID", id, balPend);
+                                    balPend.splice(idx, 1);
+                                    updateView();
+                                }
+                            })
+                        });
+                    } else {
+                        $('#bl-ppagos-total').html("0.00");
+                        $('#bl-ppagos').html("");
+                    }
                 }
             });
         }

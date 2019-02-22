@@ -21,3 +21,17 @@ var $elementos = [];
 var $bancas;
 var $usuarios;
 var $sorteos;
+
+//initConfig
+var $config = {
+        balance:{
+            filtrar:true
+        }
+    };
+if ($storage.getItem("srq.operadora")) {
+    $config = JSON.parse($storage.getItem("srq.operadora"));
+}
+
+function saveConfig() {
+    $storage.setItem("srq.operadora",JSON.stringify($config));
+}

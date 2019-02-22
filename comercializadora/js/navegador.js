@@ -2438,3 +2438,60 @@ function conexiones_nav (p,args) {
     }
 }
 nav.paginas.addListener('conexiones',conexiones_nav);
+
+function bancasSuspender_nav (p,args) {
+    var ltSuspender = []
+    var cm = $('#sup-comer'), cbody = $('#cond-body');
+    var bn = $('#sup-banca');
+
+    cm.html(jsrender($('#rd-usuario-option'), $bancas));
+    cm.change(function () {
+        bn.html('');
+        socket.sendMessage('usuario-grupos', {usuarioID:cm.val()}, function (e, d) {
+            bn.html(jsrender($('#rd-grupo-option'),d));
+            bn.select2("val","")
+        });
+    })
+    cm.select2("val", "");
+
+    $('#suspnvo-form').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        if (data.hasOwnProperty("bID")) {
+            data.sID = "g"+data.bID;
+            delete data.bID;
+        } else data.sID = "u"+data.sID;
+        var form = formLock(this)
+        socket.sendMessage("usuario-suspnvo",data, function (e, d) {
+            formLock(form,false)
+            cbody.html("");
+            getLista();
+        });
+    });
+    function getLista () {
+        socket.sendMessage("usuario-listaSuspender", null, function (e, d) {
+            d = d || [];
+            d.sort(function (a, b) {
+                if(a.c < b.c) { return 1; }
+                if(a.c > b.c) { return -1; }
+                return 0;
+            });
+            ltSuspender = d;
+            cbody.html(jsrender($('#rd-cond-row'),d));
+
+            $('.sprem').click(function (e) {
+                e.preventDefault(e);
+                var id = $(this).attr("usID");
+                var c = confirm("SEGURO DESEA REMOVER ESTA CONDICION?")
+                if (c) {
+                    socket.sendMessage("usuario-susprem", {uID: id}, function (e, d) {
+                        var i = findBy("sID", id, ltSuspender)
+                        $('#r' + id).remove();
+                    });
+                }
+            })
+            bn.select2("val","");
+        })
+    }; getLista();
+}
+nav.paginas.addListener("bancas/suspensiones",bancasSuspender_nav);

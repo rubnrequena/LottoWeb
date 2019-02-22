@@ -353,8 +353,8 @@ function sorteoMonitor_nav(e,arg) {
         help.gana = function (m) { return (m*100/jg)>100; };
         help.pdist = function (n) { return (n*100/tt).format(2); };
         hlp.ganador = function (n) {
-            var e = findBy("elementoID",n,$elementos);
-            return e? "#"+e.numero+' '+e.descripcion : '';
+            var e = findBy("gid",n,sorteos);
+            return e? "#"+e.g+' '+e.gn : '';
         };
         hlp.iganador = function (n) {
             var e = findBy("elementoID",n,$ielementos);
@@ -362,6 +362,7 @@ function sorteoMonitor_nav(e,arg) {
         };
 
         dataForm = formControls(this);
+        var s = $sorteos;
         var f = formLock(this);
         socket.sendMessage("monitor",dataForm, function (e, d) {
             formLock(f,false);

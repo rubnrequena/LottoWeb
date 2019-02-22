@@ -18,6 +18,7 @@
     <!--[if lt IE 9]>
     <script src="../theme/js/html5shiv.js"></script>
     <script src="../theme/js/respond.min.js"></script>
+
     <![endif]-->
 </head>
 <body>
@@ -187,8 +188,7 @@
         <td>{{:~formatNumber(monto,2)}}</td>
         <td>
             {{if premio>0}}
-            <label class="label label-primary">{{:~formatNumber(premio,2)}} BsS</label><br>
-            <label class="label label-default">{{:~formatNumber(premio*100000,0)}} BsF</label>
+                {{:~formatNumber(premio,2)}}
             {{/if}}
         </td>
         {{if premio>0}}
@@ -322,6 +322,7 @@
 <script src="js/bracket.js?170429"></script>
 <script src="js/aio.js?180819"></script>
 <script src="../js/aes.js"></script>
+<script src="../js/jspdf.debug.js"></script>
 <!--<script>
     var encryptedAES = CryptoJS.AES.encrypt("Message", "My Secret Passphrase");
     var AESencrypt = encryptedAES.toString();

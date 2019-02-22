@@ -116,15 +116,6 @@ var init = function () {
         });
         $('.now').datepicker('setDate',new Date());
 
-        /*$('#ebsf').change(function (e) {
-            var n = $('.rcono');
-            var s = $(this).is(':checked');
-            n.each(function (index) {
-                var nn = $(this);
-                if (s) nn.html(parseFloat(nn.html())*100000);
-                else nn.html(parseFloat(nn.html())/100000);
-            });
-        })*/
     });
     nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
         // Minimize Button in Panels
@@ -161,7 +152,8 @@ var init = function () {
                 formLock(f,false);
                 if (d.hasOwnProperty("code")) {
                     if (d.code==2) notificacion("CLAVE INVALIDA");
-                } else {
+                    } else {
+
                     var recordar = $('#recordar').is(':checked');
                     if (recordar) storage.setItem("loto_taqlogin", JSON.stringify(data));
                     else storage.removeItem("loto_taqlogin");
@@ -206,6 +198,7 @@ var init = function () {
     var vendiendo=false;
     function venta (p,args) {
 
+
         if (!$sorteos) {
             nav.nav("101");
             return;
@@ -215,7 +208,7 @@ var init = function () {
         if (formatoImpresion>0) {
             if (formatoImpresion==1) $('#printbtn').html('<i class="fa fa-envelope"></i> ENVIAR');
             if (formatoImpresion==2) $('#printbtn').html('<i class="fa fa-mobile-phone"></i> ENVIAR');
-            if (formatoImpresion==3) $('#printbtn').html('<i class="fa fa-whatsapp"></i> ENVIAR');
+            if (formatoImpresion==4) $('#printbtn').html('<i class="fa fa-file"></i> IMPRIMIR');
         } else if (formatoImpresion<0) {
             $('#print-group').html(jsrender($('#print-select')));
 
@@ -231,11 +224,12 @@ var init = function () {
                 $('#print-label').html('<i class="fa fa-envelope"></i> ENVIAR');
                 srqag.modal();
             });
-            $('#print-ws').click(function (e) {
+            $('#print-pdf').click(function (e) {
                 e.preventDefault(e);
-                formatoImpresion = 3;
-                $('#print-label').html('<i class="fa fa-whatsapp"></i> ENVIAR');
-                srqag.modal();
+                formatoImpresion = 4;
+                $('#print-label').html('<i class="fa fa-file"></i> IMPRIMIR');
+                //print pdf
+                cesto_realizarVenta({pdf:true});
             });
         }
 
@@ -391,17 +385,13 @@ var init = function () {
             }
 
             if (!meta) {
-                if (formatoImpresion>=1) {
+                if (formatoImpresion==1) {
                     srqag.modal(); return;
                 } else if (formatoImpresion==-1) {
                     $('#printbtn').click(); return;
                 }
             } else {
-                if (meta.mail==null && meta.sms == null && meta.ws==null) return;
-                /*if (!validateMail(meta.mail)) {
-                    alert("Correo introducido es invalido");
-                    return;
-                }*/
+                //VALIDAR METAs
             }
             if (formatoImpresion == 0 && canPrint==false) {
                 notificacion("ASISTENTE IMPRESION",jsrender($('#rd-print-alert')),"growl-danger"); return;
@@ -434,7 +424,12 @@ var init = function () {
                     else notificacion("TICKET RECHAZADO");
                     return;
                 }
-                if (d.format=="print") cesto_imprimir(d);
+                notificacion("VENTA CONFIRMADA","TICKET: #"+ d.tk.ticketID+"<br/><small>CODIGO: "+ d.tk.codigo+"</small>");
+                //imprimirTicket
+                if (d.format=="print") {
+                    if (formatoImpresion==0) cesto_imprimir(d);
+                    else if (formatoImpresion==4) cesto_pdf(d);
+                }
                 else cesto_enviado(d);
                 cesto_reiniciar();
             })
@@ -457,7 +452,6 @@ var init = function () {
         }
 
         function cesto_enviado (d) {
-            notificacion("VENTA CONFIRMADA","TICKET: #"+ d.tk.ticketID+"<br/><small>CODIGO: "+ d.tk.codigo+"</small>");
             try {
                 if (d.vt.length != cesto.length) {
                     alert("ALERTA: VERIFICAR TICKET, PUEDEN HABER CAMBIOS REALIZADOS POR EL SERVIDOR");
@@ -475,8 +469,19 @@ var init = function () {
                 $('#vnt-ultimo').trigger("click");
             }
         }
+        function cesto_pdf (d) {
+            for (var idx = 0; idx < d.vt.length; idx++) {
+                d.vt[idx].sorteo = getSorteo(d.vt[idx].sorteoID).descripcion;
+            }
+
+            ultimoTicket({
+                ticket: d.tk,
+                ventas: d.vt
+            });
+
+            imprimirVentas_pdf(d.vt, d.tk);
+        }
         function cesto_imprimir (d) {
-            notificacion("VENTA CONFIRMADA","TICKET: #"+ d.tk.ticketID+"<br/><small>CODIGO: "+ d.tk.codigo+"</small>");
             try {
                 if (d.vt.length != cesto.length) {
                     alert("ALERTA: VERIFICAR TICKET, PUEDEN HABER CAMBIOS REALIZADOS POR EL SERVIDOR");
@@ -514,16 +519,6 @@ var init = function () {
                 return s1 == s2?n1-n2:s1-s2;
             }); //ordenarlas por sorteo
             $('#vnt-cesta').html(jsrender($('#rd-cesta-row'),cesto,helper));
-
-            var ncono = $('.ncono');
-            ncono.mouseover(function () {
-                var n = $(this).attr("datan");
-                $(this).text((n*100000).format(0)+" BsF");
-            });
-            ncono.mouseout(function () {
-                var n = $(this).attr("datan");
-                $(this).text(formatNumber(n,2));
-            });
 
             $('.rem-cesto').click(function (e) {
                 e.preventDefault(e);
@@ -611,7 +606,11 @@ var init = function () {
                     var num;
                     if (srt.zodiacal==0) {
                         num = elementoSorteo(srt.sorteo,numero);
-                        addNum(num,sorteo);
+                        if (num>-1) addNum(num,sorteo);
+                        else {
+                            var c = confirm("El numero "+numero+" no se encontro para el sorteo "+srt.descripcion+", puede probar restaurar esta data en preferencias y volver a intentar.")
+                            if (c) nav.url("preferencias|restaurar");
+                        }
                     }
                     else {
                         var zs = vntzodiaco.select2('val');
@@ -631,20 +630,15 @@ var init = function () {
             function addNum (num,sorteo) {
                 if (num>-1) {
                     var idx = elementoCesto(sorteo, num);
-                    if (idx > -1) cesto[idx].monto += cono_sel(data.monto);
+                    if (idx > -1) cesto[idx].monto += data.monto
                     else {
                         cesto.push({
                             numero: num,
-                            monto: cono_sel(data.monto),
+                            monto: data.monto,
                             sorteoID: sorteo
                         });
                     }
                 }
-            }
-
-            function cono_sel(n) {
-                n = (n>1000)?n/100000:n;
-                return parseFloat(String(n).substr(0, n.toFixed(2).length));
             }
             cesto_updateView();
 
@@ -897,7 +891,7 @@ var init = function () {
                 }
                 linea = cesto[i];
                 el = getElemento(linea.num || linea.numero);
-                _lineas.push({type:"linea",text:["#"+el.n,el.d,formatNumber(linea.monto,2)].join("\t "),align:"center"});
+                _lineas.push({type:"linea",text:["#"+el.n,el.d,formatNumber(linea.monto,0)].join("\t "),align:"center"});
             }
 
             _lineas.push({type:"linea",text:"T:"+ticket.monto.format(2)+" AG"+_fingerprint,align:"left"});
@@ -905,6 +899,90 @@ var init = function () {
             _lineas.push({type:"linea",text:" ",align:"left"});
 
             print.sendMessage("print",{data:_lineas,printer:1});
+        }
+        function imprimirVentas_pdf (cesto,ticket,copia) {
+            copia = copia || false;
+            var cl = 10, lheight=8;
+            function newline (text) {
+                pdf.text(text,10,cl);
+                cl+=lheight;
+            }
+            var pdf = new jsPDF();
+            //print_comp
+            var _lineas = [
+                {type:"linea",text:$usuario.nombre.toUpperCase() ,align:"center"},
+                {type:"linea",text:ticket.hora,align:"center"}
+            ];
+            if (copia) {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"COPIA - CADUCA 3 DIAS",align:"center"});
+            }
+            else {
+                _lineas.push({type:"linea",text:"S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length,align:"center"});
+                _lineas.push({type:"linea",text:"TICKET - CADUCA 3 DIAS",align:"center"});
+            }
+
+            cesto.sort(function (a,b) {
+                var s1 = a.sorteoID, s2 = b.sorteoID;
+                var n1 = a.numero, n2 = b.numero;
+                return s1 == s2?n1-n2:s1-s2;
+            }); //ordenarlas por sorteo
+            var linea = cesto[0], el;
+            var ldata = []; var hdata = []; var lo = {}, hi= 0, li= 0, ci=1;
+            //_lineas.push({type:"linea",text:linea.sorteo,align:"center"});
+            hdata[hi] = [{field:"l1",text:linea.sorteo,width:"50"},{field:"l2",text:" ",width:"50"}];
+            ldata[li] = [];
+            for (var i=0;i<cesto.length;i++) {
+                if (linea.sorteoID!=cesto[i].sorteoID) {
+                    //_lineas.push({type:"linea",text:cesto[i].sorteo,align:"center"});
+                    if (ci==2) ldata[li].push(lo);
+
+                    _lineas.push({type:"tabla",header:false,columns:hdata[hi++],data:ldata[li++]});
+
+                    hdata[hi] = [{field:"l1",text:cesto[i].sorteo,width:"50"},{field:"l2",text:" ",width:"50"}];
+                    ldata[li] = [];
+
+                    ci=1; lo = {};
+                }
+                linea = cesto[i];
+                el = getElemento(linea.num || linea.numero);
+                if (ci==2) {
+                    ci=1;
+                    lo.l2 = (el.n=="0"?"0  ":el.n)+" "+el.d.substr(0,3)+" "+formatNumber(linea.monto,0);
+                    ldata[li].push(lo);
+                    lo={};
+                } else {
+                    ci=2;
+                    lo.l1 = (el.n=="0"?"0  ":el.n)+" "+el.d.substr(0,3)+" "+formatNumber(linea.monto,0);
+                    lo.l2 = " ";
+                }
+            }
+            if (ci==2) ldata[li].push(lo);
+            _lineas.push({type:"tabla",header:false,columns:hdata[hi++],data:ldata[li++]});
+
+            _lineas.push({type:"linea",text:"T:"+ticket.monto.format(2)+" AG"+_fingerprint,align:"left"});
+            //print_comp_end
+
+            var ln;
+            for (var l=0;l<_lineas.length;l++) {
+                ln = _lineas[l];
+                if (ln.type=="linea") newline(ln.text);
+                else if (ln.type=="tabla") {
+                    var col = ln.columns[0];
+                    newline(col.text);
+
+                    var body = ln.data; var bl;
+                    for (var bi=0;bi<body.length;bi++) {
+                        bl = body[bi];
+                        var s = "";
+                        if (bl.hasOwnProperty("l1")) s += bl.l1+"\t";
+                        if (bl.hasOwnProperty("l2")) s += bl.l2;
+                        newline(s);
+                    }
+                }
+            }
+
+            pdf.save('SRQ-'+ticket.ticketID);
         }
         function imprimirVentas_comp (cesto,ticket,copia) {
             copia = copia || false;
@@ -946,12 +1024,12 @@ var init = function () {
                 el = getElemento(linea.num || linea.numero);
                 if (ci==2) {
                     ci=1;
-                    lo.l2 = (el.n=="0"?"0  ":el.n)+" "+el.d.substr(0,3)+" "+formatNumber(linea.monto,2);
+                    lo.l2 = (el.n=="0"?"0  ":el.n)+" "+el.d.substr(0,3)+" "+formatNumber(linea.monto,0);
                     ldata[li].push(lo);
                     lo={};
                 } else {
                     ci=2;
-                    lo.l1 = (el.n=="0"?"0  ":el.n)+" "+el.d.substr(0,3)+" "+formatNumber(linea.monto,2);
+                    lo.l1 = (el.n=="0"?"0  ":el.n)+" "+el.d.substr(0,3)+" "+formatNumber(linea.monto,0);
                     lo.l2 = " ";
                 }
             }
@@ -1007,15 +1085,15 @@ var init = function () {
                 el = getElemento(linea.num || linea.numero);
                 if (ci==3) {
                     ci=1;
-                    lo.l3 = [el.n+"x"+formatNumber(linea.monto,2)].join("\t ");
+                    lo.l3 = [el.n+"x"+formatNumber(linea.monto,0)].join("\t ");
                     ldata[li].push(lo);
                     lo={};
                 } else if (ci==2) {
                     ci++;
-                    lo.l2 = [el.n+"x"+formatNumber(linea.monto,2)].join("\t ");
+                    lo.l2 = [el.n+"x"+formatNumber(linea.monto,0)].join("\t ");
                 } else {
                     ci++;
-                    lo.l1 = [el.n+"x"+formatNumber(linea.monto,2)].join("\t ");
+                    lo.l1 = [el.n+"x"+formatNumber(linea.monto,0)].join("\t ");
                     lo.l2 = " ";
                     lo.l3 = " ";
                 }
@@ -1665,6 +1743,21 @@ var init = function () {
                 bprint.html("Editar");
             }
         });
+
+        $('#prf-rest-numeros').click(function () {
+            var c = confirm('Esta accion reinicara el listado de numeros almacenados y reiniciara su sesion');
+            if (c) {
+                storage.removeItem("srq.taq.elementos");
+                storage.removeItem("srq.taq.helementos");
+                location.reload();
+            }
+        });
+
+        if (args && args.length>0) {
+            $('html, body').animate({
+                scrollTop: $("#"+args[0]).offset().top
+            }, 500);
+        }
     }
     nav.paginas.addListener("preferencias",preferencias_nav);
 
@@ -1786,7 +1879,8 @@ var init = function () {
                 storage.removeItem("loto_taqlogin");
                 socket.removeListener(NetEvent.SOCKET_CLOSE,socket_CLOSE);
                 socket.close();
-            }
+            } else
+            if (d.code==505) notificacion('USUARIO SUSPENDIDO','Comuniquese con su administrador o banquero','growl-danger');
             return;
         }
         $usuario = d.taq;
@@ -1795,14 +1889,18 @@ var init = function () {
         function validarElementos (hash,cb) {
             var localHash = storage.getItem("srq.taq.helementos");
             if (localHash==hash) {
-                loadLocal();
-                cb();
+                try {
+                    loadLocal();
+                    cb();
+                } catch (e) {
+                    validarElementos("refres",cb);
+                }                
             } else {
                 notificacion("Espere...",'<p id="ntf-cargaelem"><i class="fa fa-spinner fa-spin"></i> Recibiendo listado animales</p>');
                 var elm=[];
                 socket.addListener('elementos-init',function (e, d) {
-                    if (d=='end') {
-                        storage.setItem("srq.taq.helementos",hash);
+                    if (d.hasOwnProperty("hash")) {
+                        storage.setItem("srq.taq.helementos", d.hash);
                         storage.setItem("srq.taq.elementos",JSON.stringify(elm))
                         $('#ntf-cargaelem').html('<i class="fa fa-check"></i> Lista de animales recibido');
                         socket.removeListeners(e);
@@ -1823,14 +1921,12 @@ var init = function () {
             $elementos = JSON.parse(storage.getItem("srq.taq.elementos"));
             var n, a;
             var z = ["CAPRICORNIO","ACUARIO","PISCIS","ARIES","TAURO","GEMINIS","CANCER","LEO","VIRGO","LIBRA","ESCORPIO","SAGITARIO"];
-            for (var i=0;i< $elementos.length;i++) {
-                a = $elementos[i].d.split("-");
-                if ($elementos[i].n.length>2) {
-                    n = exploreBy("s",$elementos[i].s,$elementos);
-                    n = findBy("n",a[0],n,$elementos[i].s);
-                    $elementos[i].d = n.d+"-"+z[a[1]];
-                }
-            }
+            if (!$elementos || $elementos.length==0) {
+                var c = confirm("No hay registrados elementos para los sorteos registrados, desea cargarlos nuevamente?");
+                if (c) validarElementos('', function () {
+                    nav.navUrl();
+                });
+            } 
         }
         validarElementos(d.elementos, function () {
             nav.navUrl();

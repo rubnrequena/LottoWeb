@@ -16,8 +16,9 @@
                     <select class="s2 form-control" id="ft-impresion">
                         <option value="0">PAPEL</option>
                         <option value="1">DIGITAL [CORREO]</option>
-                        <option value="2">DIGITAL [SMS]</option>
-                        <option value="3">DIGITAL [WHATSAPP]</option>
+                        <!--<option value="2">DIGITAL [SMS]</option>-->
+                        <!--<option value="3">DIGITAL [WHATSAPP]</option>-->
+                        <option value="4">DIGITAL [PDF]</option>
                         <option value="-1">ELEGIR ANTES DE VENDER</option>
                     </select>
                 </div>
@@ -25,8 +26,6 @@
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
                     <p class="help-block">Se recomienda usar el formato <strong>WhatsApp</strong> solo en dispositivos mobiles, puede ser usado en escritorio conectando su whatsapp mediante <a href="https://web.whatsapp.com">web.whatsapp.com</a> </p>
-                    <p class="help-block">
-                        <span class="text-danger">El formato <strong>SMS</strong> esta en fase de pruebas, recomendamos no activar esta funcion hasta que notifiquemos oficialmente que esta 100% operativa.</span></p>
                 </div>
             </div>
             <div class="form-group">
@@ -109,6 +108,28 @@
                         <button type="button" class="btn btn-lightblue" id="btnimprimir">Editar</button>
                       </span>
                         <input type="text" class="form-control" id="scimprimir" readonly/>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <div class="panel-btns">
+            <a href="" class="minimize">&minus;</a>
+        </div>
+        <h3 class="panel-title">RESTAURAR</h3>
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal" id="restaurar">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">NUMEROS</label>
+                <div class="col-sm-6">
+                    <div class="input-group mb15">
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-darkblue" id="prf-rest-numeros">Restaurar</button>
+                      </span>
                     </div>
                 </div>
             </div>
