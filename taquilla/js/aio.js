@@ -166,7 +166,8 @@ var init = function () {
         var help = {
             gano: function (g) {
                 var e = findBy('id',g,$elementos);
-                return g==0?'':"#"+ e.n+" "+e.d;
+                if (e) return g==0?'':"#"+ e.n+" "+e.d;
+                else return "NA";
             },
             formatDate:dateFormat
         };
@@ -615,7 +616,12 @@ var init = function () {
                     else {
                         var zs = vntzodiaco.select2('val');
                         if (zs.length>0) {
-                            for (var i=0;i<zs.length;i++) {
+                            var i;
+                            if (zs.indexOf("TODOS")>-1) {
+                                zs = new Array(zdata.length);
+                                for (i=1;i<zdata.length;i++ ) zs[i] = zdata[i].zID;
+                            }
+                            for (i=0;i<zs.length;i++) {
                                 num = elementoSorteo(srt.sorteo,numero+zs[i]);
                                 addNum(num,sorteo);
                             }
@@ -1228,7 +1234,7 @@ var init = function () {
         //zodiaco
         var vntzodiaco = $('#vnt-zodiaco');
         var zdata = [
-            {zID:"",desc:"TODOS"},
+            {zID:"TODOS",desc:"TODOS"},
             {zID:"CP",desc:"CAPRICORNIO"},
             {zID:"AC",desc:"ACUARIO"},
             {zID:"PI",desc:"PISCIS"},
