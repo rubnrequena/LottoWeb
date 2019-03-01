@@ -861,3 +861,107 @@ function sorteosUsuarios_nav (p,args) {
     });
 }
 nav.paginas.addListener("sorteos/usuarios",sorteosUsuarios_nav);
+
+nav.paginas.addListener("sorteos/pendientes", function (p, args) {
+    var help = {
+        padding:padding,
+        sorteos: function (sorteo) {
+            var s = "";
+            var elem = exploreBy("sorteo",sorteo,$elementos);
+            for (var i=0;i<elem.length;i++) {
+                s += '<option value="'+elem[i].elementoID+'">#'+elem[i].numero+' '+elem[i].descripcion+'</option>';
+            }
+            return s;
+        }
+    };
+    $('#sorteo-buscar').submit(function (e) {
+        e.preventDefault(e);
+        var data = formControls(this);
+        var f = formLock(this);
+        var sn, s, res;
+        socket.sendMessage('sorteo-pendientes', data, function (e, d) {
+            formLock(f,false);
+            if (!d || d.length==0) return;
+            res = d;
+
+            sn= [], s = [];
+            for (var i=0;i< d.length;i++) {
+                var x = sn.indexOf(d[i].sorteo);
+                if (x==-1) {
+                    sn.push(d[i].sorteo);
+                    s.push({
+                        descripcion:findBy("sorteoID",d[i].sorteo,$sorteos).nombre,
+                        sorteo:d[i].sorteo,
+                        horarios:[d[i]]
+                    });
+                } else {
+                    var sr = s[x];
+                    sr.horarios.push(d[i]);
+                }
+            }
+
+            if ($elementos.length>0) initUI();
+            else {
+                socket.addListener("elementos",elementos_result)
+                socket.sendMessage("elementos",{sorteos:sn})
+                function elementos_result (e, d) {
+                    if (d=="end") initUI();
+                    else $elementos = $elementos.concat(d);
+                }
+            }
+        })
+
+        function initUI() {
+            $('#accordion').html(jsrender($('#rd-sorteo-row'), s, help));
+            select2w($('.s3'),{allowClear:true});
+            $('select.sorteosel').each(function (idx,item) {
+                var s = $(item).data('select');
+                $(item).val(s);
+                $(item).select2('val',s);
+            });
+            $('.sorteosel').change(function (ev) {
+                var val = ev.target.value; var e = $(this); var sorteo = e.data('sorteo');
+                var el = findBy("elementoID",val,$elementos);
+                var sr = findBy("sorteoID",sorteo,res);
+                var r = confirm('Confirma que desea registrar #'+sr.sorteoID+' '+sr.descripcion+' #'+el.numero+' '+el.descripcion);
+                if (r) {
+                    var data = {
+                        sorteoID: sorteo,
+                        elemento: val
+                    };
+                    premiar(data,e);
+                } else {
+                    e.select2('val',e.data('select'));
+                    e.val(e.data('select'));
+                }
+            });
+        }
+        function premiar (data,elm) {
+            socket.sendMessage("sorteo-premiar", data, function (e, d) {
+                var el;
+                if (d.code==1) {
+                    el = findBy("elementoID",data.elemento,$elementos);
+                    notificacion('SORTEO PREMIADO', 'SORTEO #' + data.sorteoID + " PREMIADO<p>GANADOR: #" + el.numero +" "+ el.descripcion +"</p>");
+                } else if (d.code==0) {
+                    el = findBy("elementoID",data.elemento,$elementos);
+                    notificacion('[JV] SOLICITUD ACEPTADA', 'SORTEO #' + data.sorteoID + "<p>GANADOR: #" + el.numero +" "+ el.descripcion +"</p>");
+                }
+                else if (d.code==4) {
+                    notificacion("SORTEOS","SORTEO #"+data.sorteoID+" YA ESTA PREMIADO",'growl-danger');
+                    var r = confirm('Este sorteo ya esta premiado, desea reiniciarlo');
+                    if (r) {
+                        socket.sendMessage("sorteo-reiniciar", {sorteoID:data.sorteoID}, function (e, d) {
+                            notificacion("SORTEOS", "SORTEO #" + data.sorteoID + " REINICIADO SATISFACTORIAMENTE");
+                            if (confirm('DESEA VOLVER A PREMIAR CON EL NUMERO SELECCIONADO?')) premiar(data,elm);
+                        });
+                    } else {
+                        elm.select2("val",elm.data('select'));
+                        elm.select2("val",elm.data('select'));
+                    }
+                }
+                else if (d.code==3) notificacion("SORTEOS","SORTEO #"+data.sorteoID+" PREMIADO, PERO SIN VENTAS REGISTRADAS",'growl-danger');
+                else if (d.code==5) notificacion("SOLICITUD RECHAZADA"," SORTEO #"+data.sorteoID+" SOLICITUD DUPLICADA",'growl-danger');
+            });
+        }
+    });
+})

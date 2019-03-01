@@ -1,0 +1,66 @@
+<div class="pageheader hidden-xs">
+    <h2><i class="fa fa-search"></i> Sorteos Pendientes</h2>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <div class="col-sm-9 col-sm-offset-2">
+            <form class="form-horizontal" id="sorteo-buscar">
+                <div class="form-group">
+                    <label class="mt10 col-sm-3 text-right">Fecha</label>
+                    <div class="col-sm-3">
+                        <input class="date now form-control" onfocus="blur()" id="reporte-fecha1" name="desde">
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="date now form-control" onfocus="blur()" id="reporte-fecha2" name="hasta">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <button type="submit" class="btn btn-darkblue btn-block"> Buscar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-body">
+        <div class="panel-body">
+            <div class="panel-group" id="accordion">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-jsrender" id="rd-sorteo-row">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#sp{{:sorteo}}">{{:descripcion}}</a>
+            </h4>
+        </div>
+        <div id="sp{{:sorteo}}" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <tbody id="sorteos-body">
+                            {{for horarios}}
+                                <tr>
+                                    <td><a data-toggle="collapse" data-parent="#accordion" href="#sp{{:sorteo}}"><i class="fa fa-chevron-up"></i></a> {{:fecha}}</td>
+                                    <td><span class="text-uppercase"><span class="label label-primary">{{:~padding(sorteoID,6)}}</span> {{:descripcion}}</span></td>
+                                    <td>
+                                        <select id="s{{:sorteoID}}" class="s3 form-control sorteosel" data-srt="{{:sorteo}}" data-sorteo="{{:sorteoID}}" data-select="{{:gid}}">
+                                            {{:~sorteos(sorteo)}}
+                                        </select>
+                                    </td>
+                                    <td><div data-target="{{:sorteoID}}" data-activa="{{:abierta}}" class="toggle toggle-success ttgl"></div></td>
+                                </tr>
+                            {{/for}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
