@@ -2447,17 +2447,28 @@ function bancasSuspender_nav (p,args) {
     cm.html(jsrender($('#rd-usuario-option'), $bancas));
     cm.change(function () {
         bn.html('');
+
+    })
+    cm.select2("val", "");
+
+    var nivel2 = $('#nivel2');
+    var nivel2val = false;
+    nivel2.click(function () {
+        nivel2val = $(this).is(":checked");
+        $('.nivel2').toggleClass("hidden");
+        if (nivel2val) getNivel2();
+    })
+
+    function getNivel2() {
         socket.sendMessage('usuario-grupos', {usuarioID:cm.val()}, function (e, d) {
             bn.html(jsrender($('#rd-grupo-option'),d));
             bn.select2("val","")
         });
-    })
-    cm.select2("val", "");
-
+    }
     $('#suspnvo-form').submit(function (e) {
         e.preventDefault(e);
         var data = formControls(this);
-        if (data.hasOwnProperty("bID")) {
+        if (nivel2val) {
             data.sID = "g"+data.bID;
             delete data.bID;
         } else data.sID = "u"+data.sID;
@@ -2472,8 +2483,8 @@ function bancasSuspender_nav (p,args) {
         socket.sendMessage("usuario-listaSuspender", null, function (e, d) {
             d = d || [];
             d.sort(function (a, b) {
-                if(a.c < b.c) { return 1; }
-                if(a.c > b.c) { return -1; }
+                if(a.c < b.c) { return -1; }
+                if(a.c > b.c) { return 1; }
                 return 0;
             });
             ltSuspender = d;
@@ -2484,7 +2495,7 @@ function bancasSuspender_nav (p,args) {
                 var id = $(this).attr("usID");
                 var c = confirm("SEGURO DESEA REMOVER ESTA CONDICION?")
                 if (c) {
-                    socket.sendMessage("usuario-susprem", {uID: id}, function (e, d) {
+                    socket.sendMessage("usuario-susprem", {sID: id}, function (e, d) {
                         var i = findBy("sID", id, ltSuspender)
                         $('#r' + id).remove();
                     });
