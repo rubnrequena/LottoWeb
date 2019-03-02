@@ -786,11 +786,26 @@ function reporteGeneral_nav (p,args) {
             }
             rdata = d;
             var j=0, pr=0, pg=0, cm=0, rn=0;
+            var srtIndex = [];
+            var srtData = [];
             d.forEach(function (item) {
                 item.balance = item.jugada-item.premio-item.comision;
                 j+=item.jugada;
                 pr+=item.premio;
                 cm+= item.comision;
+
+                if (srtIndex.indexOf(item.sorteo)==-1) {
+                  srtIndex.push(item.sorteo);
+                  var sItem = findBy("sorteoID",item.sorteo,$sorteos);
+                  var nItems = exploreBy("sorteo",item.sorteo,rdata);
+                  var nTotal=0;
+                  nItems.forEach(function (item) {
+                    nTotal += item.jugada;
+                  })
+                  sItem.jugada = nTotal;
+                  sItem.data = nItems;
+                  srtData.push(sItem);
+                }
             });
 
             $('#mnt-jugado').html(j.format(0));
@@ -798,9 +813,32 @@ function reporteGeneral_nav (p,args) {
             $('#mnt-comision').html(cm.format(0));
             $('#mnt-balance').html((j-pr-cm).format(0));
 
-            $('#reporte-body').html(jsrender($('#rd-reporte'),d));
+            $('#accordion').html(jsrender($('#rd-reporte'),srtData));
+
+            $('.rptCollapse').on('shown.bs.collapse', function () {
+              var sID = parseInt($(this).attr("sorteo"));
+              var data = exploreBy("sorteo",sID,rdata);
+              updateTotal(data);
+            })
+            $('.rptCollapse').on('hide.bs.collapse', function () {
+              updateTotal(rdata);
+            });
         })
     });
+
+    function updateTotal (d) {
+      var j=0, pr=0, pg=0, cm=0, rn=0;
+      d.forEach(function (item) {
+        item.balance = item.jugada-item.premio-item.comision;
+        j+=item.jugada;
+        pr+=item.premio;
+        cm+= item.comision;
+      });
+      $('#mnt-jugado').html(j.format(0));
+      $('#mnt-premios').html(pr.format(0));
+      $('#mnt-comision').html(cm.format(0));
+      $('#mnt-balance').html((j-pr-cm).format(0));
+    }
 
     $('#rtp-desc-o').click(function (e) {
         e.preventDefault(e);
