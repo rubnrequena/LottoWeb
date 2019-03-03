@@ -938,7 +938,7 @@ nav.paginas.addListener("sorteos/pendientes", function (p, args) {
                 }
             }
 
-            if ($elementos.length>0) initUI();
+            if ($elementos && $elementos.length>0) initUI();
             else {
                 socket.addListener("elementos",elementos_result)
                 socket.sendMessage("elementos",{sorteos:sn})

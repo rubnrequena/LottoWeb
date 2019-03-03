@@ -16,7 +16,8 @@ nav.viewport = ".contentpanel";
 nav.validate = function (page,params) {
     if ($usuario) {
         if ($usuario.nivel == 2) {
-            page = page == "sorteos/premiar" || page == "sorteos/buscar" ? page : "404";
+            var grant = ["sorteos/premiar","sorteos/buscar","sorteos/pendientes"];
+            page = grant.indexOf(page)>-1? page : "404";
         }
         return page;
     } else return "login";
