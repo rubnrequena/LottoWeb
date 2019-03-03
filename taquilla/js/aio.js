@@ -9,9 +9,9 @@ var init = function () {
     var proxy = 'http://proxy.srq.com.ve/taquilla';
     if (href.indexOf("/animal/")>-1) proxy = 'http://animal.srq.com.ve/taquilla';
     if (href.indexOf("/animales/")>-1) proxy = 'http://animales.srq.com.ve/taquilla';
-    setTimeout(function () {
+    var errCon = setTimeout(function () {
         $('#proxy').html('<i class="fa fa-clock-o"></i> No conecta? puedes probar ingresar <a href="'+proxy+'"><i class="fa fa-link"></i> aqui</a>.');
-    },0);
+    },5000);
 //CONFIG
     var config = {
         mimp:storage.getItem("srq.taq.modoImpresion") || 1,
@@ -1787,7 +1787,6 @@ var init = function () {
 // MAIN //
     var ntfbuttonidx=0;
     function main_initSocket() {
-        host = "127.0.0.1"
         socket = new Net("ws://"+host,false);
         socket.addListener(NetEvent.SOCKET_OPEN,socket_OPEN);
         socket.addListener(NetEvent.LOGIN,socket_LOGIN);
@@ -1873,6 +1872,7 @@ var init = function () {
         socket.close();
     }
     function socket_OPEN(e) {
+        clearTimeout(errCon);
         $('#conectando').fadeOut();
     }
     function login (d,f) {
