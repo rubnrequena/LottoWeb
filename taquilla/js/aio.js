@@ -25,6 +25,11 @@ var init = function () {
         storage.setItem("srq.taq."+key,val);
         config[key] = val;
     }
+
+    if (!storage.getItem("srq.taq.smskey")) {
+        storage.setItem("srq.taq.smskey","5c7c5f2987fe831d30739993");
+        notificacion("Servicio SMS Activado <i class='fa fa-envelope'></i>","Enhorabuena, hemos activado en fase de pruebas nuestro servicio de SMS, solo debes ir a preferencias y cambiar el formato de Impresion a SMS o ELEGIR ANTES DE VENDER y listo!!, que lo disfrutes.",null,true);
+    }
 //IMPRESORA
     var canPrint=false; var grt;
     var print = new Net("ws://127.0.0.1:9999",false);
@@ -240,6 +245,12 @@ var init = function () {
                 //print pdf
                 cesto_realizarVenta({pdf:true});
             });
+            $('#print-sms').click(function (e) {
+                e.preventDefault(e);
+                formatoImpresion = 2;
+                $('#print-label').html('<i class="fa fa-phone"></i> ENVIAR');
+                srqag.modal();
+            });
         }
 
         //ticketPendiente
@@ -359,9 +370,9 @@ var init = function () {
                 else alert('CORREO INVALIDO');
             }
             if (formatoImpresion==2) {
-                alert("ESTIMADOS USUARIOS, SRQ NOTIFICA QUE LAMENTABLEMENTE HEMOS SUSPENDIDO TEMPORALMENTE EL SERVICIO DE MENSAJERIA POR PROBLEMAS CON LA OPERADORA, ESPERAMOS PRONTO SOLUCIONAR EL INCONVENIENTE.");
-                /*if (validatePhone(v)) { cesto_realizarVenta({sms:v}); srqag.modal("hide"); }
-                 else alert('TELEFONO INVALIDO');*/
+                var k = storage.getItem("srq.taq.smskey")
+                if (validatePhone(v)) { cesto_realizarVenta({sms:v,key:k}); srqag.modal("hide"); }
+                else alert('TELEFONO INVALIDO');
             }
             if (formatoImpresion==3) {
                 v = parseFloat(v).toString();
@@ -394,14 +405,22 @@ var init = function () {
             }
 
             if (!meta) {
-                if (formatoImpresion==1) {
+                if (formatoImpresion==1 || formatoImpresion==2) {
                     srqag.modal(); return;
                 } else if (formatoImpresion==-1) {
                     $('#printbtn').click(); return;
                 }
-            } else {
-                //VALIDAR METAs
             }
+
+            if (formatoImpresion==2) {
+                var key = storage.getItem("srq.taq.smskey");
+                if (!key || key=="") {
+                    notificacion("ERROR","<p>No es posible conectar con el servidor de mesajes, es necario asignar una llave valida.</p>" +
+                        "<p>Puede activarla en <a href='#preferencias'>Preferencias</a>, consulte con su administrador para obtener una llave.</p>");
+                    return;
+                }
+            }
+
             if (formatoImpresion == 0 && canPrint==false) {
                 notificacion("ASISTENTE IMPRESION",jsrender($('#rd-print-alert')),"growl-danger"); return;
             }
@@ -429,7 +448,10 @@ var init = function () {
                         d.elementos.forEach(ajustarAtope);
                         cesto_updateView();
                     }
-                    else if (d.code==101) notificacion("PLATAFORMA SMS NO DISPONIBLE","La plataforma no se encuentra disponible en estos momentos, por favor intente mas tarde, disculpe las molestias.");
+                    else if (d.code==101) {
+                        notificacion("VENTA CONFIRMADA","TICKET: #"+ d.tk.ticketID+"<br/><small>CODIGO: "+ d.tk.codigo+"</small>");
+                        cesto_reiniciar();
+                    }
                     else notificacion("TICKET RECHAZADO");
                     return;
                 }
@@ -1767,6 +1789,14 @@ var init = function () {
             }
         });
 
+        $('#sms-key').submit(function (e) {
+            e.preventDefault(e);
+            var data = formControls(this);
+            storage.setItem("srq.taq.smskey",data.smskey);
+            notificacion("CAMBIOS REALIZADOS");
+        });
+        $('#smskey').val(storage.getItem('srq.taq.smskey'));
+
         if (args && args.length>0) {
             $('html, body').animate({
                 scrollTop: $("#"+args[0]).offset().top
@@ -1824,6 +1854,19 @@ var init = function () {
             if ($meta.hasOwnProperty("msg_srv") && $meta.msg_srv.length>0) {
                 notificacion('MENSAJE SERVIDOR',$meta.msg_srv,'',true);
             }
+        });
+        socket.addListener("sms-result",function (e,d) {
+            $.ajax({
+                url:'http://srq-hermes.herokuapp.com/api/log',
+                data: {usuario:$usuario.usuario,numero:d.num,contenido:d.code},
+                dataType:"json"
+            }).done(result => {
+                console.log(result);
+            })
+            if (d.code==200) notificacion("MENSAJE ENVIADO",'<p>Numero: '+ d.num+'</p>');
+            if (d.code==1000) notificacion("MENSAJE NO ENVIADO",'<p>LLAVE INVALIDA</p>');
+            if (d.code==1001) notificacion("MENSAJE NO ENVIADO",'<p>LLAVE INACTIVA</p>');
+            if (d.code==1002) notificacion("MENSAJE NO ENVIADO",'<p>SALDO INSUFICIENTE</p>');
         });
         socket.connect();
     }
@@ -1929,7 +1972,6 @@ var init = function () {
 
         //$elementos = d.elementos;
         $sorteos = d.sorteos;
-        $numeros = d.numeros;
 
         $servidor.hora = d.time;
         function loadLocal() {

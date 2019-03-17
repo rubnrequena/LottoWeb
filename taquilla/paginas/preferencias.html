@@ -15,10 +15,10 @@
                 <div class="col-sm-6">
                     <select class="s2 form-control" id="ft-impresion">
                         <option value="0">PAPEL</option>
-                        <option value="1">DIGITAL [CORREO]</option>
-                        <!--<option value="2">DIGITAL [SMS]</option>-->
+                        <option value="1">CORREO</option>
+                        <option value="2">SMS</option>
                         <!--<option value="3">DIGITAL [WHATSAPP]</option>-->
-                        <option value="4">DIGITAL [PDF]</option>
+                        <option value="4">PDF</option>
                         <option value="-1">ELEGIR ANTES DE VENDER</option>
                     </select>
                 </div>
@@ -70,25 +70,49 @@
         </div>
     </div>
 </div>
-<div class="panel">
-    <div class="panel-heading">
-        <div class="panel-btns">
-            <a href="" class="minimize">&minus;</a>
-        </div>
-        <h3 class="panel-title">VENTAS</h3>
-    </div>
-    <div class="panel-body">
-        <form class="form-horizontal">
-            <div class="form-group">
-                <label class="col-sm-3 control-label">ORDEN SORTEOS</label>
-                <div class="col-sm-6">
-                    <select class="s2 form-control" id="md-orden">
-                        <option value="0">SORTEO</option>
-                        <option value="1">HORA DE CIERRE</option>
-                    </select>
-                </div>
+<div class="row">
+    <div class="panel col-sm-6">
+        <div class="panel-heading">
+            <div class="panel-btns">
+                <a href="" class="minimize">&minus;</a>
             </div>
-        </form>
+            <h3 class="panel-title">VENTAS</h3>
+        </div>
+        <div class="panel-body" style="min-height: 130px;">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">ORDEN SORTEOS</label>
+                    <div class="col-sm-6">
+                        <select class="s2 form-control" id="md-orden">
+                            <option value="0">SORTEO</option>
+                            <option value="1">HORA DE CIERRE</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="panel col-sm-6" id="sms">
+        <div class="panel-heading">
+            <div class="panel-btns">
+                <a href="" class="minimize">&minus;</a>
+            </div>
+            <h3 class="panel-title">SMS</h3>
+        </div>
+        <div class="panel-body" style="min-height: 130px;">
+            <label>Registrar llave para activar servicio de sms</label>
+            <form class="form-horizontal" id="sms-key">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">LLave</label>
+                    <div class="input-group col-sm-6">
+                        <input type="text" class="form-control" id="smskey" name="smskey"/>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-darkblue">OK</button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 <div class="panel">

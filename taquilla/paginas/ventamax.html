@@ -1,6 +1,46 @@
 <div class="pageheader hidden-xs">
     <h2 class="text-uppercase" id="taq-nombre"></h2>
 </div>
+<div id="news"></div>
+<script>
+    var loc = location.href;
+    var news = $('#news');
+    var url = "http://srq.com.ve/noticias.php";
+    if (loc.indexOf("/animalitos/")>-1 || loc.indexOf("animalitos.")>-1) {
+        $.ajax(url,{s:"animalitos"}, function (res) {
+            console.log(res);
+        });
+    }
+    $.ajax(url,{data:{s:"animal"}}).done(function (res) {
+        news.html(res);
+        activateMinClose();
+    });
+
+    function activateMinClose() {
+        var heading = jQuery('.panel-heading');
+        heading.attr("title","Click para expandir y/o contraer panel");
+        heading.click(function(){
+            var t = jQuery(this).find('.minnew');
+            var p = t.closest('.panel');
+            if(!t.hasClass('maximize')) {
+                p.find('.panel-body, .panel-footer').slideUp(200);
+                t.addClass('maximize');
+                t.html('&plus;');
+            } else {
+                p.find('.panel-body, .panel-footer').slideDown(200);
+                t.removeClass('maximize');
+                t.html('&minus;');
+            }
+            return false;
+        });
+        // Close Button in Panels
+
+        jQuery('.closenew').click(function(){
+            jQuery(this).closest('.panel').fadeOut(200);
+            return false;
+        });
+    }
+</script>
 <div class="panel">
     <div class="panel-body">
         <div class="row taq-top-menu">
@@ -155,7 +195,7 @@
                         <input type="text" class="form-control" placeholder="Nombre o apodo" name="nombre" id="srqag-nombre" required>
                     </div>
                     <div class="form-group" id="srqag-mailg">
-                        <input type="text" class="form-control" placeholder="Correo" name="valor" required>
+                        <input type="text" class="form-control" placeholder="Correo/Telefono" name="valor" required>
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Nuevo </button>
@@ -237,7 +277,9 @@
         <ul class="dropdown-menu" role="menu">
             <li><a id="print-paper" href="#imprimir"><i class="fa fa-print"></i> Imprimir</a></li>
             <li><a id="print-mail" href="#correo"><i class="fa fa-envelope"></i> Correo</a></li>
+            <li><a id="print-sms" href="#sms"><i class="fa fa-phone"></i> SMS</a></li>
             <li><a id="print-pdf" href="#pdf"><i class="fa fa-file"></i> PDF</a></li>
+
         </ul>
     </div>
 </script>
