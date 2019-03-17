@@ -132,22 +132,6 @@
     </div>
 </div>
 
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                <h4 id="modal-title" class="modal-title"></h4>
-            </div>
-            <div id="modal-body" class="modal-body">
-                <button class="btn btn-darkblue btn-block">Ver Usuario</button>
-                <button class="btn btn-darkblue btn-block">Balance</button>
-                <button class="btn btn-darkblue btn-block">Suspender</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script type="text/x-jsrender" id="rd-reporte">
     {{if activo==0}}
     <tr class="danger">
@@ -156,10 +140,10 @@
     {{/if}}
         <td>{{:fecha}}</td>
         <td class="text-uppercase">
-            <!--<a id="bl-us{{:usID}}" class="bl-suspender" usAc="{{:activo}}" usID="{{:usID}}" href="#suspender|{{:usID}}" title="Suspender/Restalecer">
+            <a id="bl-us{{:usID}}" class="bl-suspender" usAc="{{:activo}}" usID="{{:usID}}" href="#suspender|{{:usID}}" title="Suspender/Restalecer">
                 <i class="fa fa-power-off {{if activo==0}} text-success {{else}} text-danger {{/if}}"></i>
-            </a>-->
-            <a class="menuUsuario" usID="{{:usID}}" data-toggle="modal" data-target=".bs-example-modal-sm" href="#reporte/balance|{{:usID}}">{{:desc}}</a>
+            </a>
+            <a href="#reporte/balance|{{:usID}}">{{:desc}}</a>
         </td>
         <td>{{:~formatNumber(balance,2)}}</td>
     </tr>
