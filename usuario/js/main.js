@@ -65,6 +65,7 @@ $('.logout').click(function (e) {
     $sorteos = null;
     storage.removeItem("loto_uslogin");
     nav.nav('inicio');
+    nav.url('');
 });
 
 //UI
