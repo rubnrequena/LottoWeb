@@ -23,7 +23,7 @@ nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
     // Minimize Button in Panels
     var heading = jQuery('.panel-heading');
     heading.attr("title","Click para expandir y/o contraer panel");
-    heading.click(function(){
+    heading.click(function(e){
         var t = jQuery(this).find('.minimize');
         var p = t.closest('.panel');
         if(!t.hasClass('maximize')) {
@@ -67,20 +67,6 @@ function inicio_nav(p,arg) {
         nav.paginas.removeListener(Navegador.EXIT,arguments.callee);
         if (p=="inicio") activo = false;
     });
-
-    /*var activo = true;
-    setTimeout(function () {
-        if (activo==false) return;
-        socket.sendMessage("inicio", null, function (e,d) {
-            if (d.hasOwnProperty("code")) {
-
-            } else {
-                rdia = d.data;
-                $('#srt_dia').html(jsrender($('#rd-sorteos-dia1-row'), d.data, hlp));
-            }
-            $('#str-dia-stamp').html((new Date(d.time).format('hh:MM TT')))
-        });
-    },3000);*/
 
     $('#btnload').click(function () {
         $("#inicio-sorteodia").html(jsrender($('#rd-pnlsorteo'),null));
@@ -2206,7 +2192,7 @@ function reporteBalance_nav (p,args) {
         $('.bl-greg').removeClass('hidden');
 
         $('#bl-my').removeClass("hidden");
-        var reporte;
+        var reporte; var oreporte;
         if ($balance!=null) {
             $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
             for (var i=0;i<$balance.length;i++) {
@@ -2288,24 +2274,78 @@ function reporteBalance_nav (p,args) {
                 })
             });
         }
+
+        //suspender toggle
+        var toggles = $('.toggle');
+        toggles.each(function (index) {
+            var me = $(this);
+            me.toggles({
+                text:{
+                    on:"SI",
+                    off:"NO"
+                },
+                on:$config.balance.filtrar,
+                click:true
+            });
+        });
+        toggles.on("toggle", function (e,act) {
+            $config.balance.filtrar = act; saveConfig();
+            updateView();
+        });
+        function filtrarSuspendidos (item) {
+            if (item.usID.charAt(0)=="u")
+                return item.activo == 3;
+            else 
+                return item.activo == 1;
+        }
+
+        function updateView() {
+            if (reporte==null) return;
+            if ($config.balance.filtrar) reporte = oreporte.filter(filtrarSuspendidos);
+            else reporte = oreporte;
+
+            $('#reporte-body-client').html(jsrender($('#rd-reporte'), reporte));
+            var tc = 0;
+            reporte.forEach(function (item) {
+                tc = tc + item.balance;
+            });
+            $('#bl-clients-total').html(tc.format(2));
+            //$('#bl-client-heading').trigger('click');
+
+            var now = new Date;
+            var fin = now.format();
+            now.setTime(now.getTime()-86000000*7);
+            var inicio = now.format()
+            reporte_pagos(inicio,fin);
+            $('#desde').val(inicio);
+            $('#hasta').val(fin);
+
+            //suspender
+            $('.bl-suspender').click(function (e) {
+                e.preventDefault(e);
+                var usID = $(this).attr('usID');
+                var ID = usID.substr(1);
+                var act = parseInt($(this).attr("usAc"))==0?3:0;
+                var cf = confirm("Confirma desea suspender/restaurar usuario?");
+                if (cf) {
+                    $('#bl-us'+usID).html('<i class="fa fa-spinner fa-spin"></i>');
+                    socket.sendMessage("usuario-editar",{usuarioID:ID,activo:act}, function (e, d) {
+                        var u = findBy("usID",usID,reporte);
+                        if (d.code==1) {
+                            u.activo = act;
+                            updateView();
+                        }
+                        else notificacion("ERROR","OCURRIO UN ERROR AL SUSPENDER A "+ u.nombre);
+                    })
+                }
+            });
+        }
+
         function getBalanceClientes() {
             socket.sendMessage('balance-clientes', null, function (e, d) {
-                reporte = d || [];
-                $('#reporte-body-client').html(jsrender($('#rd-reporte'), d));
-                var tc = 0;
-                d.forEach(function (item) {
-                    tc = tc + item.balance;
-                });
-                $('#bl-clients-total').html(tc.format(2));
-                $('#bl-client-heading').trigger('click');
-    
-                var now = new Date;
-                var fin = now.format();
-                now.setTime(now.getTime()-86000000*7);
-                var inicio = now.format()
-                reporte_pagos(inicio,fin);
-                $('#desde').val(inicio);
-                $('#hasta').val(fin);
+                oreporte = d || [];
+                reporte = oreporte.filter(filtrarSuspendidos);
+                updateView();
             });
         }
     }

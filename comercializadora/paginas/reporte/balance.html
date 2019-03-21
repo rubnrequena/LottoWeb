@@ -42,6 +42,11 @@
         <h3 class="panel-title">Mis Clientes | <i class="fa fa-dollar"></i> <span id="bl-clients-total">0.00</span></h3>
     </div>
     <div class="panel-body" style="display: none;">
+        <form class="form-inline bl-greg">
+            <div class="form-group">
+                Ocultar Suspendidos <div data-activa="{{:activo}}" class="toggle toggle-success"></div>
+            </div>
+        </form>
         <div class="table-responsive">
             <table class="table table-hover table-condensed">
                 <thead>
@@ -145,7 +150,11 @@
     <tr>
     {{/if}}
         <td>{{:fecha}}</td>
-        <td class="text-uppercase"><a href="#reporte/balance|{{:usID}}">{{:desc}}</a> </td>
+        <td class="text-uppercase">
+            <a id="bl-us{{:usID}}" class="bl-suspender" usAc="{{:activo}}" usID="{{:usID}}" href="#suspender|{{:usID}}" title="Suspender/Restalecer">
+                <i class="fa fa-power-off {{if activo==0}} text-success {{else}} text-danger {{/if}}"></i>
+            </a>
+            <a href="#reporte/balance|{{:usID}}">{{:desc}}</a> </td>
         <td>{{:~formatNumber(balance,2)}}</td>
     </tr>
 </script>
