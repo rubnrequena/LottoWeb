@@ -10,7 +10,7 @@ else if (loc=="animal") loc = "104.129.171.162:4014";
 else if (loc=="animalitos") loc = "104.129.171.162:4024";
 else if (location.href.indexOf("ruletonve")>-1) loc = "104.129.171.162:4014";
 else if (location.href.indexOf("ruleton")>-1) loc = "104.129.171.162:4044";
-var host = $.cookie("comercializadora") || loc;
+var host = $.cookie("comercializadora") || "127.0.0.1:4024";
 
 var socket = new Net("ws://"+host,false);
 

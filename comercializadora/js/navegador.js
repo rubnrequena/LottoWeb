@@ -172,9 +172,46 @@ function inicio_nav(p,arg) {
 }
 
 function suspendido_nav (p,args) {
+    var detalle = $('#suspDetalle')
+    var suspPayBtn = $('#suspPayBtn');
+    
+    if (args.hasOwnProperty("info")) {
+        var deuda = args.info.balance;
+        detalle.html('Tiene una deuda pendiente de <b>'+deuda+'</b>');
+        
+        var pago = args.info;
+        
+        suspPayBtn.removeClass("hidden");
+        suspPayBtn.click(reqPago);
 
+        function reqPago () {
+            askme("PROCESAR PAGO #"+pago.balID,jsrender($('#rd-procesar-pago'),pago),{
+                ok: function (result) {
+                    var monto = parseFloat(result.monto)*-1;
+                    var data = {
+                        desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
+                        monto:monto,
+                        resID:pago.resID
+                    }
+                    suspPayBtn.prop("disabled",true);
+                    socket.sendMessage('balance-pago',data, function (e, d) {                        
+                        notificacion("PAGO PROCESADO",d.msg+'<br/><button class="btn btn-success btn-xs btn-block" onclick="location.reload();">Refrescar</button>',null,true);
+                    });
+                    return true;
+                }
+            });
+        }
+    } else {
+        suspPayBtn.style("visible","none");
+    }
 }
 nav.paginas.addListener("suspendido",suspendido_nav);
+
+function suspendidoPago_nav (p,args) {
+
+}
+nav.paginas.addListener("suspendido_pago",suspendidoPago_nav);
+
 function sorteoMonitor_nav() {
     var d = new Date();
     listarSorteos(d.format());
@@ -484,7 +521,6 @@ function bancasBancas_nav(p,args) {
         var toggles = $('.toggle');
         toggles.each(function (index) {
             var me = $(this);
-            console.log(me.data('target'),me.data('activa'));
             me.toggles({
                 text:{
                     on:"SI",
@@ -2180,24 +2216,7 @@ function reporteBalance_nav (p,args) {
                 }
             }
         }
-        socket.sendMessage('balance-clientes', null, function (e, d) {
-            reporte = d || [];
-            $('#reporte-body-client').html(jsrender($('#rd-reporte'), d));
-            var tc = 0;
-            d.forEach(function (item) {
-                tc = tc + item.balance;
-            });
-            $('#bl-clients-total').html(tc.format(2));
-            $('#bl-client-heading').trigger('click');
-
-            var now = new Date;
-            var fin = now.format();
-            now.setTime(now.getTime()-86000000*7);
-            var inicio = now.format()
-            reporte_pagos(inicio,fin);
-            $('#desde').val(inicio);
-            $('#hasta').val(fin);
-        });
+        getBalanceClientes();
 
         $('#bl-sort-desc').click(function (e) {
             e.preventDefault(e);
@@ -2258,12 +2277,35 @@ function reporteBalance_nav (p,args) {
                             }
                             socket.sendMessage('balance-confirmacion',data, function (e, d) {
                                 $('#md-ask').modal('hide');
+                                $('#cfpago'+id);
+                                getBalanceClientes();
+
                                 //nav.url("reporte/balance",[b.usID]);
                             })
                             return false;
                         }
                     })
                 })
+            });
+        }
+        function getBalanceClientes() {
+            socket.sendMessage('balance-clientes', null, function (e, d) {
+                reporte = d || [];
+                $('#reporte-body-client').html(jsrender($('#rd-reporte'), d));
+                var tc = 0;
+                d.forEach(function (item) {
+                    tc = tc + item.balance;
+                });
+                $('#bl-clients-total').html(tc.format(2));
+                $('#bl-client-heading').trigger('click');
+    
+                var now = new Date;
+                var fin = now.format();
+                now.setTime(now.getTime()-86000000*7);
+                var inicio = now.format()
+                reporte_pagos(inicio,fin);
+                $('#desde').val(inicio);
+                $('#hasta').val(fin);
             });
         }
     }

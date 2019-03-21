@@ -26,9 +26,12 @@ function reload () {
 function socket_login(e,d) {
     if (d.hasOwnProperty("code")) {
         if (d.code==2) notificacion("DATOS INVALIDOS","Verifique los datos introducidos y vuelva a intentar.","growl-danger");
-        if (d.code==-10) {
-            nav.navUrl()
-        } else notificacion("INICIO DE SESION FALLIDO","Razon desconocida, consulte con su administrador.","growl-danger");
+        else if (d.code==505) {
+            if (d) {
+                nav.nav('suspendido',d);
+            }
+        }
+        else notificacion("INICIO DE SESION FALLIDO","Razon desconocida, consulte con su administrador.","growl-danger");
     } else {
         $usuario = d.us;
         $bancas = d.bn;
