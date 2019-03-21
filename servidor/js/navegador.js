@@ -2453,11 +2453,6 @@ function reporteBalance_nav (p,args) {
                     })
                 }
             });
-
-            $('.menuUsuario').click(function (e) {
-                e.preventDefault(e);
-                alert("asdasdasd");
-            });
         }
 
         $('#bl-sort-desc').click(function (e) {
