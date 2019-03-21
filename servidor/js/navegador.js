@@ -2387,11 +2387,7 @@ function reporteBalance_nav (p,args) {
         $('.bl-dreg').addClass('hidden');
         $('.bl-greg').removeClass('hidden');
         var reporte; var oreporte;
-        socket.sendMessage('balance-general', null, function (e, d) {
-            oreporte = d || [];
-            reporte = oreporte.filter(filtrarSuspendidos);
-            updateView();
-        });
+        getBalanceUsuario();
 
         var toggles = $('.toggle');
         toggles.each(function (index) {
@@ -2457,7 +2453,6 @@ function reporteBalance_nav (p,args) {
                     })
                 }
             });
-
 
             $('.menuUsuario').click(function (e) {
                 e.preventDefault(e);
@@ -2526,7 +2521,8 @@ function reporteBalance_nav (p,args) {
                                     }
                                     socket.sendMessage('balance-confirmacion', data, function (e, d) {
                                         $('#md-ask').modal('hide');
-                                        //TODO actualizar balance
+                                        $('#cfpago'+id);
+                                        getBalanceUsuario();
                                     })
                                     return false;
                                 }
@@ -2548,6 +2544,13 @@ function reporteBalance_nav (p,args) {
                         $('#bl-ppagos').html("");
                     }
                 }
+            });
+        }
+        function getBalanceUsuario () {
+            socket.sendMessage('balance-general', null, function (e, d) {
+                oreporte = d || [];
+                reporte = oreporte.filter(filtrarSuspendidos);
+                updateView();
             });
         }
     }
