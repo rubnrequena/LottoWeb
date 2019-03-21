@@ -42,7 +42,6 @@ nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
         return false;
     });
 });
-
 nav.paginas.addListener("login",login_nav);
 function login_nav(p,arg) {
     $('#login-form').submit(function (e) {
@@ -146,37 +145,42 @@ function inicio_nav(p,arg) {
 
         $('.bl-pagar').click(balance_pago_click);
     }
-    function balance_pago_click (e) {
-        e.preventDefault(e);
-        var pago = $(this).attr('pago');
-        var bi = findBy("balID",pago,$balance);
+  function balance_pago_click (e) {
+    var detalle = $('#suspDetalle')
+    var suspPayBtn = $('#suspPayBtn');
 
-        var cp=0;
-        $balance.forEach(function (item) {
-            if (item.c==0) cp++;
-        })
+    if (args.hasOwnProperty("info")) {
+      var deuda = args.info.balance;
+      detalle.html('Tiene una deuda pendiente de <b>'+deuda+'</b>');
+      
+      var pago = args.info;
+      
+      suspPayBtn.removeClass("hidden");
+      suspPayBtn.click(reqPago);
 
-        if (cp<3) askme("PROCESAR PAGO #"+pago,jsrender($('#rd-procesar-pago'),bi),{
-            ok: function (result) {
-                var monto = parseFloat(result.monto)*-1;
-                var data = {
-                    desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
-                    monto:monto,
-                    resID:bi.resID
-                }
-                socket.sendMessage('balance-pago',data, function (e, d) {
-                    d.balance = "--";
-                    d.c=0;
-                    $balance.unshift(d);
-                    $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
-                    $('.bl-pagar').click(balance_pago_click);
-                    notificacion('PAGO ENVIADO EXITOSAMENTE');
-                });
-                return true;
-            }
-        });
-        else notificacion('LIMITE DE PAGOS ALCANZADO', 'Estimado usuario, ya has alcanzado el limite de pagos sin confirmar, comuniquese con su administrador.')
+      notificacion("PAGO PROCESADO",d.msg+'<br/><button onclick="location.reload();">Refrescar</button>',null,true);
+
+      function reqPago () {
+          askme("PROCESAR PAGO #"+pago.balID,jsrender($('#rd-procesar-pago'),pago),{
+              ok: function (result) {
+                  var monto = parseFloat(result.monto)*-1;
+                  var data = {
+                      desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
+                      monto:monto,
+                      resID:pago.resID
+                  }
+                  suspPayBtn.prop("disabled",true);
+                  socket.sendMessage('balance-pago',data, function (e, d) {                        
+                      notificacion("PAGO PROCESADO",d.msg+'<br/><button class="btn btn-success btn-xs btn-block" onclick="location.reload();">Refrescar</button>',null,true);
+                  });
+                  return true;
+              }
+          });
+      }
+    } else {
+        suspPayBtn.style("visible","none");
     }
+  }
 }
 
 function sorteoMonitor_nav() {
@@ -266,7 +270,7 @@ function sorteoMonitor_nav() {
             sorteo.select2("val", "");
         })
     }
-	
+    
 }
 nav.paginas.addListener("sorteos/monitor",sorteoMonitor_nav);
 
@@ -1369,7 +1373,7 @@ function reporteTaquilla_nav (p,args) {
             d.forEach(function (item) {
                 j+=item.jugada;
                 pr+=item.premio;
-				cm+=item.comision;
+                cm+=item.comision;
             });
 
             $('#mnt-jugado').html(j.format(2));
@@ -1749,7 +1753,7 @@ function conexiones_nav (p,args) {
 
     function updateView () {
         tb.html('<tr><td colspan="2"><i class="fa fa-spinner fa-spin"></i> Espere, cargando...</td></tr>');
-        socket.sendMessage('conexiones',null, function (e, d) {
+          socket.sendMessage('conexiones',null, function (e, d) {
             tb.html(jsrender($('#rd-conexiones'),d));
         });
     }
@@ -1775,42 +1779,35 @@ function bancasRelacionPremio_nav (p,args) {
 nav.paginas.addListener('bancas/relacionpremio',bancasRelacionPremio_nav);
 
 function suspendido_nav (p,args) {
-    var detalle = $('#suspDetalle')
-    var suspPayBtn = $('#suspPayBtn');
-    if (args.hasOwnProperty("info")) {
-        var deuda = args.info[0].balance;
-        detalle.html('Tiene una deuda pendiente de <b>'+deuda+'</b>');
-
-        var bi = args.info[0].balID;
-
-        var cp=0;
-        args.forEach(function (item) {
-            if (item.c==0) cp++;
-        })
-
-        function reqPago () {
-            if (cp<3) askme("PROCESAR PAGO #"+pago,jsrender($('#rd-procesar-pago'),bi),{
-                ok: function (result) {
-                    var monto = parseFloat(result.monto)*-1;
-                    var data = {
-                        desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
-                        monto:monto,
-                        resID:bi.resID
-                    }
-                    socket.sendMessage('balance-pago',data, function (e, d) {
-                        d.balance = "--";
-                        d.c=0;
-                        $balance.unshift(d);
-                        $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
-                        $('.bl-pagar').click(balance_pago_click);
-                        notificacion('PAGO ENVIADO EXITOSAMENTE');
-                    });
-                    return true;
-                }
-            });
-        }
-    } else {
-        suspPayBtn.style("visible","none");
-    }
+  var detalle = $('#suspDetalle')
+  var suspPayBtn = $('#suspPayBtn');
+  
+  if (args.hasOwnProperty("info")) {
+      var deuda = args.info.balance;
+      detalle.html('Tiene una deuda pendiente de <b>'+deuda+'</b>');
+      
+      var pago = args.info;
+      
+      suspPayBtn.removeClass("hidden");
+      suspPayBtn.click(reqPago);
+      
+      function reqPago () {
+          askme("PROCESAR PAGO #"+pago.balID,jsrender($('#rd-procesar-pago'),pago),{
+              ok: function (result) {
+                  var monto = parseFloat(result.monto)*-1;
+                  var data = {
+                      desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
+                      monto:monto,
+                      resID:pago.resID
+                  }
+                  suspPayBtn.prop("disabled",true);
+                  socket.sendMessage('balance-pago',data, function (e, d) {                        
+                      notificacion("PAGO PROCESADO",d.msg+'<br/><button class="btn btn-success btn-xs btn-block" onclick="location.reload();">Refrescar</button>',null,true);
+                  });
+                  return true;
+              }
+          });
+      }
+  }
 }
 nav.paginas.addListener('suspendido',suspendido_nav);

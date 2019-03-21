@@ -8,7 +8,7 @@ if (loc=="LotoVictoria") loc = "127.0.0.1:4023";
 if (loc=="animales") loc = "104.129.171.16:4003";
 else if (loc=="animal") loc = "104.129.171.162:4013";
 else if (loc=="animalitos") loc = "104.129.171.162:4023";
-var host = $.cookie("usuario") || loc;
+var host = $.cookie("usuario") || "127.0.0.1:4023";
 
 var socket = new Net("ws://"+host,false);
 
@@ -17,7 +17,10 @@ var nav = new Navegador();
 nav.folder = "paginas";
 nav.viewport = ".contentpanel";
 nav.validate = function (page,params) {
-    if (page=="suspendido") return page;
+    if (page=="suspendido") {
+      nav.viewport = "body";
+      return page;
+    }
     return $usuario?page:"login";
 };
 var storage = localStorage;
