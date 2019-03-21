@@ -40,6 +40,7 @@ function askme (title,body,callback,md) {
         btnok.off('click',btnok_clic);
         _title.html('');
         _body.html('');
+        if (callback && callback.hasOwnProperty('hidden')) callback.hidden();
     });
 
     function btnok_clic () {
