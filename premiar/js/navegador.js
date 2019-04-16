@@ -97,6 +97,11 @@ function sorteoBuscar_nav(p,args) {
         update_sorteosView();
     });
 
+    $('#srt-flt').change(function (e) {
+        var flt = $(this).val();
+        if (flt==0) $('#flt-alerta').addClass("hidden");
+        else $('#flt-alerta').removeClass("hidden");
+    })
     $('#sorteo-buscar').submit(function (e) {
         e.preventDefault(e);
         var data = formControls(this);
@@ -224,11 +229,11 @@ function sorteoBuscar_nav(p,args) {
                             });
                         } else {
                             elm.select2("val",elm.data('select'));
-                            elm.select2("val",elm.data('select'));
+                            elm.val(elm.data('select'));
                         }
                     }
                     else if (d.code==3) notificacion("SORTEOS","SORTEO #"+data.sorteoID+" PREMIADO, PERO SIN VENTAS REGISTRADAS",'growl-danger');
-                    else if (d.code==5) notificacion("SOLICITUD RECHAZADA"," SORTEO #"+data.sorteoID+" SOLICITUD DUPLICADA",'growl-danger');
+                    else if (d.code==5) notificacion("SORTEO ABIERTO"," SORTEO #"+data.sorteoID+" AUN ESTA ABIERTO",'growl-danger');
                 });
             }
         });
@@ -273,7 +278,7 @@ function sorteoPremiar_nav() {
             }
             else if (d.code==4) notificacion("SORTEOS","SORTEO #"+data.sorteoID+" YA ESTA PREMIADO",'growl-danger');
             else if (d.code==3) notificacion("SORTEOS","SORTEO #"+data.sorteoID+" PREMIADO, PERO SIN VENTAS REGISTRADAS",'growl-danger');
-            else if (d.code==5) notificacion("SOLICITUD RECHAZADA"," SORTEO #"+data.sorteoID+" SOLICITUD DUPLICADA",'growl-danger');
+            else if (d.code==5) notificacion("SORTEO ABIERTO"," SORTEO #"+data.sorteoID+" AUN ESTA ABIERTO",'growl-danger');
         })
     });
     $('#reiniciar-form').submit(function (e) {
@@ -753,7 +758,7 @@ function sorteoMonitor_nav(e,arg) {
                 }
             }
             else if (d.code==3) notificacion("SORTEOS","SORTEO #"+data.sorteoID+" PREMIADO, PERO SIN VENTAS REGISTRADAS",'growl-danger');
-            else if (d.code==5) notificacion("SOLICITUD RECHAZADA"," SORTEO #"+data.sorteoID+" SOLICITUD DUPLICADA",'growl-danger');
+            else if (d.code==5) notificacion("SORTEO ABIERTO"," SORTEO #"+data.sorteoID+" AUN ESTA ABIERTO",'growl-danger');
         });
     }
 
@@ -994,11 +999,11 @@ nav.paginas.addListener("sorteos/pendientes", function (p, args) {
                         });
                     } else {
                         elm.select2("val",elm.data('select'));
-                        elm.select2("val",elm.data('select'));
+                        elm.val(elm.data('select'));
                     }
                 }
                 else if (d.code==3) notificacion("SORTEOS","SORTEO #"+data.sorteoID+" PREMIADO, PERO SIN VENTAS REGISTRADAS",'growl-danger');
-                else if (d.code==5) notificacion("SOLICITUD RECHAZADA"," SORTEO #"+data.sorteoID+" SOLICITUD DUPLICADA",'growl-danger');
+                else if (d.code==5) notificacion("SORTEO ABIERTO"," SORTEO #"+data.sorteoID+" AUN ESTA ABIERTO",'growl-danger');
             });
         }
     });
