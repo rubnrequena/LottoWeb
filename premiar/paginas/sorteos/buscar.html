@@ -21,55 +21,57 @@
     </div>
 </div>
 <div class="panel padding10">
-    <label id="flt-alerta" class="text-danger">*EL FILTRO ESTA ACTIVADO, PARA VISUALIZAR LA LISTA ENTERA DE SORTEOS DESACTIVE EL FILTRO</label>
-    <form class="form-horizontal">
-        <div class="form-group">
-            <div class="form-group">
-                <label class="mt10 col-sm-3 text-right">Sorteo</label>
-                <div class="col-sm-6">
-                    <select name="sorteoID" class="s2 form-control" id="buscar-sorteos" data-placeholder="No hay sorteos para la fecha" required>
-                        <option value=""></option>
-                    </select>
+    <div class="panel-body">
+        <div class="row">
+            <label id="flt-alerta" class="text-danger">*EL FILTRO ESTA ACTIVADO, PARA VISUALIZAR LA LISTA ENTERA DE SORTEOS DESACTIVE EL FILTRO</label>
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-3 text-right mt10">Sorteo</label>
+                    <div class="col-sm-6">
+                        <select name="sorteoID" class="s2 form-control" id="buscar-sorteos" data-placeholder="No hay sorteos para la fecha" required>
+                            <option value=""></option>
+                        </select>
+                    </div>
                 </div>
+            </form>
+        </div>
+        <div class="row mt10">        
+            <div class="col-md-3 col-sm-3 col-xs-3">
+                <label>Filtrar</label>
+                <select id="srt-flt" class="bfiltro s2">
+                    <option value="1" selected>SI</option>
+                    <option value="0">NO</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-3">
+                    <label>Abierto</label>
+                <select id="srt-abr" class="bfiltro s2">
+                    <option value="1">SI</option>
+                    <option value="0" selected>NO</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-sm-3 col-xs-3">
+                <label>Premiado</label>
+                <select id="srt-prm" class="bfiltro s2">
+                    <option value="1">SI</option>
+                    <option value="0" selected>NO</option>
+                </select>
             </div>
         </div>
-    </form>
-    <div class="row mt10">
-        <div class="col-md-2 col-sm-2 col-xs-2">Filtrar</div>
-        <div class="col-md-1 col-sm-1 col-xs-1">
-            <select id="srt-flt" class="bfiltro s2">
-                <option value="1" selected>SI</option>
-                <option value="0">NO</option>
-            </select>
-        </div>
-        <div class="col-md-2 col-sm-2 col-xs-2">Abierto</div>
-        <div class="col-md-1 col-sm-1 col-xs-1">
-            <select id="srt-abr" class="bfiltro s2">
-                <option value="1">SI</option>
-                <option value="0" selected>NO</option>
-            </select>
-        </div>
-        <div class="col-md-2 col-sm-2 col-xs-2">Premiado</div>
-        <div class="col-md-1 col-sm-1 col-xs-1">
-            <select id="srt-prm" class="bfiltro s2">
-                <option value="1">SI</option>
-                <option value="0" selected>NO</option>
-            </select>
-        </div>
-    </div>
-    <div class="panel-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>Sorteo</th>
-                    <th>Hora</th>
-                    <th>Ganador</th>
-                    <th>Abierta</th>
-                </tr>
-                </thead>
-                <tbody id="sorteos-body"></tbody>
-            </table>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Sorteo</th>
+                        <th>Hora</th>
+                        <th>Ganador</th>
+                        <th>Abierta</th>
+                    </tr>
+                    </thead>
+                    <tbody id="sorteos-body"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
