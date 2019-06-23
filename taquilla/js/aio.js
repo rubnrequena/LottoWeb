@@ -1,35 +1,40 @@
+var CONFIG = {
+    INTERFAZ_MODO:"srq.taq.modoInterfaz",
+    IMPRIMIR_TECLA:"srq.taq.imprimirTecla",
+    IMPRIMIR_FORMATO:"srq.taq.formatoImpresion",
+    IMPRIMIR_MODO:"srq.taq.modoImpresion",
+    IMPRIMIR_LETRASxLINEA:"srq.taq.letrasLinea",
+    SORTEOS_ORDEN:"srq.taq.ordenSorteos",
+    SMS_KEY:"srq.taq.smskey",
+    ELEMENTOS_HASH:"srq.taq.helementos",
+    ELEMENTOS:"srq.taq.elementos"
+}
 var init = function () {
 // VARS //
     var storage = localStorage;
 // SOCKET
     var host = $.cookie("taquilla") || location.hostname+":4022";
-    var socket;
-//ALTURL
-    var href = window.location.pathname;
-    var proxy = 'http://proxy.srq.com.ve/taquilla';
-    if (href.indexOf("/animal/")>-1) proxy = 'http://animal.srq.com.ve/taquilla';
-    if (href.indexOf("/animales/")>-1) proxy = 'http://animales.srq.com.ve/taquilla';
-    var errCon = setTimeout(function () {
-        $('#proxy').html('<i class="fa fa-clock-o"></i> No conecta? puedes probar ingresar <a href="'+proxy+'"><i class="fa fa-link"></i> aqui</a>.');
-    },5000);
-//CONFIG
+    var socket;    
+//CONFIG    
     var config = {
-        mimp:storage.getItem("srq.taq.modoImpresion") || 1,
-        imprimirTecla:storage.getItem("srq.taq.imprimirTecla") || 107,
-        formatoImpresion:storage.getItem("srq.taq.formatoImpresion") || 0,
-        letrasLinea:storage.getItem('srq.taq.letrasLinea') || 25,
-        ordenSorteos:storage.getItem('srq.taq.ordenSorteos') || 0
+        mimp:storage.getItem(CONFIG.IMPRIMIR_MODO) || 1,
+        imprimirTecla:storage.getItem(CONFIG.IMPRIMIR_TECLA) || 107,
+        formatoImpresion:storage.getItem(CONFIG.IMPRIMIR_FORMATO) || 0,
+        letrasLinea:storage.getItem(CONFIG.IMPRIMIR_LETRASxLINEA) || 25,
+        ordenSorteos:storage.getItem(CONFIG.SORTEOS_ORDEN) || 0,
+        modoInterfaz:storage.getItem(CONFIG.INTERFAZ_MODO || "ventamax")
     };
 
     function setConfig (key,val) {
-        storage.setItem("srq.taq."+key,val);
-        config[key] = val;
-    }
+        storage.setItem(key,val);
+        config[key.split(".").pop()] = val;
 
-    if (!storage.getItem("srq.taq.smskey")) {
-        storage.setItem("srq.taq.smskey","5c7c5f2987fe831d30739993");
-        notificacion("Servicio SMS Activado <i class='fa fa-envelope'></i>","Enhorabuena, hemos activado en fase de pruebas nuestro servicio de SMS, solo debes ir a preferencias y cambiar el formato de Impresion a SMS o ELEGIR ANTES DE VENDER y listo!!, que lo disfrutes.",null,true);
+        if (key==CONFIG.INTERFAZ_MODO) {
+            $('#ventalink').attr('href',`#${val}`);
+        }
     }
+    $('#ventalink').attr('href',`#${config.modoInterfaz}`);
+
 //IMPRESORA
     var canPrint=false; var grt;
     var print = new Net("ws://127.0.0.1:9999",false);
@@ -70,13 +75,6 @@ var init = function () {
     var $meta = {};
 
 //ACTIVIDADES
-    var $actividad = {
-        LOGIN:1,
-        VENTA:2,
-        ANULAR:3,
-        PAGAR:4
-    };
-
     function sorteosDisponibles_filtro (s) {
         return s.cierra>$servidor.hora && s.abierta==true;
     }
@@ -208,11 +206,23 @@ var init = function () {
 
     nav.paginas.addListener('venta', venta);
     nav.paginas.addListener('ventamax',venta);
+    nav.paginas.addListener('visual',venta);
+    nav.paginas.addListener('visual',(p,args) => {      
+      let npanel = $('#numpanel');      
+      for (let i = 0; i <= 36; i++) {
+        if (i==0) npanel.append(`<div class="numcell" numero="${zero(i)}"><img src="/assets/animales/0.jpg" class="numero"/><div class="overlay"></div></div>`);
+        npanel.append(`<div class="numcell" numero="${zero(i)}"><img src="/assets/animales/${zero(i)}.jpg" class="numero"/><div class="overlay"></div></div>`);
+      }
+      function zero (n) { return n<10?`0${n}`:n.toString() }
 
+      $('.numcell').click(function (e) {
+       let num = $(this).attr("numero");
+        $('#vnt-numeros').val(num.toString());
+        $('#vnt-venta').trigger("submit");
+      });
+    });
     var vendiendo=false;
     function venta (p,args) {
-
-
         if (!$sorteos) {
             nav.nav("101");
             return;
@@ -245,10 +255,10 @@ var init = function () {
                 //print pdf
                 cesto_realizarVenta({pdf:true});
             });
-            $('#print-sms').click(function (e) {
+            $('#print-ws').click(function (e) {
                 e.preventDefault(e);
-                formatoImpresion = 2;
-                $('#print-label').html('<i class="fa fa-phone"></i> ENVIAR');
+                formatoImpresion = 3;
+                $('#print-label').html('<i class="fa fa-whatsapp"></i> ENVIAR');
                 srqag.modal();
             });
         }
@@ -261,27 +271,22 @@ var init = function () {
             localStorage.removeItem("lastTk");
             notificacion("TICKET PENDIENTE",'Posiblemente el ultimo ticket enviado por <b>'+ltotal.format(2)+'bs</b>, no se confirmo. </br>Por favor proceda a verificar.',null,true);
         }
-
         if (!$('body').hasClass('leftpanel-collapsed')) {
             $('.menutoggle').trigger("click");
         }
-
         select2w($('.s2a'),{
             openOnEnter:false
         });
-
         nav.paginas.addListener(Navegador.EXIT,exitPage);
         function exitPage (e) {
             nav.paginas.removeListener(Navegador.EXIT,exitPage);
             $(document).off("keydown", onKeyDown);
         }
-
         $('#taq-nombre').html($usuario.nombre);
         var cesto = [];
         var num = $('#vnt-numeros');
         var sorteos = $('#vnt-sorteos');
         var monto = $('#vnt-monto');
-        var total = $('#vnt-total');
         var btnImprimir = $('#vnt-btn');
         var _ultimoTicket;
         var helper = {
@@ -296,7 +301,6 @@ var init = function () {
             },
             formatn:formatNumber
         };
-
         var srqag = $('#md-srqag'), srqag_s2 = $('#srag-input');
         var srqag_data = storage.getItem("srqag.agenda")?JSON.parse(storage.getItem("srqag.agenda")):[{n:"",v:""}];
         srqag_s2.html(jsrender($('#rd-srqag-item'),srqag_data));
@@ -349,7 +353,6 @@ var init = function () {
         });
         // METHODS
         $('#md-enviar-ok').click(validateEmailPhone);
-
         function srqag_handler (e) {
             if (e.which==parseInt(config.imprimirTecla)) {
                 e.preventDefault(e);
@@ -362,7 +365,6 @@ var init = function () {
                 $('#srqag-nombre').focus();
             }
         }
-
         function validateEmailPhone() {
             var v = $('#srag-input').val();
             if (formatoImpresion==1) {
@@ -370,7 +372,7 @@ var init = function () {
                 else alert('CORREO INVALIDO');
             }
             if (formatoImpresion==2) {
-                var k = storage.getItem("srq.taq.smskey")
+                var k = storage.getItem(CONFIG.SMS_KEY)
                 if (validatePhone(v)) { cesto_realizarVenta({sms:v,key:k}); srqag.modal("hide"); }
                 else alert('TELEFONO INVALIDO');
             }
@@ -381,7 +383,6 @@ var init = function () {
                 else alert('TELEFONO INVALIDO');
             }
         }
-
         function cesto_realizarVenta(meta) {
             if (cesto.length==0) return;
 
@@ -413,7 +414,7 @@ var init = function () {
             }
 
             if (formatoImpresion==2) {
-                var key = storage.getItem("srq.taq.smskey");
+                var key = storage.getItem(CONFIG.SMS_KEY);
                 if (!key || key=="") {
                     notificacion("ERROR","<p>No es posible conectar con el servidor de mesajes, es necario asignar una llave valida.</p>" +
                         "<p>Puede activarla en <a href='#preferencias'>Preferencias</a>, consulte con su administrador para obtener una llave.</p>");
@@ -452,6 +453,9 @@ var init = function () {
                         notificacion("VENTA CONFIRMADA","TICKET: #"+ d.tk.ticketID+"<br/><small>CODIGO: "+ d.tk.codigo+"</small>");
                         cesto_reiniciar();
                     }
+                    else if (d.code==4) {
+                      notificacion("TICKET POSIBLEMENTE DUPLICADO","Venta no confirmada. En el ultimo minuto se ha vendido un ticket con caracteristicas muy parecidas al actual");
+                    }
                     else notificacion("TICKET RECHAZADO");
                     return;
                 }
@@ -470,7 +474,6 @@ var init = function () {
                 if (c.sorteoID==item.s && c.numero==item.n) {
                     c.monto = item.tm || item.td;
                     c.tpte = true;
-
                     if (c.monto==0) {
                         cesto.splice(cesto.indexOf(c),1);
                     }
@@ -481,7 +484,6 @@ var init = function () {
             _ultimoTicket = ticket;
             $('#tk-last').html(ticket.ticket.ticketID);
         }
-
         function cesto_enviado (d) {
             try {
                 if (d.vt.length != cesto.length) {
@@ -527,7 +529,7 @@ var init = function () {
                 });
 
                 //imprimir
-                var mimp = storage.getItem("srq.taq.modoImpresion") || 1;
+                var mimp = config.mimp || 1;
                 //modo auto
                 if (mimp=="atm") mimp = d.vt.length>6?2:1;
                 _printStack[mimp](d.vt, d.tk);
@@ -537,20 +539,19 @@ var init = function () {
                 $('#vnt-ultimo').trigger("click");
             }
         }
-
         function cesto_reiniciar() {
             cesto.length = 0;
             num.focus();
             cesto_updateView(); //TODO optimizar
         }
         function cesto_updateView() {
+           var total = $('#vnt-total');
             cesto.sort(function (a,b) {
                 var s1 = a.sorteoID, s2 = b.sorteoID;
                 var n1 = a.numero, n2 = b.numero;
                 return s1 == s2?n1-n2:s1-s2;
             }); //ordenarlas por sorteo
             $('#vnt-cesta').html(jsrender($('#rd-cesta-row'),cesto,helper));
-
             $('.rem-cesto').click(function (e) {
                 e.preventDefault(e);
                 var idx = parseInt($(e.currentTarget).attr('indice'));
@@ -570,7 +571,6 @@ var init = function () {
             else $sorteos.sort(sorteos_ordenCierre);
             sorteos.html(jsrender($('#rd-sorteo-option'),$sorteos.filter(sorteosDisponibles_filtro)));
         }
-
             function sorteos_ordenSorteo (a,b) {
                 var s1 = a.sorteo, s2 = b.sorteo;
                 var n1 = a.cierra, n2 = b.cierra;
@@ -608,6 +608,7 @@ var init = function () {
                 monto.focus();
                 return;
             }
+            console.log(typeof(data.numero));
             if (typeof(data.numero)!="object" ) {
                 data.numero = data.numero.trim();
                 data.numero = data.numero.replace(/\*/g," ");
@@ -738,7 +739,7 @@ var init = function () {
                 });
                 ultimoTicket(d);
 
-                var mimp = storage.getItem("srq.taq.modoImpresion") || 1;
+                var mimp = config.mimp || 1;
                 if (mimp=="atm") mimp = _ultimoTicket.ventas.length>6?2:1; //modo auto
                 _printStack[mimp](_ultimoTicket.ventas, _ultimoTicket.ticket,true);
             }
@@ -1720,31 +1721,39 @@ var init = function () {
         var formatoImpresion = $('#ft-impresion');
         var letrasLinea = $('#lt-linea');
         var ordenSorteo = $('#md-orden');
+        var modoInterfaz = $('#md-intefaz');
+
+        modoInterfaz.change(function (e) {
+            var value = modoInterfaz.val();
+            setConfig(CONFIG.INTERFAZ_MODO,value);
+        })
+        modoInterfaz.select2("val",config.modoInterfaz || "ventamax");
+        modoInterfaz.val(config.modoInterfaz || "ventamax");
 
         modoImpresion.change(function (e) {
-            storage.setItem("srq.taq.modoImpresion",modoImpresion.val());
+            setConfig(CONFIG.IMPRIMIR_MODO,modoImpresion.val());
         });
-        var mi = storage.getItem("srq.taq.modoImpresion");
+        var mi = config.mimp;
         modoImpresion.select2("val",mi || 1);
         modoImpresion.val(mi || 1);
 
         formatoImpresion.change(function (e) {
-            setConfig("formatoImpresion",formatoImpresion.val());
+            setConfig(CONFIG.IMPRIMIR_FORMATO,formatoImpresion.val());
         });
-        var fi = storage.getItem("srq.taq.formatoImpresion");
+        var fi = config.formatoImpresion;
         formatoImpresion.select2("val",fi || 0);
         formatoImpresion.val(fi || 0);
 
         letrasLinea.val(config.letrasLinea);
         $('#btnletras').click(function () {
-            setConfig("letrasLinea",letrasLinea.val());
+            setConfig(CONFIG.IMPRIMIR_LETRASxLINEA,letrasLinea.val());
             notificacion("Letras Linea",'Cambio exitoso');
         });
 
         ordenSorteo.select2("val",config.ordenSorteos || 0);
         ordenSorteo.val(config.ordenSorteos);
         ordenSorteo.change(function (e) {
-            setConfig("ordenSorteos",ordenSorteo.val());
+            setConfig(CONFIG.SORTEOS_ORDEN,ordenSorteo.val());
         });
 
         $('#prf-ticketPrueba').click(function (e) {
@@ -1753,7 +1762,7 @@ var init = function () {
                 [{"type":"linea","text":"AG. DEMO","align":"center"},{"type":"linea","text":"04/06/17 06:12:14 AM","align":"center"},{"type":"linea","text":"9999999-1234","align":"center"},{"type":"linea","text":"TICKET PRUEBA","align":"center"},{"type":"tabla","header":false,"columns":[{"field":"l1","text":"RULETA ACTIVA 10AM","width":"50"},{"field":"l2","text":" ","width":"50"}],"data":[{"l1":"0\tDELF\t99999","l2":"01\tCARN\t99999"},{"l1":"02\tTORO\t99999","l2":"03\tCIEM\t99999"},{"l1":"04\tALAC\t99999","l2":"05\tLEON\t99999"},{"l1":"06\tRANA\t99999","l2":"07\tPERI\t99999"},{"l1":"08\tRATO\t99999","l2":"09\tAGUI\t99999"}]},{"type":"linea","text":"TOTAL: 999990","align":"center"},{"type":"linea","text":"CADUCA EN 3 DIAS","align":"center"},{"type":"linea","text":"c8dda1ff1abe1e7ddd1042a2213b3da0","align":"center"},{"type":"linea","text":" ","align":"left"}],
                 [{"type":"linea","text":"AG. DEMO","align":"center"},{"type":"linea","text":"04/06/17 06:12:14 AM","align":"center"},{"type":"linea","text":"9999999-1234","align":"center"},{"type":"linea","text":"TICKET PRUEBA","align":"center"},{"type":"tabla","header":false,"columns":[{"field":"l1","text":"RULETA ACTIVA 10AM","width":33},{"field":"l2","text":" ","width":33},{"field":"l3","text":" ","width":33}],"data":[{"l1":"0x99999","l2":"01x99999","l3":"02x99999"},{"l1":"03x99999","l2":"04x99999","l3":"05x99999"},{"l1":"06x99999","l2":"07x99999","l3":"08x99999"},{"l1":"09x99999","l2":" ","l3":" "}]},{"type":"linea","text":"TOTAL: 999990","align":"center"},{"type":"linea","text":"CADUCA EN 3 DIAS","align":"center"},{"type":"linea","text":"c8dda1ff1abe1e7ddd1042a2213b3da0","align":"center"},{"type":"linea","text":" ","align":"left"}]
             ];
-            var mimp = storage.getItem("srq.taq.modoImpresion") || 0;
+            var mimp = config.mimp || 0;
             if (mimp=="atm") mimp = 2;
 
             print.sendMessage("print",{data:_lineas[mimp],printer:1})
@@ -1774,7 +1783,7 @@ var init = function () {
                 var key = getKeyName(e.keyCode);
                 if (key) {
                     scprint.val(key);
-                    setConfig("imprimirTecla", e.keyCode);
+                    setConfig(CONFIG.IMPRIMIR_TECLA, e.keyCode);
                 }
                 bprint.html("Editar");
             }
@@ -1783,8 +1792,8 @@ var init = function () {
         $('#prf-rest-numeros').click(function () {
             var c = confirm('Esta accion reinicara el listado de numeros almacenados y reiniciara su sesion');
             if (c) {
-                storage.removeItem("srq.taq.elementos");
-                storage.removeItem("srq.taq.helementos");
+                storage.removeItem(CONFIG.ELEMENTOS);
+                storage.removeItem(CONFIG.ELEMENTOS_HASH);
                 location.reload();
             }
         });
@@ -1792,10 +1801,10 @@ var init = function () {
         $('#sms-key').submit(function (e) {
             e.preventDefault(e);
             var data = formControls(this);
-            storage.setItem("srq.taq.smskey",data.smskey);
+            storage.setItem(CONFIG.SMS_KEY,data.smskey);
             notificacion("CAMBIOS REALIZADOS");
         });
-        $('#smskey').val(storage.getItem('srq.taq.smskey'));
+        $('#smskey').val(storage.getItem(CONFIG.SMS_KEY));
 
         if (args && args.length>0) {
             $('html, body').animate({
@@ -1815,14 +1824,16 @@ var init = function () {
     nav.paginas.addListener("ayuda",ayuda_nav);
 
 // MAIN //
-    var ntfbuttonidx=0;
-    function main_initSocket() {
+    function main_initSocket(proxy) {
+        host = proxy || host;
+        console.log("conectando a ",host);
         socket = new Net("ws://"+host,false);
         socket.addListener(NetEvent.SOCKET_OPEN,socket_OPEN);
         socket.addListener(NetEvent.LOGIN,socket_LOGIN);
         socket.addListener("duplicado",socket_duplicado);
         socket.addListener("close-mant",socket_closing);
         socket.addListener(NetEvent.SOCKET_CLOSE,socket_CLOSE);
+        socket.addListener(NetEvent.SOCKET_ERROR,socket_ERROR);
         socket.addListener("init",init);
         socket.addListener("fingerprint",fingerprint);
         socket.addListener(NetEvent.DATA_CHANGE, function () {
@@ -1915,20 +1926,21 @@ var init = function () {
         socket.close();
     }
     function socket_OPEN(e) {
-        clearTimeout(errCon);
         $('#conectando').fadeOut();
     }
     function login (d,f) {
         d.fp = _urfinger;
         socket.sendMessage('login',d,f);
     }
+    function socket_ERROR (e) {        
+        socket.removeListener(NetEvent.SOCKET_CLOSE,socket_CLOSE);
+        console.log("ERROR AL CONECTAR",location);
+    }
     function socket_CLOSE(e) {
+        console.log("NO CONECTAAAAA")
         $('#conectando').fadeIn();
         vendiendo=false;
         setTimeout(main_initSocket,3000);
-    }
-    function reload () {
-        location.reload(false);
     }
     function socket_LOGIN(e,d) {
         if (d.hasOwnProperty("code")) {
@@ -1945,7 +1957,7 @@ var init = function () {
         $('.username').html($usuario.nombre);
 
         function validarElementos (hash,cb) {
-            var localHash = storage.getItem("srq.taq.helementos");
+            var localHash = storage.getItem(CONFIG.ELEMENTOS_HASH);
             if (localHash==hash) {
                 try {
                     loadLocal();
@@ -1958,8 +1970,8 @@ var init = function () {
                 var elm=[];
                 socket.addListener('elementos-init',function (e, d) {
                     if (d.hasOwnProperty("hash")) {
-                        storage.setItem("srq.taq.helementos", d.hash);
-                        storage.setItem("srq.taq.elementos",JSON.stringify(elm))
+                        storage.setItem(CONFIG.ELEMENTOS_HASH, d.hash);
+                        storage.setItem(CONFIG.ELEMENTOS,JSON.stringify(elm))
                         $('#ntf-cargaelem').html('<i class="fa fa-check"></i> Lista de animales recibido');
                         socket.removeListeners(e);
                         loadLocal();
@@ -1975,7 +1987,7 @@ var init = function () {
 
         $servidor.hora = d.time;
         function loadLocal() {
-            $elementos = JSON.parse(storage.getItem("srq.taq.elementos"));
+            $elementos = JSON.parse(storage.getItem(CONFIG.ELEMENTOS));
             var n, a;
             var z = ["CAPRICORNIO","ACUARIO","PISCIS","ARIES","TAURO","GEMINIS","CANCER","LEO","VIRGO","LIBRA","ESCORPIO","SAGITARIO"];
             if (!$elementos || $elementos.length==0) {
