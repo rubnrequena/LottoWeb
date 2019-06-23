@@ -140,13 +140,28 @@
     {{/if}}
         <td>{{:fecha}}</td>
         <td class="text-uppercase">
-            <a id="bl-us{{:usID}}" class="bl-suspender" usAc="{{:activo}}" usID="{{:usID}}" href="#suspender|{{:usID}}" title="Suspender/Restalecer">
+            <a id="bl-us{{:usID}}" class="bl-suspender hidden-xs" usAc="{{:activo}}" usID="{{:usID}}" href="#suspender|{{:usID}}" title="Suspender/Restalecer">
                 <i class="fa fa-power-off {{if activo==0}} text-success {{else}} text-danger {{/if}}"></i>
             </a>
-            <a href="#reporte/balance|{{:usID}}">{{:desc}}</a>
+            <a class="bl-usmenu" usID="{{:usID}}" href="#m{{:usID}}"><i class="fa fa-bars"></i> {{:desc}}</a>
         </td>
         <td>{{:~formatNumber(balance,2)}}</td>
     </tr>
+</script>
+<script type="text/x-jsrender" id="rd-blmenu">
+    <a href="#reporte/balance|{{:usID}}" class="btn btn-default btn-block">IR A BALANCE</a>
+    {{if tipo=="g"}}
+        <a href="#bancas/grupo|{{:uID}}" class="btn btn-default btn-block">VER USUARIO</a>
+    {{else}}
+        <a href="#bancas/banca|{{:uID}}" class="btn btn-default btn-block">VER USUARIO</a>
+    {{/if}} 
+    <a id="bl-us{{:usID}}" class="btn btn-danger btn-block bl-suspender" usAc="{{:activo}}" usID="{{:usID}}" href="#suspender|{{:usID}}" title="Suspender/Restalecer">
+        {{if activo==0}}
+            ACTIVAR
+        {{else}}
+            SUSPENDER
+        {{/if}}
+    </a>
 </script>
 <script type="text/x-jsrender" id="rd-reporte-us">
     <tr id="bidr{{:balID}}" class="hoverRow">

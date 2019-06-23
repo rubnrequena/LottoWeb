@@ -2,6 +2,18 @@
  * Created by SRQ on 05/05/2016.
  */
 var _objc = {};
+
+function notificacion (titulo,texto,className,permanente) {
+    className = className || '';
+    permanente = permanente || false;
+    return jQuery.gritter.add({
+        title: '<i class="fa fa-bullhorn"></i> '+titulo,
+        text: texto,
+        class_name: className,
+        sticky: permanente,
+        time: ''
+    });
+}
 function actividad (codigo,data) {
     _objc.codigo = codigo;
     _objc.meta = data;

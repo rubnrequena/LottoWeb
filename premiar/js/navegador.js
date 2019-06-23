@@ -135,8 +135,8 @@ function sorteoBuscar_nav(p,args) {
             var elm = findBy("sorteo",sorteo,$elementos);
             if (elm) initUI();
             else {
-                socket.sendMessage("elementos",{sorteo:sorteo}, function (e, d) {
-                    $elementos = $elementos.concat(d);
+                socket.sendMessage("elementos",{sorteo:sorteo}, function (e, d) {                    
+                    $elementos = $elementos?$elementos.concat(d):d;
                     initUI();
                 })
             }

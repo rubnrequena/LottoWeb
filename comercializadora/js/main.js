@@ -4,6 +4,9 @@ socket.addListener(NetEvent.LOGIN,socket_login);
 socket.addListener(NetEvent.MESSAGE,socket_message);
 socket.connect();
 
+var pagarFlash;
+var ultPagoConfirmado;
+
 function socket_message () {
     //console.log("bytes",socket.bytesIn,socket.bytesOut,socket.bytesIn+socket.bytesOut);
 }
@@ -41,10 +44,42 @@ function socket_login(e,d) {
 
         socket.sendMessage('balance-padre',null, function (e, d) {
             $balance = d;
-            if ($balance) {
+            if ($balance) {                
                 $('#menu-balance-date').html(d[0].fecha);
                 for (var i=0;i<$balance.length;i++) {
                     if ($balance[i].c==1) {
+                        ultPagoConfirmado = $balance[i];
+                        if ($balance[i].balance>0) {
+                            $('#tmenu-pagar').html(jsrender($('#rd-tmenupagar'),$balance[i]));
+                            $('#pagar-btn').click(() => {
+                                var cp=0;
+                                $balance.forEach(function (item) { if (item.cdo==0) cp++; })
+                        
+                                if (cp<=3) askme("PROCESAR PAGO #"+ultPagoConfirmado.balID,jsrender($('#rd-procesar-deuda'),ultPagoConfirmado),{
+                                    ok: function (result) {
+                                        var monto = parseFloat(result.monto)*-1;
+                                        var data = {
+                                            desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
+                                            monto:monto,
+                                            resID:bi.resID
+                                        }
+                                        socket.sendMessage('balance-pago',data, function (e, d) {
+                                            d.balance = "--";
+                                           $balance.unshift(d);
+                                            $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+                                            $('.bl-pagar').click(balance_pago_click);
+                                           notificacion('PAGO ENVIADO EXITOSAMENTE');
+                                        });
+                                        return true;
+                                    }
+                                });
+                                else notificacion('LIMITE DE PAGOS ALCANZADO', 'Estimado usuario, ya has alcanzado el limite de pagos sin confirmar, comuniquese con su administrador.') 
+                            });
+                            pagarFlash = setInterval(() => {
+                                var fl = $('#tmenu-pagarflash');
+                                fl.toggleClass("text-success");
+                            }, 1000);
+                        }
                         $('#menu-balance-value').html('<i class="fa fa-dollar"></i> '+$balance[i].balance.format(2));
                         break;
                     }

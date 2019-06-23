@@ -71,20 +71,6 @@ function inicio_nav(p,arg) {
         if (p=="inicio") activo = false;
     });
 
-    /*var activo = true;
-    setTimeout(function () {
-        if (activo==false) return;
-        socket.sendMessage("inicio", null, function (e,d) {
-            if (d.hasOwnProperty("code")) {
-
-            } else {
-                rdia = d.data;
-                $('#srt_dia').html(jsrender($('#rd-sorteos-dia1-row'), d.data, hlp));
-            }
-            $('#str-dia-stamp').html((new Date(d.time).format('hh:MM TT')))
-        });
-    },3000);*/
-
     $('#btnload').click(function () {
         $("#inicio-sorteodia").html(jsrender($('#rd-pnlsorteo'),null));
         var col=false;
@@ -107,6 +93,7 @@ function inicio_nav(p,arg) {
 
         function getReporte () {
             socket.sendMessage("inicio", null, function (e,d) {
+                $('#srt_dia').html('');
                 if (d.hasOwnProperty("code")) {
 
                 } else {
@@ -130,9 +117,6 @@ function inicio_nav(p,arg) {
             });
         }
     })
-    $('#bl-my').on("maximized.bs.panel",function (e) {
-        $('#info1').remove();
-    });
 
     if ($balance) {
         $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
@@ -142,45 +126,38 @@ function inicio_nav(p,arg) {
                 break;
             }
         }
-
         $('.bl-pagar').click(balance_pago_click);
     }
-  function balance_pago_click (e) {
-    var detalle = $('#suspDetalle')
-    var suspPayBtn = $('#suspPayBtn');
 
-    if (args.hasOwnProperty("info")) {
-      var deuda = args.info.balance;
-      detalle.html('Tiene una deuda pendiente de <b>'+deuda+'</b>');
-      
-      var pago = args.info;
-      
-      suspPayBtn.removeClass("hidden");
-      suspPayBtn.click(reqPago);
+    function balance_pago_click (e) {
+        e.preventDefault(e);
+        var pago = $(this).attr('pago');
+        var bi = findBy("balID",pago,$balance);
 
-      notificacion("PAGO PROCESADO",d.msg+'<br/><button onclick="location.reload();">Refrescar</button>',null,true);
+        var cp=0;
+        $balance.forEach(function (item) { if (item.cdo==0) cp++; })
 
-      function reqPago () {
-          askme("PROCESAR PAGO #"+pago.balID,jsrender($('#rd-procesar-pago'),pago),{
-              ok: function (result) {
-                  var monto = parseFloat(result.monto)*-1;
-                  var data = {
-                      desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
-                      monto:monto,
-                      resID:pago.resID
-                  }
-                  suspPayBtn.prop("disabled",true);
-                  socket.sendMessage('balance-pago',data, function (e, d) {                        
-                      notificacion("PAGO PROCESADO",d.msg+'<br/><button class="btn btn-success btn-xs btn-block" onclick="location.reload();">Refrescar</button>',null,true);
-                  });
-                  return true;
-              }
-          });
-      }
-    } else {
-        suspPayBtn.style("visible","none");
+        if (cp<=3) askme("PROCESAR PAGO #"+pago,jsrender($('#rd-procesar-pago'),bi),{
+            ok: function (result) {
+                var monto = parseFloat(result.monto)*-1;
+                var data = {
+                    desc:"PAGO:"+result.id+" B:"+padding(result.origen,4)+"-"+padding(result.destino,4)+" R:"+result.recibo+" F:"+result.fecha,
+                    monto:monto,
+                    resID:bi.resID
+                }
+                socket.sendMessage('balance-pago',data, function (e, d) {
+                    d.balance = "--";
+                   $balance.unshift(d);
+                    $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+                    $('.bl-pagar').click(balance_pago_click);
+                   notificacion('PAGO ENVIADO EXITOSAMENTE');
+                });
+                return true;
+            }
+        });
+        else notificacion('LIMITE DE PAGOS ALCANZADO', 'Estimado usuario, ya has alcanzado el limite de pagos sin confirmar, comuniquese con su administrador.')
     }
-  }
+
 }
 
 function sorteoMonitor_nav() {
@@ -1008,7 +985,7 @@ function bancasTaquilla_nav(p,args) {
         rm.click(function () {
             rm.prop("disabled",true);
             rm.html('<i class="fa fa-spinner fa-spin"></i> ESPERE, ESTO PUEDE TOMAR UN MOMENTO...');
-            socket.sendMessage("taquilla-remover",{taquillaID:taquilla.taquillaID}, function (e, d) {
+            socket.sendMessage("taquilla-remover",{taquillaID:taquilla.taquillaID,papelera:1}, function (e, d) {
                 if ($taquillas && $taquillas.length>0) {
                     var i = findIndex("taquillaID", taquilla.taquillaID, $taquillas);
                     $taquillas[i].papelera = 1;
