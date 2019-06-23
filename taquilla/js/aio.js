@@ -210,8 +210,8 @@ var init = function () {
     nav.paginas.addListener('visual',(p,args) => {      
       let npanel = $('#numpanel');      
       for (let i = 0; i <= 36; i++) {
-        if (i==0) npanel.append(`<div class="numcell" numero="${zero(i)}"><img src="/assets/lotto/0.jpg" class="numero"/><div class="overlay"></div></div>`);
-        npanel.append(`<div class="numcell" numero="${zero(i)}"><img src="/assets/lotto/${zero(i)}.jpg" class="numero"/><div class="overlay"></div></div>`);
+        if (i==0) npanel.append(`<div class="numcell" numero="${zero(i)}"><img src="/assets/animales/0.jpg" class="numero"/><div class="overlay"></div></div>`);
+        npanel.append(`<div class="numcell" numero="${zero(i)}"><img src="/assets/animales/${zero(i)}.jpg" class="numero"/><div class="overlay"></div></div>`);
       }
       function zero (n) { return n<10?`0${n}`:n.toString() }
 
