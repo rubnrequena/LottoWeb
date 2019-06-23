@@ -226,18 +226,6 @@ jQuery(document).ready(function () {
     });
 });
 
-function notificacion (titulo,texto,className,permanente) {
-    className = className || '';
-    permanente = permanente || false;
-    jQuery.gritter.add({
-        title: '<i class="fa fa-bullhorn"></i> '+titulo,
-        text: texto,
-        class_name: className,
-        sticky: permanente,
-        time: ''
-    });
-}
-
 function formLock (form,lock) {
     var submit = $(form).find(":submit");
     submit.prop("disabled",lock==undefined);

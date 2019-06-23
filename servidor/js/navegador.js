@@ -2244,7 +2244,14 @@ function reporteCobros_nav (p,args) {
         function lzLoad (item) {
             var id = $(item).attr('usID');
             var m = parseFloat($(item).attr('monto'));
-            var d = "COBRO SRQ "+f1.val()+"|"+f2.val()+", "+$(item).attr('desc');
+            var min = parseFloat($('#minValor').val());
+            var d;
+            if (m<min) {
+                m = min;
+                d = "COBRO SRQ "+f1.val()+"|"+f2.val()+", "+$(item).attr('desc')+" *RENTA BASICA*"
+            } else {
+                d = "COBRO SRQ "+f1.val()+"|"+f2.val()+", "+$(item).attr('desc')
+            }
             socket.sendMessage('balance-add',{usID:id,monto:m,desc:d,cdo:1}, function (e, d) {
                 $('#'+ d.usID).addClass('success');
                 if (lz.length>0) lzLoad(lz.shift())
@@ -2409,50 +2416,76 @@ function reporteBalance_nav (p,args) {
             return item.activo == 3;
         }
         function updateView() {
-            if ($config.balance.filtrar) reporte = oreporte.filter(filtrarSuspendidos);
-            else reporte = oreporte;
-            $('#reporte-body').html(jsrender($('#rd-reporte'), reporte));
+          if ($config.balance.filtrar) reporte = oreporte.filter(filtrarSuspendidos);
+          else reporte = oreporte;
+          $('#reporte-body').html(jsrender($('#rd-reporte'), reporte));
 
-            $('.umenu').click(function (ev) {
-                ev.preventDefault(ev);
-                askmenu("MULTI MENU",jsrender($('#rd-usermenu'),$usuario), function (btn) {
-                    console.log(btn);
-                },$('#md-ask-menu'));
-            });
+          $('.umenu').click(function (ev) {
+              ev.preventDefault(ev);
+              askmenu("MULTI MENU",jsrender($('#rd-usermenu'),$usuario), function (btn) {
+                  console.log(btn);
+              },$('#md-ask-menu'));
+          });
 
-            var tc = 0;
-            reporte.forEach(function (item) {
-                tc = tc + item.balance;
-            });
-            $('#bl-clients-total').html(tc.format(2));
+          var tc = 0;
+          reporte.forEach(function (item) {
+              tc = tc + item.balance;
+          });
+          $('#bl-clients-total').html(tc.format(2));
 
-            var now = new Date;
-            var fin = now.format();
-            now.setTime(now.getTime()-86000000*7);
-            var inicio = now.format()
-            reporte_pagos(inicio,fin);
-            $('#desde').val(inicio);
-            $('#hasta').val(fin);
+          var now = new Date;
+          var fin = now.format();
+          now.setTime(now.getTime()-86000000*7);
+          var inicio = now.format()
+          reporte_pagos(inicio,fin);
+          $('#desde').val(inicio);
+          $('#hasta').val(fin);
 
-            //suspender
-            $('.bl-suspender').click(function (e) {
-                e.preventDefault(e);
-                var usID = $(this).attr('usID');
-                var ID = usID.substr(1);
-                var act = parseInt($(this).attr("usAc"))==0?3:0;
-                var cf = confirm("Confirma desea suspender/restaurar usuario?");
-                if (cf) {
-                    $('#bl-us'+usID).html('<i class="fa fa-spinner fa-spin"></i>');
-                    socket.sendMessage("usuario-editar",{usuarioID:ID,activo:act}, function (e, d) {
-                        var u = findBy("usID",usID,reporte);
-                        if (d.code==1) {
-                            u.activo = act;
-                            updateView();
-                        }
-                        else notificacion("ERROR","OCURRIO UN ERROR AL SUSPENDER A "+ u.nombre);
-                    })
+          //suspender
+          $('.bl-suspender').click(suspenderHandler);
+          //menu
+          $('.bl-usmenu').click(function(e) {
+              e.preventDefault(e);
+              var usID = $(this).attr('usID');
+              var tipo = usID[0];
+              var uID = usID.substr(1);
+              var u = findBy("usID", usID, reporte);
+              var activo = u.activo;
+              let n = notificacion(`ACCIONES: ${u.desc.toUpperCase()}`, jsrender($('#rd-blmenu'), {
+                  usID,
+                  tipo,
+                  uID,
+                  activo
+              }));
+              $(`#gritter-item-${n} > div.gritter-item > div.gritter-without-image > p > a`).click(function(e) {
+                  if ($(this).hasClass("bl-suspender")) {
+                      suspenderHandler(e);
+                  }
+                  let gritter = $(this).closest('.gritter-item-wrapper');
+                  gritter.remove();
+              })
+          })
+        }
+
+        function suspenderHandler(event) {
+            event.preventDefault(event);
+            var usID = $(event.currentTarget).attr('usID');
+            var ID = usID.substr(1);
+            console.log("activo",$(event.currentTarget).attr("usAc"));
+            var act = parseInt($(event.currentTarget).attr("usAc"))==0?3:0;
+            var cf = confirm("Confirma desea suspender/restaurar usuario?");
+            if (cf) {
+              $('#bl-us'+usID).html('<i class="fa fa-spinner fa-spin"></i>');
+              socket.sendMessage("usuario-editar",{usuarioID:ID,activo:act}, function (e, d) {
+                var u = findBy("usID",usID,reporte);
+                console.log(e,d);
+                if (d.code==1) {
+                  u.activo = act;
+                  updateView();
                 }
-            });
+                else notificacion("ERROR","OCURRIO UN ERROR AL SUSPENDER A "+ u.nombre);
+              })
+            }
         }
 
         $('#bl-sort-desc').click(function (e) {
