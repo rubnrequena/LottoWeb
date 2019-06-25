@@ -513,7 +513,9 @@ setInterval(() => {
             socket.sendMessage("venta",{
                 m:meta || {},
                 v:cesto
-            }, function (e, d) {
+            }, ventaHandler);
+
+            function ventaHandler (e, d) {
                 vendiendo = false;
                 storage.removeItem("lastTk");
                 btnImprimir.prop("disabled",vendiendo);
@@ -534,7 +536,15 @@ setInterval(() => {
                         cesto_reiniciar();
                     }
                     else if (d.code==4) {
-                      notificacion("TICKET POSIBLEMENTE DUPLICADO","Venta no confirmada. En el ultimo minuto se ha vendido un ticket con caracteristicas muy parecidas al actual");
+                      let uid = new Date().getTime();
+                      notificacion("TICKET POSIBLEMENTE DUPLICADO",`<p><b>Venta no confirmada</b><br>. En el ultimo minuto se ha vendido un ticket con caracteristicas muy parecidas al actual.</p>
+                      <p>¿Confirma que desea realizar esta venta?</p>
+                      <button id="vnt-confirmar${uid}" class="btn btn-success btn-block">Confirmar</button>`);
+                      $('#vnt-confirmar'+uid).click(function (e) {
+                        $(this).closest('.gritter-item-wrapper').remove();
+                        d.venta.m.rw = true;
+                        socket.sendMessage("venta",d.venta, ventaHandler);
+                      })
                     }
                     else notificacion("TICKET RECHAZADO");
                     return;
@@ -551,7 +561,7 @@ setInterval(() => {
                 }
                 else cesto_enviado(d);
                 cesto_reiniciar();
-            })
+            }
         }
         function ajustarAtope (item) {
             cesto.forEach(function (c) {
