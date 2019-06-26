@@ -1038,11 +1038,14 @@ setInterval(() => {
         }
         function imprimirVentas_ws (num,cesto,ticket,copia) {
           copia = copia || false;
-            var _lineas = [$usuario.nombre,ticket.hora];
-            if (copia) _lineas.push("S:"+padding(ticket.ticketID,6)+" N:"+cesto.length);
-            else _lineas.push("S:"+padding(ticket.ticketID,6)+" C:"+padding(ticket.codigo)+" N:"+cesto.length);
-            _lineas.push("COPIA - CADUCA 3 DIAS");
-
+            var _lineas = [`*${$usuario.nombre}*`,ticket.hora];
+            if (copia) {
+                _lineas.push("S: *"+padding(ticket.ticketID,6)+"* N:"+cesto.length);
+                _lineas.push("COPIA - CADUCA 3 DIAS");
+            } else {
+                _lineas.push("S: *"+padding(ticket.ticketID,6)+"* C: *"+padding(ticket.codigo)+"* N:"+cesto.length);
+                _lineas.push("TICKET - CADUCA 3 DIAS");
+            }
             cesto.sort(function (a,b) {
                 var s1 = a.sorteoID, s2 = b.sorteoID;
                 var n1 = a.numero, n2 = b.numero;
@@ -1053,7 +1056,7 @@ setInterval(() => {
             var csorteo = [];
             for (var i=0;i<cesto.length;i++) {
                 if (linea.sorteoID != cesto[i].sorteoID) {
-                    _lineas.push(linea.sorteo);
+                    _lineas.push(`*_${linea.sorteo}_*`);
                     csorteo.sort(cesto_ordenMonto);
                     cesto_print(csorteo,_lineas);
                     csorteo = [];
@@ -1061,12 +1064,13 @@ setInterval(() => {
                 csorteo.push(cesto[i]);
                 linea = cesto[i];
             }
-            _lineas.push(linea.sorteo);
+            _lineas.push(`*_${linea.sorteo}_*`);
             csorteo.sort(cesto_ordenMonto);
             cesto_print(csorteo,_lineas);
 
             //_lineas.push({type:"linea",text:"TOTAL: "+ticket.monto,align:"center"});
-            _lineas.push("T:"+ticket.monto.format(2)+" AG"+_fingerprint);
+            _lineas.push("TOTAL:"+ticket.monto.format(2));
+            _lineas.push("_AG"+_fingerprint+"_");
             wsSend(num,_lineas.join("%0A"));
         }
         function imprimirVentas_pdf (cesto,ticket,copia) {
@@ -1314,7 +1318,6 @@ setInterval(() => {
 
             //_lineas.push({type:"linea",text:"TOTAL: "+ticket.monto,align:"center"});
             _lineas.push({type:"linea",text:"T:"+ticket.monto.format(2)+" AG"+_fingerprint,align:"left"});
-            _lineas.push({type:"linea",text:" ",align:"left"});
 
             print.sendMessage("print",{data:_lineas,printer:1});
         }
@@ -1367,7 +1370,7 @@ setInterval(() => {
                             cursor.push(tx.substr(ci));
                         }
                     } else {
-                        cursor[cursor.length-1] += ";"+tx;
+                        cursor[cursor.length-1] += "%0A"+tx;
                     }
                 }
             }
