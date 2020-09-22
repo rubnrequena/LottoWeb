@@ -376,7 +376,7 @@ function sorteoBuscar_nav(p, args) {
 nav.paginas.addListener("sorteos/buscar", sorteoBuscar_nav);
 
 function sorteoPublicar_nav(p, args) {
-  var tq_srt, taquillas;
+  var tq_srt, taquillas, grupos;
   var hlp = {
     taq: function (id) {
       if (id > 0) {
@@ -391,29 +391,21 @@ function sorteoPublicar_nav(p, args) {
   var bancas = $("#bancas"),
     taqs = $("#taquillas"),
     sorteos = $("#sorteos"),
-    htaq = $("#hb-taquilla");
+    htaq = $("#hb-taquilla"),
+    grupos_s2 = $("#grupos"),
+    rdGrupo_op = $("#rd-grupo-option");
 
-  bancas.html(jsrender($("#rd-banca-option"), $bancas));
+  bancas.html(jsrender($("#rd-usuario-option"), $bancas));
   bancas.select2("val", 0);
-  bancas.on("change", function () {
-    htaq.html(
-      '<i class="fa fa-spinner fa-spin"></i> Espere, recibiendo taquillas..'
-    );
-    socket.sendMessage(
-      "taquillas",
-      {
-        bancaID: bancas.val(),
-      },
-      updateTaquillas
-    );
-  });
+  bancas.on("change", bancas_onChange);
+  grupos_s2.on("change", grupos_onChange);
 
   sorteos.html(jsrender($("#rd-sorteos-option"), $sorteos));
 
   $("#reporte").submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
-    data.bancaID = bancas.val();
+    data.bancaID = grupos_s2.val();
     if (!data.hasOwnProperty("taquillas")) data.taquillas = [0];
 
     var i,
@@ -440,7 +432,7 @@ function sorteoPublicar_nav(p, args) {
         socket.sendMessage(
           "sorteos-publicos",
           {
-            bancaID: bancas.val(),
+            bancaID: grupos_s2.val(),
           },
           sorteos_publicos
         );
@@ -475,7 +467,7 @@ function sorteoPublicar_nav(p, args) {
         {
           id: taquilla.ID,
           publico: act,
-          bancaID: bancas.val(),
+          bancaID: grupos_s2.val(),
         },
         function (e, d) {
           taquilla.publico = act;
@@ -514,19 +506,34 @@ function sorteoPublicar_nav(p, args) {
     socket.sendMessage(
       "sorteos-publicos",
       {
-        bancaID: bancas.val(),
+        bancaID: grupos_s2.val(),
       },
       sorteos_publicos
     );
   }
+  function updateGrupos(e, d) {
+    grupos = d || [];
+    grupos_s2.html(jsrender(rdGrupo_op, grupos));
+    grupos_s2.select2("val", null);
+  }
 
-  socket.sendMessage(
-    "taquillas",
-    {
-      bancaID: bancas.val(),
-    },
-    updateTaquillas
-  );
+  function bancas_onChange() {
+    htaq.html(
+      '<i class="fa fa-spinner fa-spin"></i> Espere, recibiendo taquillas..'
+    );
+    socket.sendMessage(
+      "usuario-grupos",
+      { usuarioID: bancas.val() },
+      updateGrupos
+    );
+  }
+  function grupos_onChange() {
+    socket.sendMessage(
+      "taquillas",
+      { banca: grupos_s2.val() },
+      updateTaquillas
+    );
+  }
 }
 nav.paginas.addListener("sorteos/publicar", sorteoPublicar_nav);
 
