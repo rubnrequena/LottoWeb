@@ -226,12 +226,7 @@ jQuery(document).ready(function () {
     });
 });
 
-function formLock (form,lock) {
-    var submit = $(form).find(":submit");
-    submit.prop("disabled",lock==undefined?true:lock);
-    //TODO: Asignar icono de espera mientras esta bloqueado
-    return form;
-}
+
 function formReset (form) {
     form.reset();
     $('.form-control',form).first().focus();

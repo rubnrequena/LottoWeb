@@ -71,7 +71,7 @@
             <div class="form-group tp-avanzado hidden">
                 <label class="col-sm-3 control-label">Numero</label>
                 <div class="col-sm-6">
-                    <select class="s2 form-control" name="elemento" id="elemento"></select>
+                    <input type="text" class="form-control" name="elemento" id="elemento"></input>
                 </div>
             </div>
             <div class="form-group">
@@ -83,12 +83,14 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">General</label>
                 <div class="col-sm-6">
-                    <select class="s2 form-control" name="compartido">
+                    <select class="s2 form-control" name="compartido" id="tope-select">
                         <option value="0">INDIVIDUAL</option>
                         <option value="1">GRUPO</option>
                         <option value="2">BANCA</option>
                     </select>
-                    <span class="text-danger"><i class="fa fa-warning"></i> IMPORTANTE: Al asignar el tope como compartido, el campo taquillas deber&aacute; ser para <strong>TODAS</strong>, de lo contrario el tope no funcionara como se espera.</span>
+                    <span class="text-danger"><i class="fa fa-warning"></i> IMPORTANTE: Al asignar el tope como
+                        compartido, el campo taquillas deber&aacute; ser para <strong>TODAS</strong>, de lo contrario el
+                        tope no funcionara como se espera.</span>
                 </div>
             </div>
             <div class="form-group">
@@ -109,7 +111,7 @@
         {{if sorteoID>0}} <td>#{{:sorteoID}} {{:descripcion}}</td>
         {{else sorteo>0}} <td>{{:nsorteo}}</td>
         {{else}} <td>TODOS</td> {{/if}}
-        <td>{{:~elm(elemento)}}</td>
+        <td>{{:elemento}}</td>
         <td>{{:monto}}</td>
         {{if compartido==1}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> GRUPO</td>
         {{else compartido==2}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> BANCA</td>
@@ -117,4 +119,7 @@
         <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> INDIVIDUAL</td>
         {{/if}}
     </tr>
+</script>
+<script type="text/x-jsrender" id="rd-tope-option">
+    <option value="{{:valor}}">{{:nombre}}</option>
 </script>

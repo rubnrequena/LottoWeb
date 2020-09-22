@@ -335,7 +335,7 @@ strong {
 }
 
 .headermenu .dropdown-menu li i {
-    font-size: 11px;
+    /* font-size: 11px; */
     margin-right: 5px;
 }
 
@@ -372,7 +372,7 @@ strong {
 .headermenu .dropdown-menu-head ul {
     border: 1px solid #ddd;
     border-top: 0;
-    padding: 0 10px;
+    padding: 0;
 }
 
 .headermenu .dropdown-menu-head li a {

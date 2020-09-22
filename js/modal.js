@@ -12,6 +12,9 @@ function askme (title,body,callback,md) {
     var _body = modal.find('.modal-body');
     _body.html(body);
 
+    var fm = modal.find('form');
+    fm.submit(btnok_clic)
+
     modal.find('.date').datepicker({
         dateFormat:'yy-mm-dd'
     });
@@ -43,10 +46,12 @@ function askme (title,body,callback,md) {
         if (callback && callback.hasOwnProperty('hidden')) callback.hidden();
     });
 
-    function btnok_clic () {
+    function btnok_clic (e) {        
+        e.preventDefault()
+
         var fm = modal.find('form');
         var data = formControls(fm);
-        if (callback.ok(data)) {
+        if (callback.ok(data)!=false) {
             modal.modal('hide');
         }
     }

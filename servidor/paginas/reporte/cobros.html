@@ -125,7 +125,10 @@
             <button id="cbr-procesar" class="btn btn-darkblue btn-block"><i class="fa fa-paypal"></i> PROCESAR TODO</button>
         </div>
         <div class="col-md-3">
-            <input type="number" id="minValor" class="form-control" placeholder="Cobro Minimo" >
+            <input type="number" min="0" max="999999999" id="minValor" class="form-control" placeholder="Cobro Minimo" >
+        </div>
+        <div class="col-md-3">
+            <input type="number" min="0" max="100" value="0" id="descuento" class="form-control" placeholder="% Descuento" >
         </div>
     </div>
 </div>
@@ -142,7 +145,7 @@
                 <button class="btn btn-xs btn-maroon cbr-shutdown" href="#"><i class="fa fa-power-off"></i></button>
                 {{if uID}}
                 {{if cm>0}}
-                <button class="btn btn-xs btn-danger cbr-disable" usID="u{{:uID}}" href="#"><i class="fa fa-remove text-danger"></i></button>
+                <button class="btn btn-xs btn-danger cbr{{:cID}}-disable" usID="u{{:uID}}" href="#"><i class="fa fa-remove text-danger"></i></button>
                 <button id="cbrbal-u{{:uID}}" class="btn btn-xs cbr-bal cbr-bal-act" desc="V:{{:~formatNumber(jg)}}, C:{{:~abs(cm*100)}}" usID="u{{:uID}}" monto="{{:(jg*cm)}}" href="#"><i class="fa fa-paypal text-success"></i></button>
                 {{/if}}
                 <button class="btn btn-xs cbr-edit" href="#bancas/banca|{{:uID}}"><i class="fa fa-user text-success"></i></button>

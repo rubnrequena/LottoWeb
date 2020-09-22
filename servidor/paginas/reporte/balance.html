@@ -140,10 +140,12 @@
     {{/if}}
         <td>{{:fecha}}</td>
         <td class="text-uppercase">
+            <a href="https://api.whatsapp.com/send?text=Estimado+usuario,+se+le+notifica+que+para+la+fecha+de+hoy,+tiene+una+deuda+pendiente+de+*{{:~formatNumber(balance,2)}}*" target="_blank" class="bl-ws" href="notificacion-cobro"><i class="fa fa-whatsapp text-success"></i></a>
             <a id="bl-us{{:usID}}" class="bl-suspender hidden-xs" usAc="{{:activo}}" usID="{{:usID}}" href="#suspender|{{:usID}}" title="Suspender/Restalecer">
                 <i class="fa fa-power-off {{if activo==0}} text-success {{else}} text-danger {{/if}}"></i>
             </a>
             <a class="bl-usmenu" usID="{{:usID}}" href="#m{{:usID}}"><i class="fa fa-bars"></i> {{:desc}}</a>
+            
         </td>
         <td>{{:~formatNumber(balance,2)}}</td>
     </tr>

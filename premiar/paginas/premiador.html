@@ -1,0 +1,89 @@
+<div class="pageheader">
+  <h2><i class="fa fa-trophy"></i> Premiador</h2>
+</div>
+<div class="panel">
+  <div class="panel-body">
+    <form id="bot-buscarForm">
+      <div class="form-group">
+        <div class="form-group">
+          <label class="mt10 col-sm-3 text-right">Operadora</label>
+          <div class="col-sm-6">
+            <select id="bot-operadora" name="operadora" class="s2 form-control"></select>
+          </div>
+          <div class="col-sm-1">
+            <button id="bot-nuevoModal" disabled type="button" class="btn btn-primary btn-block" data-toggle="modal"
+              data-target="#md-botRegistro"><i class="fa fa-plus"></i></button>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="form-group">
+        <div class="col-sm-6 col-sm-offset-3">
+          <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-search"></i>
+            Buscar</button>
+        </div>
+      </div> -->
+    </form>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>SORTEO</th>
+            <th>FECHA</th>
+            <th>RELACION</th>
+            <th>CREADO</th>
+          </tr>
+        </thead>
+        <tbody id="botTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalNuevoBot" aria-hidden="true"
+  id="md-botRegistro">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
+        <h4 class="modal-title">Registro Bot Premiar</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form form-horizontal" id="bot-registro">
+          <div class="form-group">
+            <label class="col-sm-3 text-right mt10">Relacion</label>
+            <div class="col-sm-6">
+              <input type="number" class="form-control" name="relacion" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 text-right mt10">Fecha</label>
+            <div class="col-sm-6">
+              <input class="form-control date" name="fecha" id="bot-registroFecha">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-3 text-right mt10">Sorteo</label>
+            <div class="col-sm-6">
+              <select class="s2 form-control" name="sorteo" id="bot-registroSorteos"></select>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit"><i class="fa fa-send"></i>Registrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/x-jsrender" id="rd-operadora-option">
+  <option value="{{:sorteoID}}" class="text-uppercase">{{:nombre}}</option>
+</script>
+<script type="text/x-jsrender" id="rd-sorteo-option">
+  <option value="{{:sorteoID}}" class="text-uppercase">{{:descripcion}}</option>
+</script>
+<script type="text/x-jsrender" id="rd-bot-row">
+  <tr>
+    <td>{{:sorteo||"TODOS"}}</td>
+    <td>{{:fecha||"TODOS"}}</td>
+    <td>{{:relacion}}</td>
+    <td>{{:creado}}</td>
+    <td><a class="bot-remover" href="#remover" botid="{{:botID}}"><i class="fa fa-trash text-danger"></i></a>
+  <tr>
+</script>

@@ -10,9 +10,15 @@
     </div>
     <div class="panel-body">
         <div class="form-group">
-            <label class="mt10 col-sm-3 text-right">Grupo</label>
+            <label class="mt10 col-sm-3 text-right">Bancas</label>
             <div class="col-sm-6">
                 <select class="s2 form-control" id="bancas"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="mt10 col-sm-3 text-right">Grupos</label>
+            <div class="col-sm-6">
+                <select class="s2 form-control" id="grupos"></select>
             </div>
         </div>
         <table class="table table-hover table-condensed">
@@ -65,7 +71,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Numero</label>
                 <div class="col-sm-6">
-                    <select class="s2 form-control" name="elemento" id="elemento"></select>
+                    <input type="text" class="form-control" name="elemento" id="elemento"></input>
                 </div>
             </div>
             <div class="form-group">
@@ -79,10 +85,12 @@
                 <div class="col-sm-6">
                     <select class="s2 form-control" name="compartido">
                         <option value="0">NO</option>
-                        <option value="1">SI - BANCA</option>
-                        <option value="2">SI - USUARIO</option>
+                        <option value="1">GRUPO</option>
+                        <option value="2">BANCA</option>
                     </select>
-                    <span class="text-danger"><i class="fa fa-warning"></i> IMPORTANTE: Al asignar el tope como compartido, el campo taquillas deber&aacute; ser para <strong>TODAS</strong>, de lo contrario el tope no funcionara como se espera.</span>
+                    <span class="text-danger"><i class="fa fa-warning"></i> IMPORTANTE: Al asignar el tope como
+                        compartido, el campo taquillas deber&aacute; ser para <strong>TODAS</strong>, de lo contrario el
+                        tope no funcionara como se espera.</span>
                 </div>
             </div>
             <div class="form-group">
@@ -95,20 +103,25 @@
 </div>
 <script type="text/x-jsrender" id="rd-topes-row">
     <tr id="tope{{:topeID}}">
+        <td>
         {{if usuarioID>0}}
-        <td><a class="tope-rem" title="Click para remover tope" style="color:maroon;" topeID="{{:topeID}}" bancaID="{{:bancaID}}" taquillaID="{{:taquillaID}}" href="#{{:topeID}}"><i class="fa fa-remove"></i> {{if taquilla}} {{:taquilla}} {{else}} TODOS {{/if}}</a></th>
+        <a class="tope-rem" title="Click para remover tope" style="color:maroon;" topeID="{{:topeID}}" bancaID="{{:bancaID}}" taquillaID="{{:taquillaID}}" href="#{{:topeID}}"><i class="fa fa-remove"></i> {{if taquilla}} {{:taquilla}} {{else}} TODOS {{/if}}</a>
         {{else}}
-        <td>{{if taquilla}} {{:taquilla}} {{else}} TODOS {{/if}}</td>
+            {{if taquilla}} 
+                {{:taquilla}} 
+            {{else}} 
+                TODOS 
+            {{/if}}
         {{/if}}
-        {{if taquilla}} <td>{{:taquilla}}</td>
-        {{else}} <td>TODOS</td> {{/if}}
+        </td>
         {{if sorteoID>0}} <td>#{{:sorteoID}} {{:descripcion}}</td>
         {{else sorteo>0}} <td>{{:nsorteo}}</td>
         {{else}} <td>TODOS</td> {{/if}}
-        <td>{{:~elm(elemento)}}</td>
+        
+        <td>{{:elemento}}</td>
         <td>{{:monto}}</td>
-        {{if compartido==1}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> BANCA</td>
-        {{else compartido==2}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> USUARIO</td>
+        {{if compartido==1}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> GRUPO</td>
+        {{else compartido==2}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> BANCA</td>
         {{else}}
         <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> NO</td>
         {{/if}}

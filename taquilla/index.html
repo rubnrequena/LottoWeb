@@ -13,7 +13,7 @@
 
     <link href="../theme/css/style.default.css" rel="stylesheet">
     <link href="../theme/css/jquery.gritter.css" rel="stylesheet">
-    <link href="../taquilla/css/custom.css" rel="stylesheet">
+    <link href="../taquilla/css/custom.css?191123a" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -25,10 +25,11 @@
 <body>
     <!-- Preloader -->
     <div class="preloader" id="conectando">
-        <h4><a class="pull-right btn btn-danger" url="@rutaAlt" id="rutaAlt"><i class="fa fa-globe"></i> No conecta? click aqui...</a></h4>
+        <h4><a class="pull-right btn btn-danger" url="@rutaAlt" id="rutaAlt"><i class="fa fa-globe"></i> No conecta?
+                click aqui...</a></h4>
         <h4 id="proxy" class="padding10"></h4>
         <div class="status">
-            <span>Conectando</span>
+            <span>Conectando <span id="pre-timer"></span></span>
             <i class="fa fa-cog fa-spin"></i>
         </div>
     </div>
@@ -91,7 +92,6 @@
                         <ul class="children">
                             <li><a href="#reporte/general"><i class="fa fa-desktop"></i> <span>General</span></a></li>
                             <li><a href="#reporte/diario"><i class="fa fa-calendar"></i> <span>Diario</span></a></li>
-                            <li><a href="#reporte/sorteo"><i class="fa fa-sticky-note"></i> <span>Sorteo</span></a></li>
                             <li><a href="#reporte/ventas">
                                     <span class="pull-right badge badge-success">NUEVO</span>
                                     <i class="fa fa-ticket"></i> <span>Ventas</span></a></li>
@@ -113,7 +113,7 @@
 
                 <div class="header-right">
                     <ul class="headermenu">
-                        <li>
+                        <!-- <li>
                             <div class="btn-group">
                                 <button class="btn btn-default tp-icon">
                                     <i class="glyphicon glyphicon-user"></i>
@@ -151,10 +151,9 @@
                                             </div>
                                         </form>
                                     </div>
-                                    <!--<span class="new"><a href="#mensajes">Leer todos los mensajes</a></span>-->
                                 </div>
                             </div>
-                        </li>
+                        </li> -->
                         <li>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -176,7 +175,6 @@
                 </div><!-- header-right -->
 
             </div><!-- headerbar -->
-
             <div class="contentpanel">
 
             </div><!-- contentpanel -->
@@ -372,14 +370,15 @@
 <script src="../theme/js/retina.min.js"></script>
 -->
     <script>
-        var vrs = "19.06.230";
+        var vrs = "20.05.22a";
+        var hostAlt = "@rutaAlt";
     </script>
     <script src="../js/client.min.js"></script>
     <script src="../js/md5.js"></script>
     <script src="../js/jsrender.min.js"></script>
     <script src="../js/srsocket.js?170419"></script>
     <script src="../js/srnav.js?170419"></script>
-    <script src="../js/tools.js?170429"></script>
+    <script src="../js/tools.js?200510a"></script>
 
     <script src="js/keymap.js"></script>
     <script src="js/bracket.js?170429"></script>

@@ -1,6 +1,6 @@
 <?php	
 	require('../redir.php');
-	setcookie("usuario",$port["usuario"]);	
+	setcookie("comercializadora",$port["comercializadora"]);	
 
 	date_default_timezone_set('America/Caracas');
     $file = "index.html";

@@ -125,24 +125,6 @@
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="md-ask">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                <h4 class="modal-title"></h4>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <div class="btn-group">
-                    <button class="btn btn-danger" data-dismiss="modal">CANCELAR</button>
-                    <button class="btn btn-dark md-ask-ok" form="bl-form">CONFIRMAR</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script type="text/x-jsrender" id="rd-reporte">
     {{if activo==0}}
@@ -152,6 +134,7 @@
     {{/if}}
         <td>{{:fecha}}</td>
         <td class="text-uppercase">
+            <a href="https://api.whatsapp.com/send?text=Estimado+usuario,+se+le+notifica+que+para+la+fecha+de+hoy,+tiene+una+deuda+pendiente+de+*{{:~formatNumber(balance,2)}}*" target="_blank" class="bl-ws" href="notificacion-cobro"><i class="fa fa-whatsapp text-success"></i></a>
             <a id="bl-us{{:usID}}" class="bl-suspender hidden-xs" usAc="{{:activo}}" usID="{{:usID}}" href="#suspender|{{:usID}}" title="Suspender/Restalecer">
                 <i class="fa fa-power-off {{if activo==0}} text-success {{else}} text-danger {{/if}}"></i>
             </a>
@@ -167,7 +150,7 @@
         {{/if}}
         <td>
             {{if monto>0}}
-            <a href="#pago{{:balID}}" pago="{{:balID}}" class="bl-pagar"><i class="fa fa-money"></i> {{:~padding(balID,4)}}</a>
+            <a href="#pago{{:balID}}" cliente="{{:cliente}}" pago="{{:balID}}" class="bl-pagar"><i class="fa fa-money"></i> {{:~padding(balID,4)}}</a>
             {{else}}
             <i class="fa fa-money"></i> {{:~padding(balID,4)}}
             {{/if}}
@@ -277,14 +260,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">Monto</label>
-            <input type="number" class="form-control" form="" step="any" id="bl-prc-monto" name="monto" value="{{:monto}}" required>
-        </div>
-        <div class="form-group">
-            <label class="control-label">Confirmado</label>
-            <select class="form-control s2" name="cdo">
-                <option value="1">SI</option>
-                <option value="0">NO</option>
-            </select>
+            <input type="number" class="form-control" step="any" id="bl-prc-monto" name="monto" value="{{:monto}}" required>
         </div>
     </form>
 </script>

@@ -1,145 +1,207 @@
 <div class="pageheader hidden-xs">
-    <h2><i class="fa fa-home"></i> Grupo</h2>
+  <h2><i class="fa fa-home"></i> Grupo</h2>
 </div>
 <div class="panel">
-    <div class="panel-body">
-        <div class="row">
-            <form class="form-horizontal" id="banca-nueva">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Nombre</label>
-                    <div class="col-sm-6">
-                        <input class="form-control" name="nombre" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Usuario</label>
-                    <div class="col-sm-6">
-                        <input class="form-control" name="usuario" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Comision</label>
-                    <div class="col-sm-6">
-                        <div class="rdio rdio-default">
-                            <input class="rdo-com" type="radio" name="radio" value="0" id="radioNormal" checked="checked" />
-                            <label for="radioNormal">Normal</label>
-                        </div>
-                        <div class="rdio rdio-success">
-                            <input class="rdo-com" type="radio" name="radio" value="0.01" id="radioRecogedor" />
-                            <label for="radioRecogedor">Recogedor</label>
-                        </div>
-                        <!--<div class="rdio rdio-primary">
+  <div class="panel-body">
+    <div class="row">
+      <form class="form-horizontal" id="banca-nueva">
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Nombre</label>
+          <div class="col-sm-6">
+            <input class="form-control" name="nombre" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Usuario</label>
+          <div class="col-sm-6">
+            <input class="form-control" name="usuario" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Comision</label>
+          <div class="col-sm-6">
+            <div class="rdio rdio-default">
+              <input class="rdo-com" type="radio" name="radio" value="0" id="radioNormal" checked="checked" />
+              <label for="radioNormal">Normal</label>
+            </div>
+            <div class="rdio rdio-success">
+              <input class="rdo-com" type="radio" name="radio" value="0.01" id="radioRecogedor" />
+              <label for="radioRecogedor">Recogedor</label>
+            </div>
+            <!--<div class="rdio rdio-primary">
                             <input class="rdo-com" type="radio" name="radio" value="-0.01" id="radioReventa" />
                             <label for="radioReventa">Reventa</label>
                         </div>-->
-                        <div class="input-group">
-                            <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required disabled="disabled">
-                            <span class="input-group-addon">%</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-6 col-sm-offset-3">
-                        <button class="btn btn-darkblue btn-block"><i class="fa fa-check"></i> Confirmar</button>
-                    </div>
-                </div>
-            </form>
+            <div class="input-group">
+              <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision"
+                value="0" required disabled="disabled">
+              <span class="input-group-addon">%</span>
+            </div>
+          </div>
         </div>
-        <hr/>
-        <div class="row">
-            <form class="form-horizontal" id="banca-psw">
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Contrase&ntilde;a</label>
-                    <div class="col-sm-6">
-                        <input class="form-control" name="clave" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-6 col-sm-offset-3">
-                        <button class="btn btn-darkblue btn-block"><i class="fa fa-check"></i> Confirmar</button>
-                    </div>
-                </div>
-            </form>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Participacion</label>
+          <div class="col-sm-6">
+            <div class="input-group">
+              <input id="bn-participacion" type="number" min="0" step="any" max="100" class="form-control"
+                name="participacion" required>
+              <span class="input-group-addon">%</span>
+            </div>
+          </div>
         </div>
+        <div class="form-group">
+          <div class="col-sm-6 col-sm-offset-3">
+            <button class="btn btn-darkblue btn-block"><i class="fa fa-check"></i> Confirmar</button>
+          </div>
+        </div>
+      </form>
     </div>
+    <hr />
+    <div class="row">
+      <form class="form-horizontal" id="banca-psw">
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Contrase&ntilde;a</label>
+          <div class="col-sm-6">
+            <input class="form-control" name="clave" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-6 col-sm-offset-3">
+            <button class="btn btn-darkblue btn-block"><i class="fa fa-check"></i> Confirmar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-</div>
+<!-- <div class="panel">
+  <div class="panel-heading">
+    <div class="panel-btns">
+      <a href="" class="minimize maximize">&plus;</a>
+    </div>
+    <span class="panel-title">OPCIONES DE COMISION</span>
+  </div>
+  <div class="panel-body" style="display: none;">
+    <form class="form-horizontal" id="com-form">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Sorteo</label>
+        <div class="col-sm-6">
+          <select class="s2 form-control" name="sorteo" id="sorteo" required></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Comision</label>
+        <div class="col-sm-6">
+          <div class="input-group">
+            <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision"
+              required>
+            <span class="input-group-addon">%</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-6">
+          <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i>
+            Confirmar</button>
+        </div>
+      </div>
+    </form>
+    <hr>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>SORTEO</th>
+            <th>COMISION</th>
+          </tr>
+        </thead>
+        <tbody id="com-tbody">
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div> -->
 <div class="panel">
-    <div class="panel-heading">
-        <div class="panel-btns">
-            <a href="" class="minimize">&minus;</a>
-        </div>
-        <h3 class="panel-title">REGISTRAR TAQUILLA</h3>
+  <div class="panel-heading">
+    <div class="panel-btns">
+      <a href="" class="minimize">&minus;</a>
     </div>
+    <h3 class="panel-title">REGISTRAR TAQUILLA</h3>
+  </div>
+  <div class="panel-body">
+    <form class="form-horizontal" id="taquilla-nueva">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Nombre</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="nombre" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Usuario</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control toLower" name="usuario" required>
+        </div>
+      </div>
+      <div class="form-group" id="psw-grupo">
+        <label class="col-sm-3 control-label">Clave</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control toLower" name="clave" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Comisi&oacute;n</label>
+        <div class="col-sm-6">
+          <input type="number" class="form-control" name="comision" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Activa</label>
+        <div class="col-sm-6">
+          <select class="form-control" name="activa">
+            <option value="1">SI</option>
+            <option value="0">NO</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-6 col-sm-offset-3">
+          <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar
+          </button>
+        </div>
+      </div>
+    </form>
     <div class="panel-body">
-        <form class="form-horizontal" id="taquilla-nueva">
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Nombre</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" name="nombre" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Usuario</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control toLower" name="usuario" required>
-                </div>
-            </div>
-            <div class="form-group" id="psw-grupo">
-                <label class="col-sm-3 control-label">Clave</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control toLower" name="clave" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Comisi&oacute;n</label>
-                <div class="col-sm-6">
-                    <input type="number" class="form-control" name="comision" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">Activa</label>
-                <div class="col-sm-6">
-                    <select class="form-control" name="activa">
-                        <option value="1">SI</option>
-                        <option value="0">NO</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar </button>
-                </div>
-            </div>
-        </form>
-        <div class="panel-body">
-            <div class="ckbox ckbox-primary pull-right" style="margin-top: 3px; margin-left: 5px;">
-                <input type="checkbox" value="0" id="papelera" />
-                <label for="papelera">Mostrar Papelera</label>
-            </div>
-            <button class="btn btn-danger btn-xs pull-right" id="rem-taqinactivas">Remover Inactivas <span id="rem-tqinc"></span></button>
-            <i class="fa fa-shield text-success"></i> Huella registrada | <i class="fa fa-shield"></i> Huella sin registrar.
-            <div class="table-responsive">
-                <table class="table table-condensed table-hover">
-                    <thead>
-                    <tr>
-                        <th>FP</th>
-                        <th>Nombre</th>
-                        <th>Comision</th>
-                        <th>Usuario</th>
-                        <th>Clave</th>
-                        <th>Activa</th>
-                        <th>Huella</th>
-                    </tr>
-                    </thead>
-                    <tbody id="taquillas-body"></tbody>
-                </table>
-            </div>
-        </div>
+      <div class="ckbox ckbox-primary pull-right" style="margin-top: 3px; margin-left: 5px;">
+        <input type="checkbox" value="0" id="papelera" />
+        <label for="papelera">Mostrar Papelera</label>
+      </div>
+      <button class="btn btn-danger btn-xs pull-right" id="rem-taqinactivas">Remover Inactivas <span
+          id="rem-tqinc"></span></button>
+      <i class="fa fa-shield text-success"></i> Huella registrada | <i class="fa fa-shield"></i> Huella sin
+      registrar.
+      <div class="table-responsive">
+        <table class="table table-condensed table-hover">
+          <thead>
+            <tr>
+              <th>FP</th>
+              <th>Nombre</th>
+              <th>Comision</th>
+              <th>Usuario</th>
+              <th>Clave</th>
+              <th>Activa</th>
+              <th>Huella</th>
+            </tr>
+          </thead>
+          <tbody id="taquillas-body"></tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>
 <script type="text/x-jsrender" id="rd-taquilla-row">
-    <tr>
+  <tr>
         {{if fingerprint}}
         <td><a class="fingerclear" id="fp-btn" val="{{:taquillaID}}" href="#{{:fingerprint}}"><i class="fa fa-shield text-success"></i></a> </td>
         {{else}}
@@ -154,5 +216,19 @@
         <td class="password" data-clave="{{:clave}}">***</td>
         <td><div data-target="{{:taquillaID}}" data-activa="{{:activa}}" class="toggle activart toggle-success"></div></td>
         <td><div data-target="{{:taquillaID}}" data-activa="{{:fingerlock}}" class="toggle fingerlock toggle-success"></div></td>
+    </tr>
+</script>
+
+<script type="text/x-jsrender" id="rd-com-row">
+  <tr>
+        <td>
+          <a href="#remover-{{:comID}}" comID="{{:comID}}" class="comDL"><i class="fa fa-trash text-danger"></i></a>
+        </td>
+        <td>{{:~sorteo(sorteo)}}
+          {{if grupoID==0}}
+          <i class="fa fa-sitemap"></i>
+          {{/if}}
+        </td>
+        <td>{{:comision}}</td>
     </tr>
 </script>

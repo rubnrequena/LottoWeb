@@ -1,7 +1,7 @@
-<link rel="stylesheet" href="../theme/css/bootstrap-wysihtml5.css" />
+
 <div class="pageheader">
     <h2><i class="fa fa-envelope"></i> Nuevo mensaje</h2>
-    </div>
+</div>
 </div>
 
 <div class="contentpanel panel-email">
@@ -32,29 +32,24 @@
                     <form id="sms-form">
                         <div class="form-group mb5">
                             <label>Para:</label>
-                            <select class="s2 form-control" id="destino" multiple="multiple" name="destino" required> </select>
+                            <select class="s2 form-control" id="destino" name="destino" required>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <input type="text" name="titulo" placeholder="Titulo..." class="form-control" />
-                        </div>
-
-                        <div id="wys">
-
-                        </div>
+                        <textarea id="wys" name="mensaje" class="form-control"></textarea>
                     </form>
 
                 </div><!-- panel-body -->
                 <div class="panel-footer">
                     <div class="col-lg-4 col-lg-offset-4">
-                        <button form="sms-form" type="submit" id="sms-send" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Enviar</button>
+                        <button form="sms-form" type="submit" id="sms-send" class="btn btn-darkblue btn-block"><i
+                                class="fa fa-send"></i> Enviar</button>
                     </div>
                 </div>
             </div><!-- panel -->
-
         </div><!-- col-sm-9 -->
-
     </div><!-- row -->
-
 </div>
-
 </div><!-- mainpanel -->
+<script type="text/x-jsrender" id="rd-destino-option">
+    <option value="{{:usID}}">{{:nombre}}</option>
+</script>

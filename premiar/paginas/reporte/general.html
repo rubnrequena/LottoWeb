@@ -100,7 +100,7 @@
                 <tbody id="reporte-body">
                   {{for data}}
                   <tr>
-                      <td class="text-uppercase"><a href="#reporte/comercial|{{:cid}}">{{:desc}}</a></td>
+                      <td class="text-uppercase"><a href="#reporte/comercial|f={{:~fechas()}}&u={{:cid}}">{{:desc}}</a></td>
                       <td>{{:~formatNumber(jugada,0)}}</td>
                       <td>{{:~formatNumber(premio,0)}}</td>
                       <td>{{:~formatNumber(comision,0)}}</td>

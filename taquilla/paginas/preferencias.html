@@ -15,17 +15,20 @@
                 <div class="col-sm-6">
                     <select class="s2 form-control" id="ft-impresion">
                         <option value="0">PAPEL</option>
-                        <option value="1">CORREO</option>
+                        <!--<option value="1">CORREO</option>
                         <option value="2">SMS</option>
-                        <!--<option value="3">DIGITAL [WHATSAPP]</option>-->
+                        <option value="3">DIGITAL [WHATSAPP]</option>-->
                         <option value="4">PDF</option>
+                        <option value="5">PANTALLA</option>
                         <option value="-1">ELEGIR ANTES DE VENDER</option>
                     </select>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <p class="help-block">Se recomienda usar el formato <strong>WhatsApp</strong> solo en dispositivos mobiles, puede ser usado en escritorio conectando su whatsapp mediante <a href="https://web.whatsapp.com">web.whatsapp.com</a> </p>
+                    <p class="help-block">Se recomienda usar el formato <strong>WhatsApp</strong> solo en dispositivos
+                        mobiles, puede ser usado en escritorio conectando su whatsapp mediante <a
+                            href="https://web.whatsapp.com">web.whatsapp.com</a> </p>
                 </div>
             </div>
             <div class="form-group">
@@ -43,16 +46,19 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <p class="help-block">El modo automatico elegira el formato de papel idoneo (compacto o ultra) dependiendo la cantidad de numeros apostados.</p>
-                    <p class="help-block">El modo comprobante solo imprimira el encabezado del ticket y el monto total jugado.<br/>
-                        <span class="text-danger">Su uso se recomienda solo cuando este trabajando en formato digital</span></p>
+                    <p class="help-block">El modo automatico elegira el formato de papel idoneo (compacto o ultra)
+                        dependiendo la cantidad de numeros apostados.</p>
+                    <p class="help-block">El modo comprobante solo imprimira el encabezado del ticket y el monto total
+                        jugado.<br />
+                        <span class="text-danger">Su uso se recomienda solo cuando este trabajando en formato
+                            digital</span></p>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">LETRAS POR LINEA</label>
                 <div class="col-sm-6">
                     <div class="input-group">
-                        <input type="number" min="20" max="50" class="form-control" id="lt-linea"/>
+                        <input type="number" min="20" max="50" class="form-control" id="lt-linea" />
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-lightblue" id="btnletras">Confirmar</button>
                         </span>
@@ -61,17 +67,19 @@
             </div>
             <div class="col-sm-6 col-sm-offset-3">
                 <p class="help-block">Cantidad de letras permitidas a imprimir por linea.</p>
-                <span class="text-danger">Su uso se recomienda solo cuando altere el <u>tama&ntilde;o de letra</u> en el asistente</span></p>
+                <span class="text-danger">Su uso se recomienda solo cuando altere el <u>tama&ntilde;o de letra</u> en el
+                    asistente</span></p>
             </div>
         </form>
-        <br/>
+        <br />
         <div class="col-sm-6 col-sm-offset-3">
-            <button class="btn btn-darkblue btn-block" id="prf-ticketPrueba"><i class="fa fa-print"></i> Impresion de prueba</button>
+            <button class="btn btn-darkblue btn-block" id="prf-ticketPrueba"><i class="fa fa-print"></i> Impresion de
+                prueba</button>
         </div>
     </div>
 </div>
 <div class="row">
-    <div class="panel col-sm-6">
+    <div class="panel col-sm-12">
         <div class="panel-heading">
             <div class="panel-btns">
                 <a href="" class="minimize">&minus;</a>
@@ -99,26 +107,23 @@
                         </select>
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-    <div class="panel col-sm-6" id="sms">
-        <div class="panel-heading">
-            <div class="panel-btns">
-                <a href="" class="minimize">&minus;</a>
-            </div>
-            <h3 class="panel-title">SMS</h3>
-        </div>
-        <div class="panel-body" style="min-height: 130px;">
-            <label>Registrar llave para activar servicio de sms</label>
-            <form class="form-horizontal" id="sms-key">
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">LLave</label>
+                    <label class="col-sm-3 control-label">MONEDA</label>
                     <div class="input-group col-sm-6">
-                        <input type="text" class="form-control" id="smskey" name="smskey"/>
+                        <input type="text" class="form-control" id="moneda" name="moneda" />
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-darkblue">OK</button>
+                            <button type="button" id="monedaOK" class="btn btn-darkblue"><i
+                                    class="fa fa-check"></i></button>
                         </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">TICKET PERSONALIZADO</label>
+                    <div class="col-sm-6">
+                        <select class="s2 form-control" id="clienteNombre">
+                            <option value="0">NO</option>
+                            <option value="1">SI</option>
+                        </select>
                     </div>
                 </div>
             </form>
@@ -138,32 +143,10 @@
                 <label class="col-sm-3 control-label">IMPRIMIR</label>
                 <div class="col-sm-6">
                     <div class="input-group mb15">
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-lightblue" id="btnimprimir">Editar</button>
-                      </span>
-                        <input type="text" class="form-control" id="scimprimir" readonly/>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="panel">
-    <div class="panel-heading">
-        <div class="panel-btns">
-            <a href="" class="minimize">&minus;</a>
-        </div>
-        <h3 class="panel-title">RESTAURAR</h3>
-    </div>
-    <div class="panel-body">
-        <form class="form-horizontal" id="restaurar">
-            <div class="form-group">
-                <label class="col-sm-3 control-label">NUMEROS</label>
-                <div class="col-sm-6">
-                    <div class="input-group mb15">
-                      <span class="input-group-btn">
-                        <button type="button" class="btn btn-darkblue" id="prf-rest-numeros">Restaurar</button>
-                      </span>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-lightblue" id="btnimprimir">Editar</button>
+                        </span>
+                        <input type="text" class="form-control" id="scimprimir" readonly />
                     </div>
                 </div>
             </div>

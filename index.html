@@ -1,82 +1,97 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <meta name="description" content="VENTAS,LOTERIA,ANIMALITOS,SRQ">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <meta name="description" content="VENTAS,LOTERIA,ANIMALITOS,SRQ" />
 
     <title>Sistema de Animalitos</title>
 
-    <link href="theme/css/style.default.css" rel="stylesheet">
+    <link href="theme/css/style.default.css" rel="stylesheet" />
     <style>
-        .row {
-            padding: 15px;
-        }
-        .fa-15x {
-            font-size: 1.5em;
-        }
-        .col-sm-2 {
-            padding: 10px;
-        }
-        h1 {
-            font-weight: bolder;
-            color: #ffffff;
-        }
-        body {
-            color: #FFFFFF;
-            background: url(./assets/bg-pattern.png),#7b4397;
-            background: url(./assets/bg-pattern.png),-webkit-gradient(linear,right top,left top,from(#7b4397),to(#dc2430));
-            background: url(./assets/bg-pattern.png),linear-gradient(to left,#7b4397,#dc2430)
-        }
-        .btn-primary {
-            background-color: rgba(66,139,202,0.66);
-        }
-        .btn-success {
-            background-color: rgba(68,157,68,0.66);
-        }
-        .btn-orange {
-            background-color: rgba(222,117,4,0.66);
-        }
+      .row {
+        padding: 15px;
+      }
+      .fa-15x {
+        font-size: 1.5em;
+      }
+      .col-sm-2 {
+        padding: 10px;
+      }
+      h1 {
+        font-weight: bolder;
+        color: #ffffff;
+      }
+      body {
+        color: #ffffff;
+        background: url(./assets/bg-pattern.png), #7b4397;
+        background: url(./assets/bg-pattern.png),
+          -webkit-gradient(linear, right top, left top, from(#7b4397), to(#dc2430));
+        background: url(./assets/bg-pattern.png),
+          linear-gradient(to left, #7b4397, #dc2430);
+      }
+      .btn-primary {
+        background-color: rgba(66, 139, 202, 0.66);
+      }
+      .btn-success {
+        background-color: rgba(68, 157, 68, 0.66);
+      }
+      .btn-orange {
+        background-color: rgba(222, 117, 4, 0.66);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container" style="height: auto;">
-        <div class="row mt10 text-head">
-            <span class="fa-3x">SRQ...</span>
-            <span class="pull-right"><i>Nuestra pasion, su tranquilidad.</i> <i class="fa fa-smile-o"></i></span>
+      <div class="row mt10 text-head">
+        <span class="fa-3x">SRQ...</span>
+        <span class="pull-right"
+          ><i>Nuestra pasion, su tranquilidad.</i> <i class="fa fa-smile-o"></i
+        ></span>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 col-xs-offset-3">
+          <a class="btn btn-darkblue btn-block" href="./comercializadora">
+            <i class="fa fa-bank fa-4x"></i>
+            <div class="fa-2x mt10">Comercializadora</div></a
+          >
         </div>
-        <div class="row">
-            <div class="col-sm-6 col-xs-offset-3">
-                <a class="btn btn-darkblue btn-block" href="./comercializadora">
-                    <i class="fa fa-bank fa-4x"></i>
-                    <div class="fa-2x mt10">Comercializadora</div></a>
-            </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <a class="btn btn-primary btn-block" href="./taquilla">
+            <i class="fa fa-money fa-4x"></i>
+            <div class="fa-2x mt10">Taquilla</div></a
+          >
         </div>
-        <div class="row">
-            <div class="col-sm-4">
-                <a class="btn btn-primary btn-block" href="./taquilla">
-                    <i class="fa fa-money fa-4x"></i>
-                    <div class="fa-2x mt10">Taquilla</div></a>
-            </div>
-            <div class="col-sm-4">
-                <a class="btn btn-success btn-block" href="./banca"><i class="fa fa-group fa-4x"></i>
-                    <div class="fa-2x mt10">Grupo</div></a>
-            </div>
-            <div class="col-sm-4">
-                <a class="btn btn-orange btn-block" href="./usuario"><i class="fa fa-user fa-4x"></i>
-                    <div class="fa-2x mt10">Banca</div></a></a>
-            </div>
+        <div class="col-sm-4">
+          <a class="btn btn-success btn-block" href="./banca"
+            ><i class="fa fa-group fa-4x"></i>
+            <div class="fa-2x mt10">Grupo</div></a
+          >
         </div>
-        <div class="row">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-4">
-                <a class="btn btn-info-alt btn-block" href="/dl"><i class="fa fa-folder fa-4x"></i>
-                    <div class="fa-15x mt10">Descargas</div></a>
-            </div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-3"></div>
+        <div class="col-sm-4">
+          <a class="btn btn-orange btn-block" href="./usuario"
+            ><i class="fa fa-user fa-4x"></i>
+            <div class="fa-2x mt10">Banca</div></a
+          >
         </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4">
+          <a class="btn btn-info-alt btn-block" href="/dl"
+            ><i class="fa fa-folder fa-4x"></i>
+            <div class="fa-15x mt10">Descargas</div></a
+          >
+        </div>
+        <div class="col-sm-1"></div>
+        <div class="col-sm-3"></div>
+      </div>
     </div>
-</body>
+  </body>
 </html>

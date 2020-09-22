@@ -1,56 +1,63 @@
 /*
  Version 17.02.06
  */
-socket.addListener(NetEvent.SOCKET_OPEN,socket_open);
-socket.addListener(NetEvent.SOCKET_CLOSE,socket_close);
-socket.addListener(NetEvent.LOGIN,socket_login);
-socket.addListener("init",initialize);
-socket.addListener("balance-padre",balance_padre);
+socket.addListener(NetEvent.SOCKET_OPEN, socket_open);
+socket.addListener(NetEvent.SOCKET_CLOSE, socket_close);
+socket.addListener(NetEvent.LOGIN, socket_login);
+socket.addListener("init", initialize);
+socket.addListener("balance-padre", balance_padre);
 socket.connect();
 
 $('#logolink').click(reload);
 
-function balance_padre (e,d) {
+
+function balance_padre(e, d) {
     if (d) {
         $balance = d;
         $('#menu-balance-date').html(d[0].fecha);
-        for (var i=0;i<$balance.length;i++) {
-            if ($balance[i].c==1) {
-                $('#menu-balance-value').html('<i class="fa fa-dollar"></i> '+$balance[i].balance.format(2));
+        for (var i = 0; i < $balance.length; i++) {
+            if ($balance[i].c == 1) {
+                $('#menu-balance-value').html('<i class="fa fa-dollar"></i> ' + $balance[i].balance.format(2));
                 break;
             }
         }
     }
 }
+
 function socket_open(e) {
     $('#conectando').fadeOut();
     var login = storage.getItem("loto_bnlogin");
     if (login) {
-        socket.sendMessage("login",JSON.parse(login));
+        socket.sendMessage("login", JSON.parse(login));
     } else {
         nav.navUrl();
     }
 }
+
 function socket_close(e) {
     $('#conectando').fadeIn();
-    setTimeout(reload,1000);
+    setTimeout(reload, 1000);
 }
-function reload () {
+
+function reload() {
     location.reload(false);
 }
-function socket_login(e,d) {
+
+function socket_login(e, d) {
     if (d.hasOwnProperty("code")) {
-        if (d.code==2) notificacion("DATOS INVALIDOS","Verifique los datos introducidos y vuelva a intentar.","growl-danger");
-        else if (d.code==505) notificacion('USUARIO SUSPENDIDO','Comuniquese con su administrador o banquero','growl-danger');
-        else notificacion("INICIO DE SESION FALLIDO","Razon desconocida, consulte con su administrador.","growl-danger");
+        if (d.code == 2) notificacion("DATOS INVALIDOS", "Verifique los datos introducidos y vuelva a intentar.", "growl-danger");
+        else if (d.code == 505) notificacion('USUARIO SUSPENDIDO', 'Comuniquese con su administrador o banquero', 'growl-danger');
+        else notificacion("INICIO DE SESION FALLIDO", "Razon desconocida, consulte con su administrador.", "growl-danger");
+        nav.navUrl('login');
     } else {
         $usuario = d.usr;
         $bancas = [d.usr];
         $meta = d.meta;
-		$('.mn-usuario').html($usuario.usuario);
+        $('.mn-usuario').html($usuario.usuario);
     }
 }
-function initialize (e,d) {
+
+function initialize(e, d) {
     $elementos = d.e;
     $sorteos = d.s;
     nav.navUrl();
@@ -60,15 +67,15 @@ $('#vnt-anular').submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     var f = formLock(this);
-    socket.sendMessage("venta-anular",data, function (e, d) {
+    socket.sendMessage("venta-anular", data, function (e, d) {
         formReset(f);
         if (d.hasOwnProperty('code')) {
-            if (d.code==2) notificacion("TICKET NO EXISTE");
-            else if (d.code==4) notificacion("TICKET YA SE ENCUENTRA ANULADO");
-            else if (d.code==5) notificacion("TICKET INVALIDO","TICKET CADUCADO");
+            if (d.code == 2) notificacion("TICKET NO EXISTE");
+            else if (d.code == 4) notificacion("TICKET YA SE ENCUENTRA ANULADO");
+            else if (d.code == 5) notificacion("TICKET INVALIDO", "TICKET CADUCADO");
         } else {
             $('#md-anularTicket').modal('hide');
-            notificacion('TICKET ANULADO','TICKET #'+d,'growl-success');
+            notificacion('TICKET ANULADO', 'TICKET #' + d, 'growl-success');
         }
     })
 });
@@ -79,18 +86,18 @@ $('#md-anularTicket').on('shown.bs.modal', function (e) {
 });
 //PREMIAR
 var hlp = {
-    formatDate:dateFormat,
-    formatNumber:formatNumber,
-    padding:padding
+    formatDate: dateFormat,
+    formatNumber: formatNumber,
+    padding: padding
 };
 $('#vnt-pagar').submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     var f = formLock(this);
-    socket.sendMessage("venta-premios",data, function (e, d) {
+    socket.sendMessage("venta-premios", data, function (e, d) {
         formReset(f);
         if (d.hasOwnProperty("code")) {
-            notificacion("TICKET NO EXISTE",'');
+            notificacion("TICKET NO EXISTE", '');
         } else {
             $('#md-pagar-tpremio').html(jsrender($('#rd-premio-ticket'), [d.tk]));
             $('#md-pagar-prms').html(jsrender($('#rd-premio-premios'), d.prm, hlp));
@@ -104,8 +111,8 @@ $('#md-ticket').on('hidden.bs.modal', function (e) {
 });
 $('.logout').click(function (e) {
     e.preventDefault(e);
-    $usuario=null;
-    $taquillas=null;
+    $usuario = null;
+    $taquillas = null;
     storage.removeItem("loto_bnlogin");
     nav.nav('inicio');
 });

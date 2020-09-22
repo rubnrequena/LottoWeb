@@ -33,8 +33,8 @@
     </div>
 </div>
 <div class="row hidden-print">
-    <div class="col-sm-6">
-        <div class="panel panel-success panel-stat">
+    <div class="col-sm-12">
+        <div class="panel panel-dark panel-stat">
             <div class="panel-heading">
                 <div class="stat">
                     <div class="row">
@@ -47,46 +47,20 @@
                     <div class="mb15"></div>
 
                     <div class="row">
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                             <small class="stat-label">Venta</small>
                             <h4 class="clr-val" id="mnt-jugado">--</h4>
                         </div>
-						
-                        <div class="col-xs-6">
+
+                        <div class="col-xs-4">
                             <small class="stat-label">Premios</small>
                             <h4 class="clr-val" id="mnt-premios">--</h4>
                         </div>
-                    </div><!-- row -->
-                </div><!-- stat -->
-
-            </div><!-- panel-heading -->
-        </div><!-- panel -->
-    </div><!-- col-sm-6 -->
-
-	<div class="col-sm-6">
-        <div class="panel panel-danger panel-stat">
-            <div class="panel-heading">
-                <div class="stat">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <small class="stat-label">TOTAL</small>
-                            <h2 class="clr-val" id="tg-descuento">--</h2>
-                        </div>
-                    </div><!-- row -->
-
-                    <div class="mb15"></div>
-
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <small class="stat-label">Comision Agencias</small>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Comision</small>
                             <h4 class="clr-val" id="tg-comision">--</h4>
                         </div>
-                        <div class="col-xs-6" id="rg-renta">
-                            <small class="stat-label">Comision Grupo</small>
-                            <h4 class="clr-val" id="tg-renta">--</h4>
-                        </div>
                     </div><!-- row -->
-
                 </div><!-- stat -->
 
             </div><!-- panel-heading -->
@@ -100,13 +74,14 @@
         <div class="table-responsive">
             <table id="tb" class="table table-hover table-condensed">
                 <thead>
-                <tr>
-                    <th>DESCRIPCION</th>
-                    <th>JUGADO</th>
-                    <th>COMISION</th>
-                    <th>PREMIO</th>
-                    <th>BALANCE</th>
-                </tr>
+                    <tr>
+                        <th>DESCRIPCION</th>
+                        <th>VENTA</th>
+                        <th>PREMIO</th>
+                        <th>SUB TOTAL</th>
+                        <th>COMISION</th>
+                        <th>BALANCE</th>
+                    </tr>
                 </thead>
                 <tbody id="reporte-body"></tbody>
             </table>
@@ -125,35 +100,27 @@
     <table class="table text-x">
         <tbody>
         <tr>
-            <td>JUGADO: {{:~formatNumber(j,2)}}</td>
-            <td>PREMIOS: {{:~formatNumber(pr,2)}}</td>
+            <td>JUGADO: {{:~formatNumber(j)}}</td>
+            <td>PREMIOS: {{:~formatNumber(pr)}}</td>
         </tr>
         <tr>
-            <td>COMISION AGENCIA: {{:~formatNumber(cm,2)}}</td>
-            <td>COMISION GRUPO: {{:~formatNumber(cmb,2)}}</td>
+            <td>COMISION AGENCIA: {{:~formatNumber(cm)}}</td>
+            <td>COMISION GRUPO: {{:~formatNumber(cmb)}}</td>
         </tr>
         <tr>
-            <td colspan="2">BALANCE: {{:~formatNumber(b,2)}}</td>
+            <td colspan="2">BALANCE: {{:~formatNumber(b)}}</td>
         </tr>
         </tbody>
     </table>
-</script>
-<script type="text/x-jsrender" id="rd-reporte">
-    <tr>
-        <td class="text-uppercase">{{:desc}}</td>
-        <td>{{:~formatNumber(jugada,2)}}</td>
-        <td>{{:~formatNumber(comision,2)}}</td>
-        <td>{{:~formatNumber(pago,2)}}</td>
-        <td>{{:~formatNumber(jugada-pago-comision,2)}}</td>
-    </tr>
 </script>
 
 <script type="text/x-jsrender" id="rd-reporte2">
     <tr>
         <td class="text-uppercase">{{:desc}}</td>
-        <td>{{:~formatNumber(jugada,2)}}</td>
-        <td>{{:~formatNumber(comision,2)}}</td>
-        <td>{{:~formatNumber(premio,2)}}</td>
-        <td>{{:~formatNumber(jugada-premio-comision,2)}}</td>
+        <td>{{:~formatNumber(jugada)}}</td>
+        <td>{{:~formatNumber(premio)}}</td>
+        <td>{{:~formatNumber(jugada-premio)}}</td>
+        <td>{{:~formatNumber(comision)}}</td>
+        <td>{{:~formatNumber(jugada-premio-comision)}}</td>
     </tr>
 </script>

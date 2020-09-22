@@ -1,0 +1,43 @@
+<div class="pageheader hidden-xs">
+  <h2><i class="fa fa-history"></i> Historia Premios</h2>
+</div>
+<div class="panel">
+  <div class="panel-body">
+    <form class="form-horizontal" id="historiaForm">
+      <div class="form-group">
+        <div class="form-group">
+          <label class="mt10 col-sm-3 text-right">Sorteo</label>
+          <div class="col-sm-6">
+            <select id="sorteos" name="srt" class="s2 form-control"></select>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-6 col-sm-offset-3">
+          <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-search"></i>
+            Buscar</button>
+        </div>
+      </div>
+    </form>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>FECHA</th>
+            <th>DESCRIPCION</th>
+          </tr>
+        </thead>
+        <tbody id="historiaTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script type="text/x-jsrender" id="rd-sorteo-option">
+  <option value="{{:sorteoID}}" class="text-uppercase">{{:nombre}}</option>
+</script>
+<script type="text/x-jsrender" id="rd-sorteo-row">
+  <tr>
+    <td>{{:f}} - <strong {{if ultimo>7}}class="text-danger" {{/if}}>hace <i>{{:ultimo}} dias</i></strong></td>
+    <td>{{:d}}</td>
+  </tr>
+</script>

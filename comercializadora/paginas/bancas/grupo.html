@@ -14,24 +14,32 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Usuario</label>
                     <div class="col-sm-6">
-                        <input class="form-control" name="usuario" required>
+                        <input class="form-control" name="usuario" readonly required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label">Comision</label>
                     <div class="col-sm-6">
                         <div class="input-group">
-                            <span class="input-group-addon">
-                                <label class="mt5">
-                                    <input type="checkbox" id="alquiler">
-                                    <span>Alquiler</span>
-                                </label>
-                            </span>
-                            <input id="bn-comision" type="number" min="-100" step="any" max="100" class="form-control" name="comision" value="0" required>
+                            <input id="bn-comision" type="number" min="-100" step="any" max="100" class="form-control"
+                                name="comision" value="0" required>
                             <span class="input-group-addon">%</span>
                         </div>
                         <div class="help-block">
                             <span>Indique porcentaje de comision sobre la venta bruta</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">Participacion</label>
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <input id="bn-comision" type="number" min="-100" step="any" max="100" class="form-control"
+                                name="participacion" value="0" required>
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        <div class="help-block">
+                            <span>Indique porcentaje de participacion en ganacia/perdida</span>
                         </div>
                     </div>
                 </div>
@@ -42,7 +50,7 @@
                 </div>
             </form>
         </div>
-        <hr/>
+        <hr />
         <div class="row">
             <form class="form-horizontal" id="banca-psw">
                 <div class="form-group">
@@ -60,12 +68,12 @@
         </div>
     </div>
 </div>
-<div class="panel">
+<!-- <div class="panel">
     <div class="panel-heading">
         <div class="panel-btns">
             <a href="" class="minimize maximize">&plus;</a>
         </div>
-        <span class="panel-title">OPCIONES DE COMISION</span>
+        <span class="panel-title">OPCIONES COMISION: TAQUILLAS</span>
     </div>
     <div class="panel-body" style="display: none;">
         <form class="form-horizontal" id="com-form">
@@ -79,14 +87,16 @@
                 <label class="col-sm-3 control-label">Comision</label>
                 <div class="col-sm-6">
                     <div class="input-group">
-                        <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" required>
+                        <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control"
+                            name="comision" required>
                         <span class="input-group-addon">%</span>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-6">
-                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar</button>
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i>
+                        Confirmar</button>
                 </div>
             </div>
         </form>
@@ -94,18 +104,18 @@
         <div class="table-responsive">
             <table class="table">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>SORTEO</th>
-                    <th>COMISION</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>SORTEO</th>
+                        <th>COMISION</th>
+                    </tr>
                 </thead>
                 <tbody id="com-tbody">
                 </tbody>
             </table>
         </div>
     </div>
-</div> 
+</div> -->
 <div class="panel">
     <div class="panel-heading">
         <div class="panel-btns">
@@ -150,7 +160,8 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar </button>
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar
+                    </button>
                 </div>
             </div>
         </form>
@@ -159,20 +170,22 @@
                 <input type="checkbox" value="0" id="papelera" />
                 <label for="papelera">Mostrar Papelera</label>
             </div>
-            <button class="btn btn-danger btn-xs pull-right" id="rem-taqinactivas">Remover Inactivas <span id="rem-tqinc"></span></button>
-            <i class="fa fa-shield text-success"></i> Huella registrada | <i class="fa fa-shield"></i> Huella sin registrar.
+            <button class="btn btn-danger btn-xs pull-right" id="rem-taqinactivas">Remover Inactivas <span
+                    id="rem-tqinc"></span></button>
+            <i class="fa fa-shield text-success"></i> Huella registrada | <i class="fa fa-shield"></i> Huella sin
+            registrar.
             <div class="table-responsive">
                 <table class="table table-condensed table-hover">
                     <thead>
-                    <tr>
-                        <th>FP</th>
-                        <th>Nombre</th>
-                        <th>Comision</th>
-                        <th>Usuario</th>
-                        <th>Clave</th>
-                        <th>Activa</th>
-                        <th>Huella</th>
-                    </tr>
+                        <tr>
+                            <th>FP</th>
+                            <th>Nombre</th>
+                            <th>Comision</th>
+                            <th>Usuario</th>
+                            <th>Clave</th>
+                            <th>Activa</th>
+                            <th>Huella</th>
+                        </tr>
                     </thead>
                     <tbody id="taquillas-body"></tbody>
                 </table>

@@ -18,6 +18,12 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-sm-3 control-label">Contacto</label>
+                    <div class="col-sm-6">
+                        <input class="form-control toLower" name="contacto">
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-sm-3 control-label">Clave</label>
                     <div class="col-sm-6">
                         <input type="password" class="form-control" name="clave" required>
@@ -27,7 +33,8 @@
                     <label class="col-sm-3 control-label">Renta</label>
                     <div class="col-sm-6">
                         <div class="input-group">
-                            <input id="bn-renta" type="number" min="0" step="any" max="100" class="form-control" name="renta" value="0" required>
+                            <input id="bn-renta" type="number" min="0" step="any" max="100" class="form-control"
+                                name="renta" value="0" required>
                             <span class="input-group-addon">%</span>
                         </div>
                         <div class="help-block">
@@ -39,7 +46,8 @@
                     <label class="col-sm-3 control-label">Comision</label>
                     <div class="col-sm-6">
                         <div class="input-group">
-                            <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required>
+                            <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control"
+                                name="comision" value="0" required>
                             <span class="input-group-addon">%</span>
                         </div>
                         <div class="help-block">
@@ -51,7 +59,8 @@
                     <label class="col-sm-3 control-label">Participacion</label>
                     <div class="col-sm-6">
                         <div class="input-group">
-                            <input id="bn-participacion" type="number" min="0" step="any" max="100" class="form-control" name="participacion" value="0" required>
+                            <input id="bn-participacion" type="number" min="0" step="any" max="100" class="form-control"
+                                name="participacion" value="0" required>
                             <span class="input-group-addon">%</span>
                         </div>
                         <div class="help-block">
@@ -67,7 +76,7 @@
                 </div>
             </form>
         </div>
-        <hr/>
+        <hr />
         <div class="row">
             <form class="form-horizontal" id="banca-psw">
                 <div class="form-group">
@@ -129,11 +138,13 @@
                         <label for="radioReventa">Reventa</label>
                     </div>
                     <div class="input-group">
-                        <input id="gr-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required disabled="disabled">
+                        <input id="gr-comision" type="number" min="0" step="any" max="100" class="form-control"
+                            name="comision" value="0" required disabled="disabled">
                         <span class="input-group-addon">%</span>
                     </div>
                     <div class="help-block">
-                        <span class="text-danger">Consulte con su administrador sobre este nuevo campo, de lo contrario no lo modifique.</span>
+                        <span class="text-danger">Consulte con su administrador sobre este nuevo campo, de lo contrario
+                            no lo modifique.</span>
                     </div>
                 </div>
             </div>
@@ -174,15 +185,15 @@
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>NOMBRE</th>
-                    <th>USUARIO</th>
-                    <th>RENTA</th>
-                    <th>COMISION</th>
-                    <th>CLAVE</th>
-                    <th>ACTIVA</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>NOMBRE</th>
+                        <th>USUARIO</th>
+                        <th>RENTA</th>
+                        <th>COMISION</th>
+                        <th>CLAVE</th>
+                        <th>ACTIVA</th>
+                    </tr>
                 </thead>
                 <tbody id="grupos-body"></tbody>
             </table>

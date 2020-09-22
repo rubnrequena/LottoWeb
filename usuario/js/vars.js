@@ -4,24 +4,28 @@
 
 // SOCKET
 var loc = location.href.split("/")[3];
-if (loc=="LotoVictoria") loc = "127.0.0.1:4023";
-if (loc=="animales") loc = "104.129.171.16:4003";
-else if (loc=="animal") loc = "104.129.171.162:4013";
-else if (loc=="animalitos") loc = "104.129.171.162:4023";
+if (loc == "LotoVictoria") loc = "127.0.0.1:4023";
+if (loc == "animales") loc = "104.129.171.16:4003";
+else if (loc == "animal") loc = "104.129.171.162:4013";
+else if (loc == "animalitos") loc = "104.129.171.162:4023";
 var host = $.cookie("usuario") || "127.0.0.1:4023";
 
-var socket = new Net("ws://"+host,false);
+/* var customHost = /host=(?<host>\d*.\d*.\d*.\d*):(?<puerto>\d*)/g.exec(
+  window.location.search
+if (customHost) host = `${customHost.groups.host}:${customHost.groups.puerto}`;
+); */
+var socket = new Net("ws://" + host, false);
 
 //NAVEGADOR
 var nav = new Navegador();
 nav.folder = "paginas";
 nav.viewport = ".contentpanel";
-nav.validate = function (page,params) {
-    if (page=="suspendido") {
-      nav.viewport = "body";
-      return page;
-    }
-    return $usuario?page:"login";
+nav.validate = function (page, params) {
+  if (page == "suspendido") {
+    nav.viewport = "body";
+    return page;
+  }
+  return $usuario ? page : "login";
 };
 var storage = localStorage;
 // SISTEMA
@@ -30,3 +34,7 @@ var $elementos;
 var $bancas;
 var $taquillas;
 var $balance;
+var $mensajes = [];
+
+/** @type {Array} */
+var $permisos;

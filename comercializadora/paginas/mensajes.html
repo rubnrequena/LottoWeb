@@ -1,72 +1,71 @@
 <div class="pageheader">
-    <h2><i class="fa fa-envelope"></i> Mensajes</h2>
+  <h2><i class="fa fa-envelope"></i> Mensajes</h2>
 </div>
 
 <div class="contentpanel panel-email">
 
-    <div class="row">
-        <div class="col-sm-3 col-lg-2">
-            <a href="#mensaje/nuevo" class="btn btn-success btn-block btn-compose-email">Nuevo Mensaje</a>
-            <ul class="nav nav-pills nav-stacked nav-email">
-                <li class="active">
-                    <a href="#mensajes">
-                        <span class="badge pull-right">0</span>
-                        <i class="glyphicon glyphicon-inbox"></i> Bandeja
-                    </a>
-                </li>
-                <li><a href="#sms/favoritos"><i class="glyphicon glyphicon-star"></i> Favoritos</a></li>
-                <li><a href="#sms/enviados"><i class="glyphicon glyphicon-send"></i> Enviados</a></li>
-                <li><a href="#sms/papelera"><i class="glyphicon glyphicon-trash"></i> Papelera</a></li>
-            </ul>
-        </div><!-- col-sm-3 -->
-        <div class="col-sm-9 col-lg-10">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="pull-right">
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-white" type="button"><i class="glyphicon glyphicon-chevron-left"></i></button>
-                            <button class="btn btn-sm btn-white" type="button"><i class="glyphicon glyphicon-chevron-right"></i></button>
-                        </div>
-                    </div><!-- pull-right -->
-                    <h5 class="subtitle mb5">Bandeja</h5>
-                    <p class="text-muted">Mostrando 1 - 15 de 230 mensajes</p>
-                    <div class="table-responsive">
-                        <table class="table table-email">
-                            <tbody id="sms-bandeja">
-                            </tbody>
-                        </table>
-                    </div><!-- table-responsive -->
-                </div><!-- panel-body -->
-            </div><!-- panel -->
-        </div><!-- col-sm-9 -->
+  <div class="row">
+    <div class="col-sm-3 col-lg-2">
+      <a href="#mensaje/nuevo" class="btn btn-success btn-block btn-compose-email">Nuevo Mensaje</a>
+      <ul class="nav nav-pills nav-stacked nav-email">
+        <li class="active">
+          <a href="#mensajes">
+            <i class="glyphicon glyphicon-inbox"></i> Bandeja
+          </a>
+        </li>
+        <li>
+            <a href="#mensaje/recibidos">
+              <i class="glyphicon glyphicon-list"></i> Todos
+            </a>
+          </li>
+        <li>
+            <a href="#mensaje/enviados">
+              <i class="glyphicon glyphicon-send"></i> Enviados
+            </a>
+          </li>
+      </ul>
+    </div><!-- col-sm-3 -->
+    <div class="col-sm-9 col-lg-10">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="pull-right">
+            <div class="btn-group">
+              <button class="btn btn-sm btn-white" type="button"><i
+                  class="glyphicon glyphicon-chevron-left"></i></button>
+              <button class="btn btn-sm btn-white" type="button"><i
+                  class="glyphicon glyphicon-chevron-right"></i></button>
+            </div>
+          </div><!-- pull-right -->
+          <h5 class="subtitle mb5">Bandeja</h5>
+          <p class="text-muted">Mostrando <span id="ms-totalConversaciones"></span> conversaciones</p>
+          <div class="table-responsive">
+            <table class="table table-email">
+              <tbody id="sms-bandeja">
 
-    </div><!-- row -->
+              </tbody>
+            </table>
+          </div><!-- table-responsive -->
+        </div><!-- panel-body -->
+      </div><!-- panel -->
+    </div><!-- col-sm-9 -->
+
+  </div><!-- row -->
 
 </div>
 
 <script type="text/x-jsrender" id="rd-sms">
-    <tr class="{{if leido==false}} unread {{/if}}">
-        <td>
-            <div class="ckbox ckbox-success">
-                <input type="checkbox" id="checkbox{{:rutaID}}">
-                <label for="checkbox{{:rutaID}}"></label>
-            </div>
-        </td>
-        <td>
-            <a href="" class="star"><i class="glyphicon glyphicon-star"></i></a>
-        </td>
-        <td>
-            <div class="media" ruta="{{:rutaID}}">
-                <a href="#" class="pull-left" style="width: 32px;">
-                    <i class="fa fa-users fa-2x"></i>
-                </a>
-                <div class="media-body">
-                    <span class="media-meta pull-right">{{:~formatDate(tiempo)}}</span>
-                    <h4 class="text-primary">{{:oNombre}}</h4>
-                    <small class="text-muted"></small>
-                    <p class="email-summary">{{:titulo}}</p>
-                </div>
-            </div>
-        </td>
-    </tr>
+  <tr class="{{if leido==false}} unread {{/if}}">
+    <td>
+        <a class="text-muted" href="#mensaje/chat|{{:origen}}">
+          <div class="media" ruta="{{:origenID}}">
+              <div class="media-body">
+                  <span class="media-meta pull-right">{{:enviado}}</span>
+                  <h4 class="text-primary">{{:origenNombre}}</h4>
+                  <small class="text-muted"></small>
+                  <p class="email-summary">{{:~markdown(mensaje)}}</p>
+              </div>
+          </div>
+        </a>
+    </td>
+  </tr>
 </script>

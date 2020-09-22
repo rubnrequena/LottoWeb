@@ -1,51 +1,73 @@
 <div class="pageheader mb10">
-    <h2><i class="fa fa-home"></i> Panel de Control</h2>
+  <h2><i class="fa fa-home"></i> Panel de Control</h2>
+</div>
+<div class="panel panel-dark">
+  <div class="panel-heading">
+    <div class="panel-btns">
+      <a href="" class="minimize">-</a>
+    </div>
+    <h3 class="panel-title">Novedades</h3>
+  </div>
+  <div class="panel-body" style="display: block;">
+    <h4>28.07.2020</h4>
+    <ul>
+      <li>Corregida la falla al <b>remover topes de comision de taquilas</b> en el modulo <b>GRUPO</b></li>
+      <li>Anexado campo de <b>participacion</b> al modificar <b>GRUPO</b></li>
+      <li>Corregida la denominacion del agrupamiento de topes</li>
+    </ul>
+  </div>
 </div>
 <div class="panel panel-dark" id="bl-my">
-    <div class="panel-heading">
-        <div class="panel-btns">
-            <a href="" class="minimize maximize">+</a>
-        </div>
-        <h3 class="panel-title">Cuentas por pagar | <i class="fa fa-dollar"></i> <span class="my-saldo" id="bl-my-total">0.00</span></h3>
+  <div class="panel-heading">
+    <div class="panel-btns">
+      <a href="" class="minimize maximize">+</a>
     </div>
-    <div class="panel-body" style="display: none;">
-        <span class="text-danger"><i class="fa fa-info-circle"></i> Utilize el boton <i class="fa fa-money text-primary"></i> para informar el pago correspondiente.</span>
-        <div class="table-responsive">
-            <table id="tb" class="table table-hover table-condensed">
-                <thead>
-                <tr>
-                    <th>REF</th>
-                    <th>FECHA</th>
-                    <th>DESCRIPCION</th>
-                    <th>Monto</th>
-                    <th>Balance</th>
-                </tr>
-                </thead>
-                <tbody id="reporte-body"></tbody>
-            </table>
-        </div>
+    <h3 class="panel-title">Cuentas por pagar | <i class="fa fa-dollar"></i> <span class="my-saldo"
+        id="bl-my-total">0.00</span></h3>
+  </div>
+  <div class="panel-body" style="display: none;">
+    <span class="text-danger"><i class="fa fa-info-circle"></i> Utilize el boton <i
+        class="fa fa-money text-primary"></i> para informar el pago correspondiente.</span>
+    <div class="table-responsive">
+      <table id="tb" class="table table-hover table-condensed">
+        <thead>
+          <tr>
+            <th>REF</th>
+            <th>FECHA</th>
+            <th>DESCRIPCION</th>
+            <th>Monto</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody id="reporte-body"></tbody>
+      </table>
     </div>
+  </div>
 </div>
 <div class="panel">
-    <div class="panel-heading hidden-xs">
-        <div class="panel-title">SORTEOS DEL DIA</div>
+  <div class="panel-heading hidden-xs">
+    <div class="panel-title">SORTEOS DEL DIA</div>
+  </div>
+  <div class="panel-body" id="inicio-sorteodia">
+    <div style="margin: auto; width: 50%; text-align: center;">
+      Presionar la nube para mostrar reporte rapido<br>
+      <button id="btnload" class="btn-link"><i class="fa fa-cloud-download fa-4x"></i></button>
     </div>
-    <div class="panel-body" id="inicio-sorteodia">
-        <div style="margin: auto; width: 50%; text-align: center;">
-            Presionar la nube para mostrar reporte rapido<br>
-            <button id="btnload" class="btn-link"><i class="fa fa-cloud-download fa-4x"></i></button>
-        </div>
-    </div>
+  </div>
 </div>
-
-
+<style>
+  #srt_dia>tr:last-child {
+    font-weight: bold;
+    background-color: #dff0d8;
+  }
+</style>
 
 <script type="text/x-jsrender" id="rd-sorteos-dia1-row">
-    <tr>
+  <tr>
         {{if desc}}
             <td>{{:desc}}</td>
         {{else}}
-            <td>TOTAL</td>
+            <td>*TOTAL</td>
         {{/if}}
         <td>{{:~ganador(ganador,0)}}</td>
         <td>{{:~formatNumber(jugado,0)}}</td>
@@ -54,11 +76,11 @@
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-sorteos-dia2-row">
-    <tr>
+  <tr>
         {{if desc}}
             <td>{{:desc}}</td>
         {{else}}
-            <td>TOTAL</td>
+            <td>*TOTAL</td>
         {{/if}}
         <td>{{:~ganador(ganador)}}</td>
         <td>{{:~formatNumber(jugado,0)}}</td>
@@ -67,28 +89,36 @@
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-pnlsorteo">
-    <div class="table-responsive">
-            <table class="table table-bordered mb30">
-                <thead>
-                <tr>
-                    <th>Sorteo</th>
-                    <th>Ganador</th>
-                    <th>Jugado</th>
-                    <th id="prm-col"><a href="#">Premios</br>a pagar</a></th>
-                    <th>Balance</th>
-                </tr>
-                </thead>
-                <tbody id="srt_dia">
-                    <tr>
-                        <td><i class="fa fa-spinner fa-spin"></i> Espere.. cargando.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div><!-- table-responsive -->
-        <label class="pull-right" >Actualizado a las <span id="str-dia-stamp">--</span></label>
+  <form>
+    <div class="form-group">
+      <div class="col-md-4">
+          <input class="date now form-control" onfocus="blur()" id="reporte-fecha1" name="inicio">
+      </div>
+    </div>
+  </form> 
+  <div class="table-responsive mt20">       
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Sorteo</th>
+          <th>Ganador</th>
+          <th>Jugado</th>
+          <th id="prm-col"><a href="#">Premios</br>a pagar</a></th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      <tbody id="srt_dia">
+        <tr>
+          <td><i class="fa fa-spinner fa-spin"></i> Espere.. cargando.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div><!-- table-responsive -->        
+  <span>*No incluye las comisiones a pagar</span>
+  <label class="pull-right">Actualizado a las <span id="str-dia-stamp">--</span></label>
 </script>
 <script type="text/x-jsrender" id="rd-reporte-us">
-    {{if c==1}}
+  {{if c==1}}
     <tr>
     {{else}}
     <tr class="danger">
@@ -107,7 +137,7 @@
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-procesar-pago">
-    <form id="bl-form" class="ask-form">
+  <form id="bl-form" class="ask-form">
         <div class="form-group">
             <input type="hidden" class="form-control" value="{{:balID}}" name="id">
         </div>

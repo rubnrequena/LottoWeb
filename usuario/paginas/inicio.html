@@ -11,17 +11,18 @@
         <h3 class="panel-title">Cuentas por pagar | <i class="fa fa-dollar"></i> <span id="bl-my-total">0.00</span></h3>
     </div>
     <div class="panel-body" style="display: none;">
-        <span class="text-danger"><i class="fa fa-info-circle"></i> Utilize el boton <i class="fa fa-money text-primary"></i> para informar el pago correspondiente.</span>
+        <span class="text-danger"><i class="fa fa-info-circle"></i> Utilize el boton <i
+                class="fa fa-money text-primary"></i> para informar el pago correspondiente.</span>
         <div class="table-responsive">
             <table id="tb" class="table table-hover table-condensed">
                 <thead>
-                <tr>
-                    <th>REF</th>
-                    <th>FECHA</th>
-                    <th>DESCRIPCION</th>
-                    <th>Monto</th>
-                    <th>Balance</th>
-                </tr>
+                    <tr>
+                        <th>REF</th>
+                        <th>FECHA</th>
+                        <th>DESCRIPCION</th>
+                        <th>Monto</th>
+                        <th>Balance</th>
+                    </tr>
                 </thead>
                 <tbody id="reporte-body"></tbody>
             </table>
@@ -65,10 +66,10 @@
         {{else}}
             <td>TOTAL</td>
         {{/if}}
-        <td>{{:~ganador(ganador,2)}}</td>
-        <td>{{:~formatNumber(jugado,2)}}</td>
-        <td>{{:~formatNumber(pago,2)}}</td>
-        <td>{{:~formatNumber(jugado-pago,2)}}</td>
+        <td>{{:~ganador(ganador,0)}}</td>
+        <td>{{:~formatNumber(jugado,0)}}</td>
+        <td>{{:~formatNumber(pago,0)}}</td>
+        <td>{{:~formatNumber(jugado-pago,0)}}</td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-sorteos-dia2-row">
@@ -78,10 +79,10 @@
         {{else}}
             <td>TOTAL</td>
         {{/if}}
-        <td>{{:~ganador(ganador)}}</td>
-        <td>{{:~formatNumber(jugado,2)}}</td>
-        <td>{{:~formatNumber(premios,2)}}</td>
-        <td>{{:~formatNumber(jugado-premios,2)}}</td>
+        <td>{{:ganadorNombre}}</td>
+        <td>{{:~formatNumber(jugado,0)}}</td>
+        <td>{{:~formatNumber(premios,0)}}</td>
+        <td>{{:~formatNumber(jugado-premios,0)}}</td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-pnlsorteo">
@@ -91,8 +92,8 @@
                 <tr>
                     <th>Sorteo</th>
                     <th>Ganador</th>
-                    <th>Jugado</th>
-                    <th id="prm-col"><a href="#">Premios</br>a pagar</a></th>
+                    <th>Venta</th>
+                    <th>Premios</th>
                     <th>Balance</th>
                 </tr>
                 </thead>
@@ -120,8 +121,8 @@
         </td>
         <td>{{:fecha}}</td>
         <td>{{:desc}}</td>
-        <td>{{:~formatNumber(monto,2)}}</td>
-        <td class="text-right">{{if c==1}} {{:~formatNumber(balance,2)}} {{else}} -- {{/if}}</td>
+        <td>{{:~formatNumber(monto,0)}}</td>
+        <td class="text-right">{{if c==1}} {{:~formatNumber(balance,0)}} {{else}} -- {{/if}}</td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-procesar-pago">

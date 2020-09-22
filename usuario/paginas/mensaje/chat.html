@@ -1,0 +1,57 @@
+<div class="pageheader">
+  <h2><i class="fa fa-envelope"></i> Mensaje</h2>
+</div>
+<div class="contentpanel panel-email">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="pull-right">
+            <div class="btn-group mr10">
+              <!--<button class="btn btn-sm btn-white tooltips" type="button" data-toggle="tooltip" title="Delete"><i
+                  class="glyphicon glyphicon-trash"></i></button>-->
+            </div>
+          </div><!-- pull-right -->
+          <div class="btn-group mr10 pull-right">
+            <a href="javascript:window.history.back()" class="btn btn-sm btn-white tooltips" type="button"
+              data-toggle="tooltip" title="Volver a la bandeja"><i class="glyphicon glyphicon-chevron-left"></i>
+              Volver</a>
+          </div>
+          <div>
+            <b>Enviado por:</b> <span id="origen-sms"></span><br>
+          </div>
+        </div><!-- panel-body -->
+      </div><!-- panel -->
+    </div><!-- col-sm-9 -->
+  </div><!-- row -->
+</div>
+<div class="contentpanel" id="read-sms"></div><!-- read-panel -->
+<div>
+  <form id="sms-form">
+    <div class="media">
+      <a href="#" class="pull-left">
+        <i class="fa fa-reply"></i>
+      </a>
+      <div class="media-body">
+        <textarea id="wysiwyg" placeholder="Responder aqui..." class="form-control" rows="5" name="mensaje"></textarea>
+      </div>
+      <br />
+      <div class="col-lg-8 col-xs-offset-2">
+        <button form="sms-form" type="submit" id="sms-send" class="btn btn-darkblue btn-block"><i
+            class="fa fa-send"></i> Enviar</button>
+      </div>
+    </div><!-- media -->
+  </form>
+</div>
+<script type="text/x-jsrender" id="rd-sms-body">
+  <div class="row msg-body">
+    <div class="panel col-sm-9 {{:~recibido(destino)}}">      
+      <div class="panel-body">        
+        <p>          
+          <span style="font-size:12px;" class="pull-right"><i class="fa fa-calendar"></i> {{:~fecha(enviado)}} {{if leido==1}}<i title="Mensaje leido" class="fa fa-check"></i> {{/if}}</span>
+        </p>
+        {{:~markdown(mensaje)}}
+      </div>  
+    </div>    
+  </div>
+</script>
