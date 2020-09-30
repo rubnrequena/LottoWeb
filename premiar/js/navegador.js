@@ -323,7 +323,6 @@ function sorteoBuscar_nav(p, args) {
     var a = $("#srt-abr").value;
     var p = $("#srt-prm").value;
     item.gid = item.gid || 0;
-    console.log(item.abierta, a, item.gid, p);
     if (item.abierta == a && item.gid == p) {
       return true;
     } else return false;
@@ -519,211 +518,227 @@ function sorteoMonitor_nav(e, arg) {
       return;
     }
     var f = formLock(this);
-    socket.sendMessage("monitor", dataForm, function (e, d) {
-      formLock(f, false);
-      if (d.t == null || d.n == null) {
-        notificacion("NO HAY VENTAS REGISTRADAS PARA ESTE SORTEO");
-        return;
-      }
-      data = d;
-      var now = new Date();
-      $("#ultact").html(now.format("dd/mm/yy hh:MM:ss TT"));
-
-      jg = 0;
-      tt = 0;
-      var ld = d.t[0];
-      d.t.forEach(function (item) {
-        jg += item.jugada;
-        if (item.jugada > ld.jugada) ld = item;
-      });
-
-      $("#jugada").html(jg.format($decimales));
-      $("#bnLider").html(ld.banca);
-      $("#bnLider-jg").html(ld.jugada.format($decimales));
-
-      ld = d.n[0];
-      d.n.forEach(function (item) {
-        tt += item.tickets;
-        item.pcj = (item.jugada * 100) / jg;
-        if (item.jugada > ld.jugada) ld = item;
-      });
-      $("#numLider").html(ld.desc);
-      $("#numLider-jg").html(ld.jugada.format($decimales));
-
-      $("#ventas-body").html(jsrender($("#rd-ventas-row"), d.t));
-
-      var idata = {
-        fecha: fecha.val(),
-        sorteo: findBy("sorteoID", dataForm.sorteoID, sorteos).sorteo,
-      };
-
-      socket.sendMessage(
-        "sorteo-num-hist",
-        {
-          srt: idata.sorteo,
-        },
-        function (e, d) {
-          var n;
-          if (!d) d = [];
-          d.forEach(function (item) {
-            n = findBy("n", item.id, data.n);
-            if (n) {
-              n.lastd = dayLeft(item.f) + "d";
-              n.lastf = item.f;
-            }
-            //$('#nh'+item.id).html(dayLeft(item.f)+"d").attr('title',item.f);
-          });
-
-          actualizarVista();
-          reporteInicio();
+    var d = { t: [], n: [] };
+    reiniciarVista();
+    socket.sendMessage(
+      "monitor",
+      dataForm,
+      function (e, result) {
+        if (result.reporte != "end") {
+          if (result.reporte == "usuarios") d.t = result.data;
+          else d.n = d.n.concat(result.data);
+          return;
         }
-      );
+        socket.removeListeners("monitor");
 
-      function reporteInicio() {
-        socket.sendMessage("inicio", idata, function (e, d) {
-          if (d.hasOwnProperty("code")) {
-          } else {
-            var t1 = 0,
-              t2 = 0,
-              t3 = 0;
-            let row;
-            for (var i = 0; i < d.data.length; i++) {
-              row = d.data[i];
-              t1 += row.jugado;
-              t2 += row.premio;
-              t3 += row.comision;
-              row.pPremios = Number((row.premio * 100) / row.jugado).toFixed(2);
-            }
-            $("#gbalance").html((t1 - (t2 + t3)).format($decimales));
-            $("#gjugada").html(t1.format($decimales));
-            $("#gpremios").html(t2.format($decimales));
-            $("#gcomision").html(t3.format($decimales));
-            $("#srt_dia").html(
-              jsrenderMerge($("#rd-sorteos-dia-row"), d.data, hlp)
-            );
-            $("#str-dia-stamp").html(d.time);
+        formLock(f, false);
+        if (d.t == null || d.n == null) {
+          notificacion("NO HAY VENTAS REGISTRADAS PARA ESTE SORTEO");
+          return;
+        }
+        data = d;
+        var now = new Date();
+        $("#ultact").html(now.format("dd/mm/yy hh:MM:ss TT"));
 
-            tablaHandlers();
-          }
+        jg = 0;
+        tt = 0;
+        var ld = d.t[0];
+        d.t.forEach(function (item) {
+          jg += item.jugada;
+          if (item.jugada > ld.jugada) ld = item;
+        });
 
-          function tablaHandlers() {
-            $(".cargarReporteTickets").click((e) => {
-              e.preventDefault(e);
-              let sorteo = $(e.currentTarget).attr("srt");
-              let ganador = $(e.currentTarget).attr("gn");
-              runSQL(reportesMap.monitorReporteTickets(sorteo, ganador)).then(
-                (result) => {
-                  reporteSorteo = reporteSorteo.concat(result);
-                  let fila = findBy("sorteoID", sorteo, d.data);
-                  fila.tickets = result.length;
-                  $("#srt_dia").html(
-                    jsrenderMerge($("#rd-sorteos-dia-row"), d.data, hlp)
-                  );
-                  tablaHandlers();
-                }
-              );
+        $("#jugada").html(jg.format($decimales));
+        $("#bnLider").html(ld.banca);
+        $("#bnLider-jg").html(ld.jugada.format($decimales));
+
+        ld = d.n[0];
+        d.n.forEach(function (item) {
+          tt += item.tickets;
+          item.pcj = (item.jugada * 100) / jg;
+          if (item.jugada > ld.jugada) ld = item;
+        });
+        $("#numLider").html(ld.desc);
+        $("#numLider-jg").html(ld.jugada.format($decimales));
+
+        $("#ventas-body").html(jsrender($("#rd-ventas-row"), d.t));
+
+        var idata = {
+          fecha: fecha.val(),
+          sorteo: findBy("sorteoID", dataForm.sorteoID, sorteos).sorteo,
+        };
+
+        socket.sendMessage(
+          "sorteo-num-hist",
+          {
+            srt: idata.sorteo,
+          },
+          function (e, d) {
+            var n;
+            if (!d) d = [];
+            d.forEach(function (item) {
+              n = findBy("n", item.id, data.n);
+              if (n) {
+                n.lastd = dayLeft(item.f) + "d";
+                n.lastf = item.f;
+              }
+              //$('#nh'+item.id).html(dayLeft(item.f)+"d").attr('title',item.f);
             });
-            $("#srt_dia .mnt-vnt-tickets").click(function (e) {
-              e.preventDefault(e);
-              let sorteo = $(e.currentTarget).attr("srt");
-              let num = $(e.currentTarget).attr("gn");
-              socket.sendMessage(
-                "sorteo-monitor-vnt",
-                { numero: num, sorteo: sorteo },
-                function (e, result) {
-                  if (result == null) {
-                    notificacion("NO HAY TICKETS DISPONIBLES");
-                    return;
-                  }
-                  mntfiltro = result;
-                  var us = uniqueVal(result, "us");
-                  var bn = uniqueVal(result, "bc");
-                  var tq = uniqueVal(result, "tq");
 
-                  us.unshift({
-                    us: 0,
-                    usn: "TODAS",
-                  });
-                  bn.unshift({
-                    bc: 0,
-                    bnc: "TODAS",
-                  });
-                  tq.unshift({
-                    tq: 0,
-                    tqn: "TODAS",
-                  });
-
-                  var s2us = $("#mnt-ventas-us"),
-                    s2bc = $("#mnt-ventas-bc"),
-                    s2tq = $("#mnt-ventas-tq");
-                  s2us.html(jsrender($("#rd-us-option"), us));
-                  s2us.select2("val", 0);
-                  s2bc.html(jsrender($("#rd-bn-option"), bn));
-                  s2bc.select2("val", 0);
-                  s2tq.html(jsrender($("#rd-tq-option"), tq));
-                  s2tq.select2("val", 0);
-
-                  $("#md-tickets-body").html(
-                    jsrender($("#rd-num-ticket"), result)
-                  );
-                  actualizarVista_tickets(result);
-                  var ns = findBy("n", num, data.n);
-                  $("#md-tnum").html(ns.numero + " " + ns.desc);
-
-                  $("#md-tktable").css("max-height", "400px");
-                  $("#md-numventas").modal();
-
-                  function uniqueVal(source, field, full) {
-                    full = full == undefined ? true : full;
-                    var flags = [],
-                      output = [],
-                      l = source.length,
-                      i;
-                    for (i = 0; i < l; i++) {
-                      if (flags[source[i][field]]) continue;
-                      flags[source[i][field]] = true;
-                      if (full) output.push(source[i]);
-                      else output.push(source[i][field]);
-                    }
-                    return output;
-                  }
-                }
-              );
-            });
+            actualizarVista();
+            reporteInicio();
           }
+        );
 
-          let iReporte = 0;
-
-          function cargarReporteTicket(data) {
-            if (iReporte < data.length) {
-              let r = data[iReporte];
-              let sorteo = r.sorteoID;
-              let ganador = r.ganador;
-              runSQL(reportesMap.monitorReporteTickets(sorteo, ganador)).then(
-                (result) => {
-                  let ticketJugada = 0;
-                  result.forEach((item) => (ticketJugada += item.monto));
-                  let fila = findBy("sorteoID", sorteo, d.data);
-                  fila.tickets = result.length;
-                  fila.ticketJugado = ticketJugada;
-                  fila.pJugada = Number(
-                    (ticketJugada * 100) / fila.jugado
-                  ).toFixed(1);
-                  iReporte++;
-                  cargarReporteTicket(data);
-                }
-              );
+        function reporteInicio() {
+          socket.sendMessage("inicio", idata, function (e, d) {
+            if (d.hasOwnProperty("code")) {
             } else {
+              var t1 = 0,
+                t2 = 0,
+                t3 = 0;
+              let row;
+              for (var i = 0; i < d.data.length; i++) {
+                row = d.data[i];
+                t1 += row.jugado;
+                t2 += row.premio;
+                t3 += row.comision;
+                row.pPremios = Number((row.premio * 100) / row.jugado).toFixed(
+                  2
+                );
+              }
+              $("#gbalance").html((t1 - (t2 + t3)).format($decimales));
+              $("#gjugada").html(t1.format($decimales));
+              $("#gpremios").html(t2.format($decimales));
+              $("#gcomision").html(t3.format($decimales));
               $("#srt_dia").html(
                 jsrenderMerge($("#rd-sorteos-dia-row"), d.data, hlp)
               );
+              $("#str-dia-stamp").html(d.time);
+
               tablaHandlers();
             }
-          }
-          cargarReporteTicket(d.data);
-        });
-      }
-    });
+
+            function tablaHandlers() {
+              $(".cargarReporteTickets").click((e) => {
+                e.preventDefault(e);
+                let sorteo = $(e.currentTarget).attr("srt");
+                let ganador = $(e.currentTarget).attr("gn");
+                runSQL(reportesMap.monitorReporteTickets(sorteo, ganador)).then(
+                  (result) => {
+                    reporteSorteo = reporteSorteo.concat(result);
+                    let fila = findBy("sorteoID", sorteo, d.data);
+                    fila.tickets = result.length;
+                    $("#srt_dia").html(
+                      jsrenderMerge($("#rd-sorteos-dia-row"), d.data, hlp)
+                    );
+                    tablaHandlers();
+                  }
+                );
+              });
+              $("#srt_dia .mnt-vnt-tickets").click(function (e) {
+                e.preventDefault(e);
+                let sorteo = $(e.currentTarget).attr("srt");
+                let num = $(e.currentTarget).attr("gn");
+                socket.sendMessage(
+                  "sorteo-monitor-vnt",
+                  { numero: num, sorteo: sorteo },
+                  function (e, result) {
+                    if (result == null) {
+                      notificacion("NO HAY TICKETS DISPONIBLES");
+                      return;
+                    }
+                    mntfiltro = result;
+                    var us = uniqueVal(result, "us");
+                    var bn = uniqueVal(result, "bc");
+                    var tq = uniqueVal(result, "tq");
+
+                    us.unshift({
+                      us: 0,
+                      usn: "TODAS",
+                    });
+                    bn.unshift({
+                      bc: 0,
+                      bnc: "TODAS",
+                    });
+                    tq.unshift({
+                      tq: 0,
+                      tqn: "TODAS",
+                    });
+
+                    var s2us = $("#mnt-ventas-us"),
+                      s2bc = $("#mnt-ventas-bc"),
+                      s2tq = $("#mnt-ventas-tq");
+                    s2us.html(jsrender($("#rd-us-option"), us));
+                    s2us.select2("val", 0);
+                    s2bc.html(jsrender($("#rd-bn-option"), bn));
+                    s2bc.select2("val", 0);
+                    s2tq.html(jsrender($("#rd-tq-option"), tq));
+                    s2tq.select2("val", 0);
+
+                    $("#md-tickets-body").html(
+                      jsrender($("#rd-num-ticket"), result)
+                    );
+                    actualizarVista_tickets(result);
+                    var ns = findBy("n", num, data.n);
+                    $("#md-tnum").html(ns.numero + " " + ns.desc);
+
+                    $("#md-tktable").css("max-height", "400px");
+                    $("#md-numventas").modal();
+
+                    function uniqueVal(source, field, full) {
+                      full = full == undefined ? true : full;
+                      var flags = [],
+                        output = [],
+                        l = source.length,
+                        i;
+                      for (i = 0; i < l; i++) {
+                        if (flags[source[i][field]]) continue;
+                        flags[source[i][field]] = true;
+                        if (full) output.push(source[i]);
+                        else output.push(source[i][field]);
+                      }
+                      return output;
+                    }
+                  }
+                );
+              });
+            }
+
+            let iReporte = 0;
+
+            function cargarReporteTicket(data) {
+              if (iReporte < data.length) {
+                let r = data[iReporte];
+                let sorteo = r.sorteoID;
+                let ganador = r.ganador;
+                runSQL(reportesMap.monitorReporteTickets(sorteo, ganador)).then(
+                  (result) => {
+                    let ticketJugada = 0;
+                    result.forEach((item) => (ticketJugada += item.monto));
+                    let fila = findBy("sorteoID", sorteo, d.data);
+                    fila.tickets = result.length;
+                    fila.ticketJugado = ticketJugada;
+                    fila.pJugada = Number(
+                      (ticketJugada * 100) / fila.jugado
+                    ).toFixed(1);
+                    iReporte++;
+                    cargarReporteTicket(data);
+                  }
+                );
+              } else {
+                $("#srt_dia").html(
+                  jsrenderMerge($("#rd-sorteos-dia-row"), d.data, hlp)
+                );
+                tablaHandlers();
+              }
+            }
+            cargarReporteTicket(d.data);
+          });
+        }
+      },
+      true
+    );
   });
 
   $("#mnt-filtrar-tickets").submit(function (e) {
@@ -787,6 +802,12 @@ function sorteoMonitor_nav(e, arg) {
   $(".mnt-filtro-tickets").change(function () {
     $("#mnt-filtrar-tickets").submit();
   });
+  function reiniciarVista() {
+    $("#numeros-body").html("");
+    $("#ventas-body").html("");
+    $("#srt_dia").html("");
+    $(".canReset").html("--");
+  }
 
   function actualizarVista() {
     $("#numeros-body").html(jsrender($("#rd-vtnum-row"), data.n, help));
@@ -1201,7 +1222,6 @@ function reporteGeneral_nav(p, args) {
     });
     $("#reporte-body").html(jsrender($("#rd-reporte"), rdata));
   });
-  console.log("args :>> ", args);
   if (args.fechas) {
     var fechas = args.fechas.split(",");
     var a = fechas[0].split("-");
