@@ -532,7 +532,7 @@ function sorteoMonitor_nav(e, arg) {
         socket.removeListeners("monitor");
 
         formLock(f, false);
-        if (d.t == null || d.n == null) {
+        if (d.t.length == 0 || d.n.length == 0) {
           notificacion("NO HAY VENTAS REGISTRADAS PARA ESTE SORTEO");
           return;
         }
@@ -1150,7 +1150,7 @@ function reporteGeneral_nav(p, args) {
         var srtIndex = [];
         var srtData = [];
         d.forEach(function (item) {
-          item.balance = item.jugada - item.premio - item.comision;
+          item.balance = item.jugada - item.premio;
           j += item.jugada;
           pr += item.premio;
           cm += item.comision;
@@ -1171,8 +1171,8 @@ function reporteGeneral_nav(p, args) {
 
         $("#mnt-jugado").html(j.format(0));
         $("#mnt-premios").html(pr.format(0));
-        $("#mnt-comision").html(cm.format(0));
-        $("#mnt-balance").html((j - pr - cm).format(0));
+        //$("#mnt-comision").html(cm.format(0));
+        $("#mnt-balance").html((j - pr).format(0));
 
         $("#accordion").html(
           jsrenderMerge($("#rd-reporte"), srtData, {
@@ -1199,15 +1199,15 @@ function reporteGeneral_nav(p, args) {
       cm = 0,
       rn = 0;
     d.forEach(function (item) {
-      item.balance = item.jugada - item.premio - item.comision;
+      item.balance = item.jugada - item.premio;
       j += item.jugada;
       pr += item.premio;
       cm += item.comision;
     });
     $("#mnt-jugado").html(j.format(0));
     $("#mnt-premios").html(pr.format(0));
-    $("#mnt-comision").html(cm.format(0));
-    $("#mnt-balance").html((j - pr - cm).format(0));
+    //$("#mnt-comision").html(cm.format(0));
+    $("#mnt-balance").html((j - pr).format(0));
   }
 
   $("#rtp-desc-o").click(function (e) {
