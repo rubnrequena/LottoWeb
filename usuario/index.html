@@ -59,9 +59,10 @@
 
                     <h5 class="sidebartitle actitle">Cuenta</h5>
                     <ul class="nav nav-pills nav-stacked nav-bracket mb30">
-                        <li><a href="°file.html"><i class="fa fa-user"></i> <span>Usuario</span></a></li>
-                        <li><a href="#config"><i class="fa fa-cog"></i> <span>Configuracion</span></a></li>
-                        <li><a href="#ayuda"><i class="fa fa-question-circle"></i> <span>Ayuda</span></a></li>
+                        <li><a href="#"><i class="glyphicon glyphicon-cog"></i> Datos Usuario</a></li>
+                        <li>Usuario: <span class="usr-usuario"></span></li>
+                        <li>Contacto: <span class="usr-contacto"></span></li>
+                        <div class="divider"></div>
                         <li><a class="logout" href="#cerrar"><i class="fa fa-sign-out"></i> <span>Cerrar
                                     Sesi&oacute;n</span></a></li>
                     </ul>
@@ -77,10 +78,10 @@
                             </li>
                             <li><a href="#sorteos/buscar"><i class="fa fa-search"></i> <span>Buscar</span></a></li>
                             <li><a href="#sorteos/publicar"><i class="fa fa-globe"></i> <span>Publicar</span></a></li>
-                            <li><a href="#sorteos/comisiones">
+                            <!-- <li><a href="#sorteos/comisiones">
                                     <span class="pull-right badge badge-success">NUEVO</span>
                                     <i class="fa fa-percent"></i> <span>Comisiones</span></a>
-                            </li>
+                            </li> -->
                         </ul>
                     </li>
                     <li class="nav-parent"><a href=""><i class="fa fa-sitemap"></i> <span>Grupos</span></a>
@@ -157,35 +158,12 @@
                                 <div class="dropdown-menu dropdown-menu-head pull-right">
                                     <h5 class="title">Mensajes</h5>
                                     <div id="mensajes-body"></div>
-                                    <!--<span class="new"><a href="#mensajes">Leer todos los mensajes</a></span>-->
+                                    <button class="btn btn-block btn-sm" class="new"><a href="#mensajes">Leer todos los
+                                            mensajes</a></button>
                                 </div>
                             </div>
                         </li>
-                        <li>
-                            <div class="btn-group">
-                                <button class="btn btn-default dropdown-toggle tp-icon" data-toggle="dropdown">
-                                    <i class="glyphicon glyphicon-globe"></i>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-head pull-right">
-                                    <h5 class="title">You Have 5 New Notifications</h5>
-                                    <ul class="dropdown-list gen-list">
-                                        <li class="new">
-                                            <a href="">
-                                                <span class="thumb"><img src="../theme/images/photos/user4.png"
-                                                        alt="" /></span>
-                                                <span class="desc">
-                                                    <span class="name">Zaham Sindilmaca <span
-                                                            class="badge badge-success">new</span></span>
-                                                    <span class="msg">is now following you</span>
-                                                </span>
-                                            </a>
-                                        </li>
-                                        <li class="new"><a href="">See All Notifications</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
+                        <li class="hidden-xs">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <img src="../theme/images/photos/loggeduser.png" alt="" />
@@ -193,8 +171,10 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
-                                    <li><a href="#config"><i class="glyphicon glyphicon-cog"></i> Configuración</a></li>
-                                    <li><a href="#405"><i class="glyphicon glyphicon-question-sign"></i> Ayuda</a></li>
+                                    <li><a href="#"><i class="glyphicon glyphicon-cog"></i> Datos Usuario</a></li>
+                                    <li>Usuario: <span class="usr-usuario"></span></li>
+                                    <li>Contacto: <span class="usr-contacto"></span></li>
+                                    <div class="divider"></div>
                                     <li><a class="logout" href="#cerrar"><i class="glyphicon glyphicon-log-out"></i>
                                             Cerrar Sessión</a></li>
                                 </ul>

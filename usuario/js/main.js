@@ -73,7 +73,9 @@ function socket_login(e, d) {
     $elementos = d.el;
     $sorteos = d.st;
     $permisos = d.permisos || [];
-    $(".mn-usuario").html($usuario.usuario);
+    $(".mn-usuario").html($usuario.nombre);
+    $(".usr-usuario").text($usuario.usuario);
+    $(".usr-contacto").text($usuario.contacto || "");
     nav.navUrl();
   }
 }
