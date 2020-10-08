@@ -526,6 +526,7 @@ function sorteoComisiones_nav(p, args) {
   sorteo.trigger("change");
   var hlp = copyTo(_helpers);
   hlp.sorteo = function (s) {
+    if (!s) return "";
     return findBy("sorteoID", s, $sorteos).nombre;
   };
   comForm.submit(function (e) {
