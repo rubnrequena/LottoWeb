@@ -368,6 +368,12 @@
                     <h4 class="modal-title">Anuncios</h4>
                 </div>
                 <div class="modal-body">
+                    <h4>20.10.09 <label class="label label-success">NUEVO</label></h4>
+                    <p>Nueva actualizacion, estos meses hemos estado trabajando en mejorar el servicio para que tengas
+                        mas control sobre tu negocio y mas herramientas para auditar tus clientes,
+                        hemos optimizado algunas de las funciones ya existentes y corregido algunos detalles que se
+                        venian presentando en la versiones anteriores. Cualquier opinion o duda que tengas, envíala
+                        atravez de tu administrador. Feliz día.</p>
                     <h4>20.08.14</h4>
                     <ul>
                         <li>A partir de esta version se podra asignar comision y participacion por operadora a cada
@@ -400,7 +406,7 @@
         </div>
     </div>
     <script>
-        const version = 200814
+        const version = 201009
         let ultVersion = parseFloat(localStorage.getItem('anuncio_vrs'))
         if (!ultVersion || version > ultVersion) {
             $('#md-anuncios').modal('show')
