@@ -442,6 +442,11 @@ var init = function () {
       srt.sorteos.sort((a, b) => a.cierra - b.cierra);
     });
     const regHorario = /\d{1,2}[AMP]+|\d{1,2}:\d{2}[AMP ]+/;
+    xsorteos = xsorteos.sort((a, b) => {
+      if (a.sorteo.descripcion < b.sorteo.descripcion) return -1;
+      else if (b.sorteo.descripcion < a.sorteo.descripcion) return 1;
+      else return 0;
+    });
     $(".md-sorteos-body").html(
       jsrender($("#rd-md-sorteos"), xsorteos, {
         horario: (desc) => {
