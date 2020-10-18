@@ -150,9 +150,17 @@ function sorteoBuscar_nav(p, args) {
         socket.sendMessage(
           "elementos",
           {
-            sorteo: sorteo,
+            csorteo: sorteo,
           },
           function (e, d) {
+            d = d.map((item) => {
+              if (!item.d) item.descripcion = item.n;
+              else item.descripcion = item.d;
+              item.elementoID = item.id;
+              item.numero = item.n;
+              item.sorteo = sorteo;
+              return item;
+            });
             $elementos = $elementos ? $elementos.concat(d) : d;
             initUI();
           }
@@ -300,6 +308,10 @@ function sorteoBuscar_nav(p, args) {
               elm.select2("val", elm.data("select"));
               elm.val(elm.data("select"));
             }
+          } else if (d.code == 8) {
+            notificacion("SORTEOS", "SORTEO ABIERTO", "growl-danger");
+            elm.select2("val", null);
+            elm.val(null);
           } else if (d.code == 3)
             notificacion(
               "SORTEOS",
