@@ -2338,36 +2338,41 @@ function reporteTaquilla_nav(p, args) {
 nav.paginas.addListener("reporte/taquilla", reporteGeneral_nav);
 
 function reporteVentas_nav(p, args) {
-  var _taqs = [];
   var bancas = $("#bancas");
   var hbtaq = $("#hb-taquilla");
   var taqs = $("#taquillas");
+  const s2_taquillas = $("#rd-taquillal-option");
   socket.addListener("taquillas", updateTaquillas);
 
   bancas.html(jsrender($("#rd-usuario-option"), $bancas));
-  bancas.select2("val", 0);
+  bancas.select2("val", null);
   bancas.on("change", function () {
+    taqs.select2("val", null);
     hbtaq.html(
       '<i class="fa fa-spinner fa-spin"></i> Espere, recibiendo taquillas..'
     );
-    socket.sendMessage("taquillas", {
-      usuariol: bancas.val(),
-    });
-  });
-  socket.sendMessage("taquillas", {
-    usuariol: bancas.val(),
+    socket.sendMessage(
+      "sql",
+      {
+        comando: "fdd29ed26e0da352612bdc8ca918226d",
+        data: { usuario: bancas.val() },
+      },
+      updateTaquillas
+    );
   });
 
   function updateTaquillas(e, d) {
     hbtaq.html("");
-    _taqs = _taqs.concat(d);
-    if (d.hasOwnProperty("code")) {
-      taqs.html(jsrender($("#rd-taquillal-option"), _taqs));
-      if (args.length >= 2) {
-        taqs.select2("val", args[1]);
-        $("#reporte").trigger("submit");
-      }
-    }
+    d = d || [];
+    d.data = d.data.sort((a, b) => {
+      a.nombre = a.nombre.toLowerCase();
+      b.nombre = b.nombre.toLowerCase();
+      if (a.nombre > b.nombre) return 1;
+      else if (a.nombre < b.nombre) return -1;
+      else return 0;
+    });
+    const html = jsrender(s2_taquillas, d.data);
+    taqs.html(html);
   }
 
   var rpt;
