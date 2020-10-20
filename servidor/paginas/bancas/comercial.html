@@ -19,7 +19,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Contacto</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" minlength="10" name="contacto">
+                    <input type="text" class="form-control" name="contacto">
                 </div>
             </div>
             <div class="form-group">
@@ -38,13 +38,14 @@
                 <label class="col-sm-3 control-label">Comision</label>
                 <div class="col-sm-6">
                     <div class="input-group">
-                            <span class="input-group-addon">
-                                <label class="mt5">
-                                    <input type="checkbox" id="alquiler">
-                                    <span>Alquiler</span>
-                                </label>
-                            </span>
-                        <input id="bn-comision" type="number" min="-100" step="any" max="100" class="form-control" name="comision" value="0" required>
+                        <span class="input-group-addon">
+                            <label class="mt5">
+                                <input type="checkbox" id="alquiler">
+                                <span>Alquiler</span>
+                            </label>
+                        </span>
+                        <input id="bn-comision" type="number" min="-100" step="any" max="100" class="form-control"
+                            name="comision" value="0" required>
                         <span class="input-group-addon">%</span>
                     </div>
                     <div class="help-block">
@@ -56,7 +57,8 @@
                 <label class="col-sm-3 control-label">Participacion</label>
                 <div class="col-sm-6">
                     <div class="input-group">
-                        <input id="us-participacion" type="number" min="0" step="any" max="100" class="form-control" name="participacion" value="0" required>
+                        <input id="us-participacion" type="number" min="0" step="any" max="100" class="form-control"
+                            name="participacion" value="0" required>
                         <span class="input-group-addon">%</span>
                     </div>
                     <div class="help-block">
@@ -66,7 +68,8 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar </button>
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar
+                    </button>
                 </div>
             </div>
         </form>
@@ -103,13 +106,14 @@
                 <label class="col-sm-3 control-label">Comision</label>
                 <div class="col-sm-6">
                     <div class="input-group">
-                            <span class="input-group-addon">
-                                <label class="mt5">
-                                    <input type="checkbox">
-                                    <span>Alquiler</span>
-                                </label>
-                            </span>
-                        <input type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0" required>
+                        <span class="input-group-addon">
+                            <label class="mt5">
+                                <input type="checkbox">
+                                <span>Alquiler</span>
+                            </label>
+                        </span>
+                        <input type="number" min="0" step="any" max="100" class="form-control" name="comision" value="0"
+                            required>
                         <span class="input-group-addon">%</span>
                     </div>
                     <div class="help-block">
@@ -121,7 +125,8 @@
                 <label class="col-sm-3 control-label">Participacion</label>
                 <div class="col-sm-6">
                     <div class="input-group">
-                        <input id="bn-participacion" type="number" min="0" step="any" max="100" class="form-control" name="participacion" value="0" required>
+                        <input id="bn-participacion" type="number" min="0" step="any" max="100" class="form-control"
+                            name="participacion" value="0" required>
                         <span class="input-group-addon">%</span>
                     </div>
                     <div class="help-block">
@@ -182,14 +187,14 @@
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
-                <tr>
-                    <th>NOMBRE</th>
-                    <th>USUARIO</th>
-                    <th>RENTA</th>
-                    <th title="COMISION/PARTICIPACION">COMISION/PART.</th>
-                    <th>CLAVE</th>
-                    <th>ACTIVA</th>
-                </tr>
+                    <tr>
+                        <th>NOMBRE</th>
+                        <th>USUARIO</th>
+                        <th>RENTA</th>
+                        <th title="COMISION/PARTICIPACION">COMISION/PART.</th>
+                        <th>CLAVE</th>
+                        <th>ACTIVA</th>
+                    </tr>
                 </thead>
                 <tbody id="bancas-body"></tbody>
             </table>

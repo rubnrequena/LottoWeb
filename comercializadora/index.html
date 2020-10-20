@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../theme/css/bootstrap-wysihtml5.css" />
   <link href="./css/custom.css" rel="stylesheet">
 
-  <!-- v200829 -->
+  <!-- v201020 -->
   <!--[if lt IE 9]>
     <script src="../theme/js/html5shiv.js"></script>
     <script src="../theme/js/respond.min.js"></script>
@@ -76,14 +76,15 @@
               <li><a href="#sorteos/monitor"><i class="fa fa-area-chart"></i> <span>Monitor</span></a>
               </li>
               <li><a href="#sorteos/buscar"><i class="fa fa-search"></i> <span>Buscar</span></a></li>
-              <li><a href="#sorteos/publicar"><i class="fa fa-globe"></i> <span>Publicar</span></a></li>
-              <li><a href="#sorteos/comisiones">
+              <li class="noauditor"><a href="#sorteos/publicar"><i class="fa fa-globe"></i> <span>Publicar</span></a>
+              </li>
+              <li class="noauditor"><a href="#sorteos/comisiones">
                   <span class="pull-right badge badge-success">NUEVO</span>
                   <i class="fa fa-user-secret"></i> <span>Comisiones</span></a>
               </li>
             </ul>
           </li>
-          <li class="nav-parent"><a href=""><i class="fa fa-sitemap"></i> <span>Bancas</span></a>
+          <li class="nav-parent noauditor"><a href=""><i class="fa fa-sitemap"></i> <span>Bancas</span></a>
             <ul class="children">
               <li><a href="#bancas/bancas"><i class="fa fa-group"></i> <span>Bancas</span></a></li>
               <li><a href="#bancas/transferir">
@@ -98,7 +99,7 @@
               </li>
             </ul>
           </li>
-          <li class="nav-parent"><a href=""><i class="fa fa-money"></i> <span>Tickets</span></a>
+          <li class="nav-parent noauditor"><a href=""><i class="fa fa-money"></i> <span>Tickets</span></a>
             <ul class="children">
               <li><a href="#ticket-buscar" data-target="#md-ticket" data-toggle="modal"><i class="fa fa-search"></i>
                   <span>Buscar</span></a></li>
@@ -113,14 +114,15 @@
               <li><a href="#reporte/ventas"><i class="fa fa-random"></i> <span>Ventas</span></a></li>
             </ul>
           </li>
-          <li class="nav-parent"><a href=""><i class="fa fa-code-fork"></i> <span>Alquiler</span></a>
+          <li class="nav-parent noauditor"><a href=""><i class="fa fa-code-fork"></i> <span>Alquiler</span></a>
             <ul class="children">
               <li><a href="#reporte/cobros"><i class="fa fa-percent"></i> <span>Cobros</span></a></li>
               <li><a href="#reporte/balance"><i class="fa fa-balance-scale"></i> <span>Gestor de
                     pagos</span></a></li>
             </ul>
-          <li><a href="#conexiones"><i class="fa fa-plug"></i> <span>Conexiones</span></a></li>
-          <li><a href="javascript:alert('Proximamente..')"><i class="fa fa-envelope"></i>
+          </li>
+          <li class="noauditor"><a href="#conexiones"><i class="fa fa-plug"></i> <span>Conexiones</span></a></li>
+          <li class="noauditor"><a href="javascript:alert('Proximamente..')"><i class="fa fa-envelope"></i>
               <span>Mensajes</span></a></li>
         </ul>
 
@@ -238,7 +240,7 @@
     <option value="{{:taquillaID}}" class="text-uppercase">{{:nombre}}</option>
 </script>
   <script type="text/x-jsrender" id="rd-taquillal-option">
-    <option value="{{:id}}" class="text-uppercase">{{:n}}</option>
+    <option value="{{:taquillaID}}" class="text-uppercase">{{:nombre}}</option>
 </script>
   <script type="text/x-jsrender" id="rd-grupo-option">
     <option value="{{:bancaID}}" class="text-uppercase">{{:nombre}}</option>

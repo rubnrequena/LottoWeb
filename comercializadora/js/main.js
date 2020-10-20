@@ -55,6 +55,10 @@ function socket_login(e, d) {
     $elementos = d.el;
     $sorteos = d.st;
     $(".mn-usuario").html($usuario.usuario);
+    //validar auditor
+    if ($usuario.tipo == 3) {
+      $(".noauditor").remove();
+    }
 
     socket.sendMessage("balance-padre", null, function (e, d) {
       $balance = d;
