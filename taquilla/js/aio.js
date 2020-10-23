@@ -384,6 +384,47 @@ var init = function () {
   var vendiendo = false;
 
   function venta_nav(p, args) {
+    //#region permuta
+    const mdPermuta = $("#md-permuta");
+    mdPermuta.on("shown.bs.modal", (e) => $("#permuta-numero").focus());
+    const permutaForm = $("#permuta-form");
+    permutaForm.submit(permutaForm_submit);
+    const permutaBtn = $("#permuta-btn");
+    permutaBtn.click((e) => mdPermuta.modal());
+    const serieBtn = $("#serie-btn");
+    const corridaBtn = $("#corrida-btn");
+
+    function permutaForm_submit(e) {
+      e.preventDefault(e);
+      const data = formControls(this);
+      const permuta = permutar(data.numero);
+      num.val(permuta.join(" "));
+      mdPermuta_close();
+    }
+    function permutar(input) {
+      let result = input
+        .toString()
+        .split("")
+        .reduce(function permute(res, item, key, arr) {
+          return res.concat(
+            (arr.length > 1 &&
+              arr
+                .slice(0, key)
+                .concat(arr.slice(key + 1))
+                .reduce(permute, [])
+                .map(function (perm) {
+                  return [item].concat(perm);
+                })) ||
+              item
+          );
+        }, []);
+      return result.map((r) => r.join(""));
+    }
+    function mdPermuta_close() {
+      mdPermuta.modal("hide");
+      permutaForm[0].reset();
+    }
+    //#endregion
     $("#md-copy-ticket").on("hidden.bs.modal", function (e) {
       sorteos.select2("focus");
     });
@@ -1340,6 +1381,7 @@ var init = function () {
     $(document).on("keydown", onKeyDown);
 
     function onKeyDown(e) {
+      console.log(e.keyCode);
       if (e.altKey) {
         num.focus();
         if (e.which >= 96 && e.which <= 105) {
@@ -1350,7 +1392,6 @@ var init = function () {
         }
       }
       if (e.ctrlKey) {
-        $("#vnt-submit-venta").focus();
         if (e.which == 88) {
           $("#md-anularTicket").modal();
         }

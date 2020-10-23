@@ -114,6 +114,17 @@
                 AGREGAR</button>
             </div>
           </form>
+          <div class="row" style="padding-bottom: 10px;">
+            <div class="col-md-4">
+              <button id="permuta-btn" type="button" class="btn btn-default btn-block">Permuta</button>
+            </div>
+            <div class="col-md-4">
+              <button id="serie-btn" type="button" class="btn btn-default btn-block">Serie</button>
+            </div>
+            <div class="col-md-4">
+              <button id="corrida-btn" type="button" class="btn btn-default btn-block">Corrida</button>
+            </div>
+          </div>
           <form id="repetir">
             <div class="input-group">
               <span class="input-group-btn">
@@ -197,6 +208,35 @@
       </div>
       <div class="modal-body md-sorteos-body">
         asdasd
+      </div>
+      <div class="modal-footer hidden-xs">
+        <button class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary sorteos-hub-btn"><i class="fa fa-check"></i> Confirmar</button>
+      </div>
+    </div>
+  </div>
+  <button class="float sorteos-hub-btn ok">
+    <i class="fa fa-check"></i>
+  </button>
+  <button class="float sorteos-hub-btn dismiss">
+    <i class="fa fa-close"></i>
+  </button>
+</div>
+
+<div id="md-permuta" class="modal fade" tabindex="-3" role="dialog" aria-labelledby="seleccionarSorteos"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">
+          Permuta
+        </div>
+      </div>
+      <div class="modal-body body-permuta">
+        <form class="form" id="permuta-form">
+          <input id="permuta-numero" name="numero" class="form-control" required minlength="3">
+          <button type="submit" class="btn btn-primary btn-block">Permutar</button>
+        </form>
       </div>
       <div class="modal-footer hidden-xs">
         <button class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
@@ -360,7 +400,7 @@
   <div class="row">
       <h3>
         <label>
-          <input sorteo="{{:sorteo.sorteo}}" class="srt-hub-padre" type="checkbox">
+          <input sorteo="{{:sorteo.sorteo}}" class="srt-hub-padre srt-hub" type="checkbox">
           {{:sorteo.descripcion}}
         </label>
       </h3>
