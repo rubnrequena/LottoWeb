@@ -234,22 +234,48 @@
       </div>
       <div class="modal-body body-permuta">
         <form class="form" id="permuta-form">
-          <input id="permuta-numero" name="numero" class="form-control" required minlength="3">
+          <input id="permuta-numero" name="numero" class="form-control" required maxlength="3" minlength="3">
           <button type="submit" class="btn btn-primary btn-block">Permutar</button>
         </form>
       </div>
-      <div class="modal-footer hidden-xs">
-        <button class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
-        <button class="btn btn-primary sorteos-hub-btn"><i class="fa fa-check"></i> Confirmar</button>
+    </div>
+  </div>
+</div>
+<div id="md-serie" class="modal fade" tabindex="-3" role="dialog" aria-labelledby="seleccionarSorteos"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">
+          Serie
+        </div>
+      </div>
+      <div class="modal-body body-serie">
+        <form class="form" id="serie-form">
+          <input id="serie-numero" name="numero" class="form-control" required maxlength="3" minlength="1">
+          <button type="submit" class="btn btn-primary btn-block">Generar Serie</button>
+        </form>
       </div>
     </div>
   </div>
-  <button class="float sorteos-hub-btn ok">
-    <i class="fa fa-check"></i>
-  </button>
-  <button class="float sorteos-hub-btn dismiss">
-    <i class="fa fa-close"></i>
-  </button>
+</div>
+<div id="md-corrida" class="modal fade" tabindex="-3" role="dialog" aria-labelledby="seleccionarSorteos"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">
+          Corrida
+        </div>
+      </div>
+      <div class="modal-body body-corrida">
+        <form class="form" id="corrida-form">
+          <input id="corrida-numero" name="numero" class="form-control" required maxlength="7" minlength="7">
+          <button type="submit" class="btn btn-primary btn-block">Generar Corrida</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="modal fade" tabindex="-3" role="dialog" aria-labelledby="showMyTicket" aria-hidden="true"

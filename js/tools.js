@@ -140,6 +140,13 @@ function parseFormItem(val) {
   return val;
 }
 
+function formatoTriple(n) {
+  n = parseInt(n);
+  if (n < 10) return `00${n}`;
+  else if (n < 100) return `0${n}`;
+  else return n.toString();
+}
+
 function jsrenderMerge(script, data, helpers = {}) {
   var hp = Object.assign(_helpers, helpers);
   return jsrender(script, data, hp);

@@ -328,7 +328,6 @@ var init = function () {
       $("#md-montoInput").focus();
       $("#md-montoInput").select();
     });
-
     $(document).on("keydown", ventaTeclado);
     let keyPressed = "";
     let pressTime;
@@ -384,6 +383,66 @@ var init = function () {
   var vendiendo = false;
 
   function venta_nav(p, args) {
+    //#region serie
+    const mdSerie = $("#md-serie");
+    mdSerie.on("shown.bs.modal", (e) => $("#serie-numero").focus());
+    const serieBtn = $("#serie-btn");
+    serieBtn.click((e) => mdSerie.modal());
+    const serieForm = $("#serie-form");
+    serieForm.submit(serieForm_submit);
+    function serieForm_submit(e) {
+      e.preventDefault(e);
+      const data = formControls(this);
+      const numeros = crearSerie(data.numero);
+      num.val(numeros.join(" "));
+      mdSerie_close();
+    }
+    function crearSerie(input) {
+      input = parseInt(input);
+      const exp = 100;
+      const max = 1000;
+      let ultValor = input;
+      let valores = [];
+      while (ultValor < max) {
+        valores.push(formatoTriple(ultValor));
+        ultValor += exp;
+      }
+      return valores;
+    }
+    function mdSerie_close() {
+      mdSerie.modal("hide");
+      serieForm[0].reset();
+    }
+    //#endregion
+    //#region corrida
+    const mdCorrida = $("#md-corrida");
+    mdCorrida.on("shown.bs.modal", (e) => $("#corrida-numero").focus());
+    const corridaBtn = $("#corrida-btn");
+    corridaBtn.click((e) => mdCorrida.modal());
+    const corridaForm = $("#corrida-form");
+    corridaForm.submit(corridaForm_submit);
+    function corridaForm_submit(e) {
+      e.preventDefault(e);
+      const data = formControls(this);
+      const numeros = crearCorrida(data.numero);
+      num.val(numeros.join(" "));
+      mdCorrida_close();
+    }
+    function crearCorrida(input) {
+      const inputs = input.split(" ");
+      let min = parseInt(inputs[0]);
+      const max = parseInt(inputs[1]);
+      let valores = [];
+      while (min <= max) {
+        valores.push(formatoTriple(min++));
+      }
+      return valores;
+    }
+    function mdCorrida_close() {
+      mdCorrida.modal("hide");
+      corridaForm[0].reset();
+    }
+    //#endregion
     //#region permuta
     const mdPermuta = $("#md-permuta");
     mdPermuta.on("shown.bs.modal", (e) => $("#permuta-numero").focus());
@@ -391,8 +450,6 @@ var init = function () {
     permutaForm.submit(permutaForm_submit);
     const permutaBtn = $("#permuta-btn");
     permutaBtn.click((e) => mdPermuta.modal());
-    const serieBtn = $("#serie-btn");
-    const corridaBtn = $("#corrida-btn");
 
     function permutaForm_submit(e) {
       e.preventDefault(e);
@@ -402,6 +459,7 @@ var init = function () {
       mdPermuta_close();
     }
     function permutar(input) {
+      input = formatoTriple(input);
       let result = input
         .toString()
         .split("")
@@ -418,7 +476,13 @@ var init = function () {
               item
           );
         }, []);
-      return result.map((r) => r.join(""));
+      return result
+        .map((r) => r.join(""))
+        .reduce((acc, item) => {
+          if (acc.indexOf(item) > -1) return acc;
+          acc.push(item);
+          return acc;
+        }, []);
     }
     function mdPermuta_close() {
       mdPermuta.modal("hide");
@@ -595,7 +659,7 @@ var init = function () {
 
     function exitPage(e) {
       nav.paginas.removeListener(Navegador.EXIT, exitPage);
-      $(document).off("keydown", onKeyDown);
+      $(document).off("keydown", onKeyboardDown);
     }
 
     $("#taq-nombre").html($usuario.nombre);
@@ -636,11 +700,11 @@ var init = function () {
     srqag.on("shown.bs.modal", function (e) {
       $("#srag-input").select2("focus");
       srqag.on("keydown", srqag_handler);
-      $(document).off("keydown", onKeyDown);
+      $(document).off("keydown", onKeyboardDown);
     });
     srqag.on("hide.bs.modal", function (e) {
       srqag.off("keydown", srqag_handler);
-      $(document).on("keydown", onKeyDown);
+      $(document).on("keydown", onKeyboardDown);
     });
     srqag.on("send", () => {
       alert("enviando venta por...");
@@ -1378,12 +1442,37 @@ var init = function () {
       if (index == 1) numInput = this.id;
       if (index == 0) sorteoInput = this.id;
     });
-    $(document).on("keydown", onKeyDown);
+    $(document).on("keydown", onKeyboardDown);
+    num.on("keydown", numInput_keyDown);
+    function numInput_keyDown(e) {
+      if (e.ctrlKey) {
+        //tecla P
+        if (e.which == 80) {
+          e.preventDefault(e);
+          const nm = num.val();
+          const numeros = permutar(nm);
+          num.val(numeros.join(" "));
+        }
+        //tecla S
+        if (e.which == 83) {
+          e.preventDefault(e);
+          const nm = num.val();
+          const numeros = crearSerie(nm);
+          num.val(numeros.join(" "));
+        }
+        //tecla c
+        if (e.which == 67) {
+          e.preventDefault(e);
+          const nm = num.val();
+          const numeros = crearCorrida(nm);
+          num.val(numeros.join(" "));
+        }
+      }
+    }
 
-    function onKeyDown(e) {
-      console.log(e.keyCode);
+    function onKeyboardDown(e) {
       if (e.altKey) {
-        num.focus();
+        //num.focus();
         if (e.which >= 96 && e.which <= 105) {
           e.preventDefault(e);
           var n = e.which - 96;
