@@ -78,10 +78,10 @@
                             </li>
                             <li><a href="#sorteos/buscar"><i class="fa fa-search"></i> <span>Buscar</span></a></li>
                             <li><a href="#sorteos/publicar"><i class="fa fa-globe"></i> <span>Publicar</span></a></li>
-                            <!-- <li><a href="#sorteos/comisiones">
+                            <li><a href="#sorteos/comisiones">
                                     <span class="pull-right badge badge-success">NUEVO</span>
                                     <i class="fa fa-percent"></i> <span>Comisiones</span></a>
-                            </li> -->
+                            </li>
                         </ul>
                     </li>
                     <li class="nav-parent"><a href=""><i class="fa fa-sitemap"></i> <span>Grupos</span></a>
@@ -368,7 +368,25 @@
                     <h4 class="modal-title">Anuncios</h4>
                 </div>
                 <div class="modal-body">
-                    <h4>20.10.09 <label class="label label-success">NUEVO</label></h4>
+                    <div id="ultima-noticia">
+                        <h4>20.10.29 </h4>
+                        <p>
+                            <b>Modulo de comisiones</b><label class="label label-success">NUEVO</label>
+                            <p>Este modulo te permite administrar de forma general las comisiones de la banca y de los
+                                grupos. Podrás registrar comisiones generales a cada sorteo para tu banca o para cada
+                                grupo
+                                específico, <u>⚠️ recuerda que cada sorteo que no este especificado en esta tabla tomará
+                                    el
+                                    valor
+                                    predeterminado previamente asignado</u>.
+                                Pera ya basta de teorias 🤓 VAMOS A LA PRACTICA 🎉, accede inmediatamente haciendo click
+                                en
+                                este
+                                <a class="ntf-link" href="#sorteos/comisiones">👉 LINK</a></p>
+                            <img src="/assets/201029_banca_noticias.png" class="img-responsive" />
+                        </p>
+                    </div>
+                    <h4>20.10.09</h4>
                     <p>Nueva actualizacion, estos meses hemos estado trabajando en mejorar el servicio para que tengas
                         mas control sobre tu negocio y mas herramientas para auditar tus clientes,
                         hemos optimizado algunas de las funciones ya existentes y corregido algunos detalles que se
@@ -406,10 +424,11 @@
         </div>
     </div>
     <script>
-        const version = 201009
+        const version = 201029
         let ultVersion = parseFloat(localStorage.getItem('anuncio_vrs'))
         if (!ultVersion || version > ultVersion) {
             $('#md-anuncios').modal('show')
+            $('.ntf-link').click(() => $('#md-anuncios').modal('hide'))
         }
 
         function no_volver_a_mostrar(params) {
@@ -417,6 +436,12 @@
             $('#md-anuncios').modal('hide')
         }
     </script>
+    <style>
+        #ultima-noticia {
+            background-color: beige;
+            padding: 10px;
+        }
+    </style>
 </body>
 
 </html>

@@ -518,12 +518,16 @@ nav.paginas.addListener("sorteos/premiar", sorteoPremiar_nav);
 function sorteoComisiones_nav(p, args) {
   //comision
   var comisiones;
-  var sorteo = $("#sorteo"),
+  const sorteo = $("#sorteo"),
     comForm = $("#com-form"),
     comBody = $("#com-tbody");
   sorteo.html(jsrender($("#rd-sorteos-option"), $sorteos));
   sorteo.select2("val", 0);
   sorteo.trigger("change");
+  const grupo = $("#grupo"),
+    rdGrupo = $("#rd-banca-option"),
+    bancas = [{ bancaID: 0, nombre: "TODAS" }, ...$bancas];
+  grupo.html(jsrender(rdGrupo, bancas));
   var hlp = copyTo(_helpers);
   hlp.sorteo = function (s) {
     if (!s) return "";
@@ -533,11 +537,10 @@ function sorteoComisiones_nav(p, args) {
     e.preventDefault(e);
     var data = formControls(this);
     data.taquillaID = 0;
-    data.grupoID = 0;
     data.bancaID = $usuario.usuarioID;
     if (
       exploreBy("sorteo", data.sorteo, comisiones).find(
-        (cm) => cm.grupoID == 0 && cm.taquillaID == 0
+        (cm) => cm.grupoID == data.grupoID && cm.taquillaID == 0
       )
     ) {
       notificacion(

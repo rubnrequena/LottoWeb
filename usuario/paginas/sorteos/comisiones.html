@@ -17,6 +17,12 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-3 control-label">Grupos</label>
+                <div class="col-sm-6">
+                    <select class="s2 form-control" name="grupoID" id="grupo" required></select>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-sm-3 control-label">Comision</label>
                 <div class="col-sm-6">
                     <div class="input-group">
@@ -50,7 +56,6 @@
                         <th></th>
                         <th>SORTEO</th>
                         <th>GRUPO</th>
-                        <th>TAQUILLA</th>
                         <th>COMISION (%)</th>
                     </tr>
                 </thead>
@@ -73,8 +78,7 @@
             <i class="fa fa-sitemap"></i>
             {{/if}}
           </td>
-          <td>{{if grupo}} <a href="#bancas/grupo|{{:grupoID}}">{{:grupo}}</a> {{else}} -- {{/if}}</td>
-          <td>{{if taquilla}} <a href="#bancas/taquilla|{{:taquillaID}}" class="text-uppercase">{{:taquilla}}</a> {{else}} -- {{/if}}</td>
+          <td class="text-uppercase">{{if grupo}} <a href="#bancas/grupo|{{:grupoID}}">{{:grupo}}</a> {{else}} -- {{/if}}</td>
           <td>{{:comision}}</td>
       </tr>
   </script>
