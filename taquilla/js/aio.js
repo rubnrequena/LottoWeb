@@ -383,6 +383,11 @@ var init = function () {
   var vendiendo = false;
 
   function venta_nav(p, args) {
+    if (!$sorteos) {
+      nav.nav("101");
+      return;
+    }
+    var triplesAcciones = $("#triples-acciones");
     //#region serie
     const mdSerie = $("#md-serie");
     mdSerie.on("shown.bs.modal", (e) => $("#serie-numero").focus());
@@ -394,7 +399,8 @@ var init = function () {
       e.preventDefault(e);
       const data = formControls(this);
       const numeros = crearSerie(data.numero);
-      num.val(numeros.join(" "));
+      const jugada = num.val().trim() + " ";
+      num.val(jugada + numeros.join(" "));
       mdSerie_close();
     }
     function crearSerie(input) {
@@ -425,7 +431,8 @@ var init = function () {
       e.preventDefault(e);
       const data = formControls(this);
       const numeros = crearCorrida(data.numero);
-      num.val(numeros.join(" "));
+      const jugada = num.val().trim() + " ";
+      num.val(jugada + numeros.join(" "));
       mdCorrida_close();
     }
     function crearCorrida(input) {
@@ -454,8 +461,9 @@ var init = function () {
     function permutaForm_submit(e) {
       e.preventDefault(e);
       const data = formControls(this);
-      const permuta = permutar(data.numero);
-      num.val(permuta.join(" "));
+      const numeros = permutar(data.numero);
+      const jugada = num.val().trim() + " ";
+      num.val(jugada + numeros.join(" "));
       mdPermuta_close();
     }
     function permutar(input) {
@@ -504,10 +512,6 @@ var init = function () {
         copyClip_btn.text("Copiar");
         copyClip_btn.removeClass("btn-success");
       }, 4000);
-    }
-    if (!$sorteos) {
-      nav.nav("101");
-      return;
     }
     const copyClip_btn = $("#btn_copyClipboard");
     copyClip_btn.click(copiarAPortapapeles);
@@ -666,6 +670,21 @@ var init = function () {
     var cesto = [];
     var num = $("#vnt-numeros");
     var sorteos = $("#vnt-sorteos");
+    sorteos.on("change", (e) => {
+      let triples = false;
+      for (let i = 0; i < e.val.length; i++) {
+        const sorteoID = e.val[i];
+        const sorteo = $sorteos.find((sorteo) => sorteo.sorteoID == sorteoID);
+        if (sorteo) {
+          if (sorteo.descripcion.indexOf("TRIPLE") >= 0) {
+            triples = true;
+            break;
+          }
+        }
+      }
+      if (triples) triplesAcciones.removeClass("hidden");
+      else triplesAcciones.addClass("hidden");
+    });
     var monto = $("#vnt-monto");
     var total = $("#vnt-total");
     var btnImprimir = $("#vnt-btn");
@@ -1299,7 +1318,7 @@ var init = function () {
     $(".vnt-reimprimir").click(function (e) {
       e.preventDefault(e);
       formatoImpresion = $(this).attr("formato");
-      if (canPrint == false) {
+      if (canPrint == false && formatoImpresion == "0") {
         grt = notificacion(
           "ASISTENTE IMPRESION",
           jsrender($("#rd-print-alert")),

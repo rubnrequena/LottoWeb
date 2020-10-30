@@ -59,8 +59,6 @@
           <ul class="dropdown-menu" role="menu">
             <li><a class="vnt-reimprimir" formato="0" href="#imprimir">Imprimir</a></li>
             <li><a class="vnt-reimprimir" formato="4" href="#pdf">PDF</a></li>
-            <li class="divider"></li>
-            <li><a class="vnt-reimprimir" formato="3" href="#ws">Whatsapp</a></li>
           </ul>
         </div><!-- btn-group -->
       </div>
@@ -93,12 +91,12 @@
             </div>
             <div class="form-group">
               <div class="row">
-                <div class="col-sm-5">
+                <div class="col-sm-7">
                   <label>Numero</label>
                   <input class="form-control" name="numero" id="vnt-numeros" autocomplete="off" required
                     onkeypress="return restrictCharacters(this,event,ventaOnly);">
                 </div>
-                <div class="col-sm-offset-2 col-sm-5">
+                <div class="col-sm-5">
                   <label>Monto</label>
                   <input class="form-control" id="vnt-monto" name="monto" type="number" min="0.01" max="999999"
                     step="any" autocomplete="off">
@@ -114,7 +112,7 @@
                 AGREGAR</button>
             </div>
           </form>
-          <div class="row" style="padding-bottom: 10px;">
+          <div id="triples-acciones" class="row hidden" style="padding-bottom: 10px;">
             <div class="col-md-4">
               <button id="permuta-btn" type="button" class="btn btn-default btn-block">Permuta</button>
             </div>
