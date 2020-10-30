@@ -1,6 +1,33 @@
-/**
+/*
  * Created by SRQ on 05/05/2016.
  */
+
+/**
+ *
+ * @param {String} comando
+ * @param {Object} data
+ * @returns {Promise<Array>}
+ */
+function sqlAPI(comando, data) {
+  return new Promise((resolve, reject) => {
+    socket.sendMessage("sql", { comando, data }, (e, d) => {
+      resolve(d.data);
+    });
+  });
+}
+/**
+ *
+ * @param {String} comando
+ * @param {Object} data
+ * @returns {Promise<Object>}
+ */
+function sendPromise(comando, data) {
+  return new Promise((resolve, reject) => {
+    socket.sendMessage(comando, data, (e, d) => {
+      resolve(d);
+    });
+  });
+}
 var _objc = {};
 
 function notificacion(titulo, texto, className, permanente) {
