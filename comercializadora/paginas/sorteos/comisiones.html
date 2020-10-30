@@ -80,8 +80,8 @@
 </script>
 <script type="text/x-jsrender" id="rd-comision-row">
   <tr>
-    <td><a href="#" usuario="{{:usuarioID || bancaID}}" class="rm_comision text-danger"><i class="fa fa-trash"></i></a></td>
-    <td>{{:nombre}}</td>
-    <td>{{:comision}}</td>
-    <td>{{:participacion}}</td>
+    <td><a href="#" usuario="{{:usuarioID || bancaID}}" operadora="{{:operadora}}" class="rm_comision text-danger"><i class="fa fa-trash"></i></a></td>
+    <td class="text-uppercase">{{:nombre}}</td>
+    <td>{{:~formatNumber(comision,0)}}</td>
+    <td>{{:~formatNumber(participacion,0)}}</td>
 </script>

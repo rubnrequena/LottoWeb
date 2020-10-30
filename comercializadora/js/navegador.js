@@ -639,23 +639,47 @@ function sorteoComisiones_nav(p, args) {
     grupo_select.change(operadora_change);
   }
   function operadora_change() {
+    reset();
     let data = formControls(comision_form);
-    let rol = data.usuario == "" || data.usuario[1] == "" ? "banca" : "grupo";
-    let usuario = "";
-    if (rol == "grupo") usuario = data.usuario[0];
-    socket.sendMessage(
-      `comisiones_${rol}`,
-      { operadora: data.operadora, usuario },
-      (e, d) => {
-        bancas_body.html(jsrender(rd_comision_row, d));
-        $(rm_comision).click(remover_comision);
-      }
-    );
+    if (data.operadora == "") comision_banca(data);
+    else {
+      grupo_select.prop("disabled", false);
+      let rol = data.usuario == "" || data.usuario[1] == "" ? "banca" : "grupo";
+      let usuario = "";
+      usuario = data.usuario[0] || data.usuario;
+      socket.sendMessage(
+        `comisiones_${rol}`,
+        { operadora: data.operadora, usuario },
+        (e, d) => {
+          d = d.map((item) => {
+            item.operadora = data.operadora;
+            return item;
+          });
+          update_comision(d);
+        }
+      );
+    }
   }
   function bancas_change(event) {
-    socket.sendMessage("usuario-grupos", { usuarioID: event.val }, (e, d) => {
-      grupo_select.html(jsrender(rd_grupo_option, [todos, ...d]));
-    });
+    reset();
+    const form = formControls(comision_form);
+    if (form.operadora == "") comision_banca(form);
+    else {
+      socket.sendMessage(
+        "sql",
+        {
+          comando: "533a1c25611f9f98d8d405f302e7ed71",
+          data: { usuarioID: event.val, operadora: form.operadora },
+        },
+        (e, d) => {
+          update_comision(d.data);
+        }
+      );
+
+      socket.sendMessage("usuario-grupos", { usuarioID: event.val }, (e, d) => {
+        grupo_select.html(jsrender(rd_grupo_option, [todos, ...d]));
+      });
+    }
   }
   function comision_nuevo(e) {
     e.preventDefault(e);
@@ -674,15 +698,41 @@ function sorteoComisiones_nav(p, args) {
   function remover_comision(e) {
     e.preventDefault(e);
     let usuario = $(e.currentTarget).attr("usuario");
-    let data = formControls(comision_form);
+    let operadora = $(e.currentTarget).attr("operadora");
     socket.sendMessage(
       "comision_producto_rm",
-      { usuario, operadora: data.operadora },
+      { usuario, operadora: operadora },
       (e, d) => {
         notificacion("COMISION RESTABLECIDA A VALORES PREDETERMINADOS");
         operadora_change();
       }
     );
+  }
+  function update_comision(data) {
+    if (!data) return;
+    data = data.sort((a, b) => {
+      a.nombre = a.nombre.toUpperCase();
+      b.nombre = b.nombre.toUpperCase();
+      if (a.nombre > b.nombre) return 1;
+      else if (a.nombre < b.nombre) return -1;
+      else return 0;
+    });
+    bancas_body.html(jsrender(rd_comision_row, data));
+    $(rm_comision).click(remover_comision);
+  }
+  function comision_banca(form) {
+    grupo_select.prop("disabled", true);
+    const usuarioID = form.usuario[0] || form.usuario;
+    socket.sendMessage(
+      "sql",
+      { comando: "f3714ca394491659136687c08635958b", data: { usuarioID } },
+      (e, d) => {
+        update_comision(d.data);
+      }
+    );
+  }
+  function reset() {
+    bancas_body.html("");
   }
   init();
 }
@@ -1062,7 +1112,7 @@ function bancasBanca_nav(p, args) {
       });
     }
 
-    //comision
+    //#region comision
     var comisiones;
     var sorteo = $("#sorteo"),
       comForm = $("#com-form"),
@@ -1121,6 +1171,7 @@ function bancasBanca_nav(p, args) {
       );
     }
     updateComision();
+    //#endregion
   } else {
     nav.nav("406");
   }
@@ -2076,6 +2127,9 @@ nav.paginas.addListener("bancas/topes2", topes2_nav);
  */
 function reporteGeneral_nav(pagina, args) {
   let params;
+  const mdComision = $("#md-comisiones");
+  const tbComision = $("#tabla-comision");
+  const rdComisionRow = $("#rd-comision-row");
   var f1 = $("#reporte-fecha1");
   var f2 = $("#reporte-fecha2");
   var reporte_search;
@@ -2123,6 +2177,7 @@ function reporteGeneral_nav(pagina, args) {
       prt = 0,
       b = 0;
     reporte_result.forEach(function (item) {
+      item.padre = params.banca;
       item.prt = item.prt ? item.prt : 0;
       item.balance = item.jg - item.pr - item.cm - item.prt;
       item.rango = f1[0].value + "|" + f2[0].value;
@@ -2161,7 +2216,19 @@ function reporteGeneral_nav(pagina, args) {
     $("#relacion-participacion").html(((prt * 100) / (j - pr - cm)).format(2));
 
     $("#reporte-body").html(jsrender($("#rd-reporte"), reporte_result));
-
+    $(".cm_grupo").click((e) => {
+      e.preventDefault(e);
+      const operadora = $(e.currentTarget).attr("operadora");
+      const usuario = $(e.currentTarget).attr("padre");
+      socket.sendMessage(
+        "sql",
+        { comando: "comision_grupos", data: { usuario, operadora } },
+        (e, d) => {
+          tbComision.html(jsrender(rdComisionRow, d.data));
+          mdComision.modal();
+        }
+      );
+    });
     //prepareDownload();
   }
 
