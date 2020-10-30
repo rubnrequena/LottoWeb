@@ -619,7 +619,7 @@ var init = function () {
       $("#print-pantalla").click(function (e) {
         e.preventDefault(e);
         formatoImpresion = 5;
-        $("#print-label").html('<i class="fa fa-file"></i> IMPRIMIR');
+        $("#print-label").html('<i class="fa fa-desktop"></i> IMPRIMIR');
         //print pdf
         cesto_realizarVenta({
           pantalla: true,
