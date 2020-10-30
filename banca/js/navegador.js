@@ -6,37 +6,36 @@ Version 17.02.09
 */
 nav.paginas.addListener(Navegador.ENTER, function (p, a) {
   // Adjust mainpanel height
-  var main = jQuery('.mainpanel');
+  var main = jQuery(".mainpanel");
   var docHeight = jQuery(document).height();
   var mh = main.height();
-  if (docHeight > mh)
-    main.height(docHeight);
+  if (docHeight > mh) main.height(docHeight);
 
-  $('.date').datepicker({
-    dateFormat: 'yy-mm-dd'
+  $(".date").datepicker({
+    dateFormat: "yy-mm-dd",
   });
 
-  $('.now').datepicker('setDate', new Date());
+  $(".now").datepicker("setDate", new Date());
 
-  $('.s2-elementos').html(jsrender($('#rd-elemento-option'), $elementos));
+  $(".s2-elementos").html(jsrender($("#rd-elemento-option"), $elementos));
 });
 nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
-  select2w($('.s2'));
+  select2w($(".s2"));
 
   // Minimize Button in Panels
-  jQuery('.panel-heading').click(function () {
-    var t = jQuery(this).find('.minimize');
-    var p = t.closest('.panel');
-    if (!t.hasClass('maximize')) {
-      p.find('.panel-body, .panel-footer').slideUp(200);
-      t.addClass('maximize');
-      t.html('&plus;');
-      p.trigger('minimized.bs.panel');
+  jQuery(".panel-heading").click(function () {
+    var t = jQuery(this).find(".minimize");
+    var p = t.closest(".panel");
+    if (!t.hasClass("maximize")) {
+      p.find(".panel-body, .panel-footer").slideUp(200);
+      t.addClass("maximize");
+      t.html("&plus;");
+      p.trigger("minimized.bs.panel");
     } else {
-      p.find('.panel-body, .panel-footer').slideDown(200);
-      t.removeClass('maximize');
-      t.html('&minus;');
-      p.trigger('maximized.bs.panel');
+      p.find(".panel-body, .panel-footer").slideDown(200);
+      t.removeClass("maximize");
+      t.html("&minus;");
+      p.trigger("maximized.bs.panel");
     }
     return false;
   });
@@ -45,13 +44,13 @@ nav.paginas.addListener(Navegador.COMPLETE, function (p, a) {
 nav.paginas.addListener("login", login_nav);
 
 function login_nav(p, arg) {
-  $('#login-form').submit(function (e) {
+  $("#login-form").submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     var f = formLock(f);
     socket.sendMessage("login", data, function (e, d) {
       formLock(f, false);
-      var recordar = $('#recordar').is(":checked");
+      var recordar = $("#recordar").is(":checked");
       if (recordar) storage.setItem("loto_bnlogin", JSON.stringify(data));
       else storage.removeItem("loto_bnlogin");
     });
@@ -65,7 +64,7 @@ function inicio_nav(p, arg) {
   var hlp = copyTo(_helpers);
   hlp.ganador = function (n) {
     var e = findBy("id", n, $elementos);
-    return e ? "#" + e.n + " " + e.d : '';
+    return e ? "#" + e.n + " " + e.d : "";
   };
 
   nav.paginas.addListener(Navegador.EXIT, function (e, p) {
@@ -73,14 +72,17 @@ function inicio_nav(p, arg) {
     if (p == "inicio") activo = false;
   });
 
-  $('#btnload').click(function () {
-    $("#inicio-sorteodia").html(jsrender($('#rd-pnlsorteo'), null));
+  $("#btnload").click(function () {
+    $("#inicio-sorteodia").html(jsrender($("#rd-pnlsorteo"), null));
     var col = false;
-    $('#prm-col').click(function (e) {
+    $("#prm-col").click(function (e) {
       col = !col;
-      $(this).find("a").html(col ? "PREMIOS</br>PAGADOS" : "PREMIOS</br>A PAGAR");
-      if (col) $('#srt_dia').html(jsrender($('#rd-sorteos-dia1-row'), rdia, hlp));
-      else $('#srt_dia').html(jsrender($('#rd-sorteos-dia2-row'), rdia, hlp));
+      $(this)
+        .find("a")
+        .html(col ? "PREMIOS</br>PAGADOS" : "PREMIOS</br>A PAGAR");
+      if (col)
+        $("#srt_dia").html(jsrender($("#rd-sorteos-dia1-row"), rdia, hlp));
+      else $("#srt_dia").html(jsrender($("#rd-sorteos-dia2-row"), rdia, hlp));
     });
 
     if ($elementos) solicitarReporte();
@@ -94,7 +96,6 @@ function inicio_nav(p, arg) {
     function solicitarReporte() {
       socket.sendMessage("inicio", null, function (e, d) {
         if (d.hasOwnProperty("code")) {
-
         } else {
           rdia = d.data;
           var t1 = 0,
@@ -110,59 +111,74 @@ function inicio_nav(p, arg) {
             sorteo: "TOTAL",
             jugado: t1,
             premio: t2,
-            pago: t3
+            pago: t3,
           });
-          $('#srt_dia').html(jsrender($('#rd-sorteos-dia2-row'), d.data, hlp));
+          $("#srt_dia").html(jsrender($("#rd-sorteos-dia2-row"), d.data, hlp));
         }
-        $('#str-dia-stamp').html((new Date(d.time).format('hh:MM TT')))
+        $("#str-dia-stamp").html(new Date(d.time).format("hh:MM TT"));
       });
     }
-  })
-  $('#bl-my').on("maximized.bs.panel", function (e) {
-    $('#info1').remove();
-  })
+  });
+  $("#bl-my").on("maximized.bs.panel", function (e) {
+    $("#info1").remove();
+  });
   if ($balance) {
-    $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
+    $("#reporte-body").html(jsrender($("#rd-reporte-us"), $balance));
     for (var i = 0; i < $balance.length; i++) {
       if ($balance[i].c == 1) {
-        $('#bl-my-total').html($balance[i].balance.format(2));
+        $("#bl-my-total").html($balance[i].balance.format(2));
         break;
       }
     }
 
-    $('.bl-pagar').click(balance_pago_click);
+    $(".bl-pagar").click(balance_pago_click);
   }
 
   function balance_pago_click(e) {
     e.preventDefault(e);
-    var pago = $(this).attr('pago');
+    var pago = $(this).attr("pago");
     var bi = findBy("balID", pago, $balance);
 
     var cp = 0;
     $balance.forEach(function (item) {
       if (item.cdo == 0) cp++;
-    })
-
-    if (cp < 3) askme("PROCESAR PAGO #" + pago, jsrender($('#rd-procesar-pago'), bi), {
-      ok: function (result) {
-        var monto = parseFloat(result.monto) * -1;
-        var data = {
-          desc: "PAGO:" + result.id + " B:" + padding(result.origen, 4) + "-" + padding(result.destino, 4) + " R:" + result.recibo + " F:" + result.fecha,
-          monto: monto,
-          resID: bi.resID
-        }
-        socket.sendMessage('balance-pago', data, function (e, d) {
-          d.balance = "--";
-          d.c = 0;
-          $balance.unshift(d);
-          $('#reporte-body').html(jsrender($('#rd-reporte-us'), $balance));
-          $('.bl-pagar').click(balance_pago_click);
-          notificacion('PAGO ENVIADO EXITOSAMENTE');
-        });
-        return true;
-      }
     });
-    else notificacion('LIMITE DE PAGOS ALCANZADO', 'Estimado usuario, ya has alcanzado el limite de pagos sin confirmar, comuniquese con su administrador.')
+
+    if (cp < 3)
+      askme("PROCESAR PAGO #" + pago, jsrender($("#rd-procesar-pago"), bi), {
+        ok: function (result) {
+          var monto = parseFloat(result.monto) * -1;
+          var data = {
+            desc:
+              "PAGO:" +
+              result.id +
+              " B:" +
+              padding(result.origen, 4) +
+              "-" +
+              padding(result.destino, 4) +
+              " R:" +
+              result.recibo +
+              " F:" +
+              result.fecha,
+            monto: monto,
+            resID: bi.resID,
+          };
+          socket.sendMessage("balance-pago", data, function (e, d) {
+            d.balance = "--";
+            d.c = 0;
+            $balance.unshift(d);
+            $("#reporte-body").html(jsrender($("#rd-reporte-us"), $balance));
+            $(".bl-pagar").click(balance_pago_click);
+            notificacion("PAGO ENVIADO EXITOSAMENTE");
+          });
+          return true;
+        },
+      });
+    else
+      notificacion(
+        "LIMITE DE PAGOS ALCANZADO",
+        "Estimado usuario, ya has alcanzado el limite de pagos sin confirmar, comuniquese con su administrador."
+      );
   }
 }
 
@@ -171,41 +187,41 @@ function sorteoMonitor_nav() {
   var data;
   listarSorteos(d.format());
 
-  $('#ord-num-num').click(function (e) {
+  $("#ord-num-num").click(function (e) {
     e.preventDefault(e);
-    $('.order-num').removeClass('btn btn-primary btn-sm');
-    $(this).addClass('btn btn-primary btn-sm');
+    $(".order-num").removeClass("btn btn-primary btn-sm");
+    $(this).addClass("btn btn-primary btn-sm");
     data.n.sort(function (a, b) {
       return a.numero - b.numero;
     });
-    $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
+    $("#numeros-body").html(jsrender($("#rd-vtnum-row"), data.n));
   });
-  $('#ord-num-jg').click(function (e) {
+  $("#ord-num-jg").click(function (e) {
     e.preventDefault(e);
-    $('.order-num').removeClass('btn btn-primary btn-sm');
-    $(this).addClass('btn btn-primary btn-sm');
+    $(".order-num").removeClass("btn btn-primary btn-sm");
+    $(this).addClass("btn btn-primary btn-sm");
     data.n.sort(function (a, b) {
       return b.jugada - a.jugada;
     });
-    $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
+    $("#numeros-body").html(jsrender($("#rd-vtnum-row"), data.n));
   });
-  $('#ord-num-gb').click(function (e) {
+  $("#ord-num-gb").click(function (e) {
     e.preventDefault(e);
-    $('.order-num').removeClass('btn btn-primary btn-sm');
-    $(this).addClass('btn btn-primary btn-sm');
+    $(".order-num").removeClass("btn btn-primary btn-sm");
+    $(this).addClass("btn btn-primary btn-sm");
     data.n.sort(function (a, b) {
       return b.glb - a.glb;
     });
-    $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
+    $("#numeros-body").html(jsrender($("#rd-vtnum-row"), data.n));
   });
 
-  $('#sfecha').on("change", function (e) {
+  $("#sfecha").on("change", function (e) {
     listarSorteos(e.target.value);
   });
-  $('#monitor-form').submit(function (e) {
+  $("#monitor-form").submit(function (e) {
     e.preventDefault(e);
-    $("#ventas-body").html('');
-    $("#numeros-body").html('');
+    $("#ventas-body").html("");
+    $("#numeros-body").html("");
     var dataForm = formControls(this);
     var f = formLock(this);
     clear();
@@ -213,7 +229,7 @@ function sorteoMonitor_nav() {
       formLock(f, false);
       data = d || [];
       var now = new Date();
-      $("#ultact").html(now.format('dd/mm/yy hh:MM:ss TT'));
+      $("#ultact").html(now.format("dd/mm/yy hh:MM:ss TT"));
       if (data.t == null) return;
 
       var jg = 0;
@@ -229,15 +245,15 @@ function sorteoMonitor_nav() {
 
       ld = data.n[0];
       data.n.forEach(function (item) {
-        item.pcj = item.jugada * 100 / jg;
+        item.pcj = (item.jugada * 100) / jg;
         if (item.jugada > ld.jugada) ld = item;
       });
       $("#numLider").html(ld.desc);
       $("#numLider-jg").html(ld.jugada.format(2));
 
-      $("#ventas-body").html(jsrender($('#rd-ventas-row'), data.t));
-      $("#numeros-body").html(jsrender($('#rd-vtnum-row'), data.n));
-    })
+      $("#ventas-body").html(jsrender($("#rd-ventas-row"), data.t));
+      $("#numeros-body").html(jsrender($("#rd-vtnum-row"), data.n));
+    });
 
     function clear() {
       $(".clearm").html("--");
@@ -247,27 +263,31 @@ function sorteoMonitor_nav() {
   });
 
   function listarSorteos(fecha) {
-    socket.sendMessage("sorteos", {
-      lista: fecha
-    }, function (e, d) {
-      var sorteo = $('#ssorteos');
-      sorteo.html(jsrender($('#rd-sorteo-option'), d));
-      sorteo.select2("val", "");
-    })
+    socket.sendMessage(
+      "sorteos",
+      {
+        lista: fecha,
+      },
+      function (e, d) {
+        var sorteo = $("#ssorteos");
+        sorteo.html(jsrender($("#rd-sorteo-option"), d));
+        sorteo.select2("val", "");
+      }
+    );
   }
 }
 nav.paginas.addListener("sorteos/monitor", sorteoMonitor_nav);
 
 function sorteoBuscar_nav(p, args) {
-  $('#sorteo-buscar').submit(function (e) {
+  $("#sorteo-buscar").submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     var f = formLock(this);
     socket.sendMessage("sorteos", data, function (e, d) {
       formLock(f, false);
-      $('#sorteos-body').html(jsrender($('#rd-sorteo-row'), d || []));
-    })
-  })
+      $("#sorteos-body").html(jsrender($("#rd-sorteo-row"), d || []));
+    });
+  });
 }
 nav.paginas.addListener("sorteos/buscar", sorteoBuscar_nav);
 
@@ -277,44 +297,53 @@ function sorteoPublicar_nav(p, args) {
     taq: function (id) {
       if (id > 0) {
         var tqq = findBy("taquillaID", id, $taquillas.filter(soloActivas));
-        return tqq ? tqq.nombre : "<span class='label label-danger'>TAQUILLA NO EXISTE</span>";
+        return tqq
+          ? tqq.nombre
+          : "<span class='label label-danger'>TAQUILLA NO EXISTE</span>";
       } else return "TODAS";
     },
     srt: function (id) {
-      return findBy("sorteoID", id, $sorteos)
-    }
+      return findBy("sorteoID", id, $sorteos);
+    },
   };
 
   if ($taquillas) {
-    $('#taquillas').html(jsrender($('#rd-taquilla-option'), $taquillas.filter(soloActivas)));
+    $("#taquillas").html(
+      jsrender($("#rd-taquilla-option"), $taquillas.filter(soloActivas))
+    );
     listSorteos();
   } else {
-    var hbtaq = $('#hb-taquilla');
-    hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...');
+    var hbtaq = $("#hb-taquilla");
+    hbtaq.html(
+      '<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...'
+    );
     socket.sendMessage("taquillas", null, function (e, d) {
       $taquillas = d;
-      $('#taquillas').html(jsrender($('#rd-taquilla-option'), d));
+      $("#taquillas").html(jsrender($("#rd-taquilla-option"), d));
       hbtaq.remove();
       listSorteos();
     });
   }
 
-
-
   function listSorteos() {
-    $('#sorteos').html(jsrender($('#rd-sorteos-option'), $sorteos));
+    $("#sorteos").html(jsrender($("#rd-sorteos-option"), $sorteos));
     socket.sendMessage("sorteos_publicos", null, sorteos_publicos);
   }
-  $('#reporte').submit(function (e) {
+  $("#reporte").submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     data.bancaID = $usuario.bancaID;
     if (!data.hasOwnProperty("taquillas")) data.taquillas = [0];
 
-    var i, j, ex = [];
+    var i,
+      j,
+      ex = [];
     for (i = data.taquillas.length - 1; i >= 0; i--) {
       for (j = tq_srt.length - 1; j >= 0; j--) {
-        if (data.taquillas[i] == tq_srt[j].taquilla && data.sorteo == tq_srt[j].sorteo) {
+        if (
+          data.taquillas[i] == tq_srt[j].taquilla &&
+          data.sorteo == tq_srt[j].sorteo
+        ) {
           ex.push(tq_srt[j].ID);
         }
       }
@@ -323,12 +352,12 @@ function sorteoPublicar_nav(p, args) {
     if (ex.length > 0) {
       notificacion("REGISTROS DUPLICADOS, POR FAVOR VERIFIQUE");
       ex.forEach(function (item, i) {
-        $('#r' + item).addClass("danger");
+        $("#r" + item).addClass("danger");
       });
     } else {
       socket.sendMessage("publicar", data, function (e, d) {
         socket.sendMessage("sorteos_publicos", null, sorteos_publicos);
-      })
+      });
     }
   });
 
@@ -338,60 +367,68 @@ function sorteoPublicar_nav(p, args) {
   }
 
   function updateView() {
-    $('#tb-sorteos').html(jsrender($('#rd-srt-row'), tq_srt, hlp));
-    var toggles = $('.toggle');
+    $("#tb-sorteos").html(jsrender($("#rd-srt-row"), tq_srt, hlp));
+    var toggles = $(".toggle");
     toggles.each(function (index) {
       var me = $(this);
       me.toggles({
         text: {
           on: "SI",
-          off: "NO"
+          off: "NO",
         },
-        on: me.data('activa'),
-        click: true
+        on: me.data("activa"),
+        click: true,
       });
     });
     toggles.on("toggle", function (e, act) {
-      var id = $(e.target).data('target');
+      var id = $(e.target).data("target");
       var taquilla = findBy("ID", id, tq_srt);
-      socket.sendMessage("pb_editar", {
-        id: taquilla.ID,
-        publico: act
-      }, function (e, d) {
-        taquilla.publico = act;
-      })
+      socket.sendMessage(
+        "pb_editar",
+        {
+          id: taquilla.ID,
+          publico: act,
+        },
+        function (e, d) {
+          taquilla.publico = act;
+        }
+      );
     });
 
-    $('.tqsrt_rem').on("click", remover_publicacion);
+    $(".tqsrt_rem").on("click", remover_publicacion);
   }
 
   function remover_publicacion(e) {
-    var _id = parseInt($(e.target).attr('sid'));
-    socket.sendMessage('pb_remover', {
-      id: _id
-    }, function (e, d) {
-      var i = findIndex("ID", _id, tq_srt);
-      tq_srt.splice(i, 1);
-      updateView();
-    });
+    var _id = parseInt($(e.target).attr("sid"));
+    socket.sendMessage(
+      "pb_remover",
+      {
+        id: _id,
+      },
+      function (e, d) {
+        var i = findIndex("ID", _id, tq_srt);
+        tq_srt.splice(i, 1);
+        updateView();
+      }
+    );
   }
 }
 nav.paginas.addListener("sorteos/publicar", sorteoPublicar_nav);
 
 function sorteoPremiar_nav(p, args) {
-  var sorteo = $('#premiar-sorteo'),
-    numeros = $('#premiar-numero'),
-    opt = $('#rd-sorteo-option'),
-    rdElm = $('#rd-elemento-option');
+  var sorteo = $("#premiar-sorteo"),
+    numeros = $("#premiar-numero"),
+    opt = $("#rd-sorteo-option"),
+    rdElm = $("#rd-elemento-option");
   var sorteos;
 
-  $('.date').on("change", function (e) {
+  $(".date").on("change", function (e) {
     listarSorteos(e.target.value);
   });
-  sorteo.on('change', function () {
+  sorteo.on("change", function () {
     listarNumeros(sorteo.val());
   });
-  $('#premiar-form').submit(function (e) {
+  $("#premiar-form").submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     var form = formLock(this);
@@ -399,30 +436,52 @@ function sorteoPremiar_nav(p, args) {
       formLock(form, false);
       if (d.hasOwnProperty("code")) {
         if (d.code == 1) {
-          notificacion('SOLICITUD ACEPTADA', 'SORTEO PREMIADO, Gracias por su tiempo...');
+          notificacion(
+            "SOLICITUD ACEPTADA",
+            "SORTEO PREMIADO, Gracias por su tiempo..."
+          );
         } else if (d.code == 0) {
-          notificacion('SOLICITUD ACEPTADA', 'Gracias por su tiempo...');
-        } else if (d.code == 4) notificacion("SORTEOS", "SORTEO #" + data.sorteoID + " YA ESTA PREMIADO", 'growl-danger');
-        else if (d.code == 5) notificacion("SOLICITUD RECHAZADA", " SORTEO #" + data.sorteoID + " SOLICITUD DUPLICADA", 'growl-danger');
-        else if (d.code == 8) notificacion("SOLICITUD RECHAZADA", " SORTEO #" + data.sorteoID + " SORTEO ABIERTO", 'growl-danger');
+          notificacion("SOLICITUD ACEPTADA", "Gracias por su tiempo...");
+        } else if (d.code == 4)
+          notificacion(
+            "SORTEOS",
+            "SORTEO #" + data.sorteoID + " YA ESTA PREMIADO",
+            "growl-danger"
+          );
+        else if (d.code == 5)
+          notificacion(
+            "SOLICITUD RECHAZADA",
+            " SORTEO #" + data.sorteoID + " SOLICITUD DUPLICADA",
+            "growl-danger"
+          );
+        else if (d.code == 8)
+          notificacion(
+            "SOLICITUD RECHAZADA",
+            " SORTEO #" + data.sorteoID + " SORTEO ABIERTO",
+            "growl-danger"
+          );
       }
-    })
+    });
   });
 
   function listarSorteos(fecha) {
-    socket.sendMessage("sorteos", {
-      fecha: fecha
-    }, function (e, d) {
-      sorteos = d || [];
-      var sorteo = $('#premiar-sorteo');
-      sorteo.html(jsrender(opt, sorteos));
-      sorteo.select2("val", "");
-    })
+    socket.sendMessage(
+      "sorteos",
+      {
+        fecha: fecha,
+      },
+      function (e, d) {
+        sorteos = d || [];
+        var sorteo = $("#premiar-sorteo");
+        sorteo.html(jsrender(opt, sorteos));
+        sorteo.select2("val", "");
+      }
+    );
   }
 
   function listarNumeros(sorteo) {
     var srt = findBy("sorteoID", sorteo, sorteos);
-    numeros.html(jsrender(rdElm, exploreBy('s', srt.sorteo, $elementos)));
+    numeros.html(jsrender(rdElm, exploreBy("s", srt.sorteo, $elementos)));
   }
   var hoy = new Date().format();
 
@@ -432,14 +491,13 @@ function sorteoPremiar_nav(p, args) {
     socket.sendMessage("elementos", null, function (e, d) {
       $elementos = d;
       listarSorteos(hoy);
-    })
+    });
   }
 }
 nav.paginas.addListener("sorteos/premiar", sorteoPremiar_nav);
 
 function bancasTaquillas_nav(p, args) {
-
-  var papelera = $('#papelera');
+  var papelera = $("#papelera");
   papelera.change(function () {
     updateView();
   });
@@ -447,39 +505,44 @@ function bancasTaquillas_nav(p, args) {
   var puedeActivar = findBy("campo", "taq_activa", $meta).valor;
   var taqActiva = findBy("campo", "taq_activa_val", $meta).valor;
 
-  var taqActivar = $('#taq_activar');
+  var taqActivar = $("#taq_activar");
   if (puedeActivar == 0) {
     taqActivar.prop("disabled", true);
     taqActivar.val(taqActiva);
   }
-  var remTaqI = $('#rem-taqinactivas');
+  var remTaqI = $("#rem-taqinactivas");
   remTaqI.click(function () {
     var i = 0;
     var taqs = $taquillas.exploreBy("activa", 0).exploreBy("papelera", 0);
     if (taqs.length == 0) return;
-    remTaqI.prop('disabled', 1);
-    var taq, cont = $('#rem-tqinc');
+    remTaqI.prop("disabled", 1);
+    var taq,
+      cont = $("#rem-tqinc");
 
-    var r = confirm('Confirma desea remover todas las taquillas inactivas?');
+    var r = confirm("Confirma desea remover todas las taquillas inactivas?");
     if (r === true) removerTaquilla(taqs[i].taquillaID);
 
     function removerTaquilla(id) {
-      cont.html(i + '/' + taqs.length);
-      socket.sendMessage('taquilla-remover', {
-        taquillaID: id,
-        papelera: 1
-      }, function (e, d) {
-        if (d.code == 1) {
-          taq = findBy("taquillaID", id, $taquillas);
-          taq.papelera = 1;
-          if (++i < taqs.length) removerTaquilla(taqs[i].taquillaID);
-          else {
-            updateView();
-            cont.html('');
-            remTaqI.prop('disabled', 0);
+      cont.html(i + "/" + taqs.length);
+      socket.sendMessage(
+        "taquilla-remover",
+        {
+          taquillaID: id,
+          papelera: 1,
+        },
+        function (e, d) {
+          if (d.code == 1) {
+            taq = findBy("taquillaID", id, $taquillas);
+            taq.papelera = 1;
+            if (++i < taqs.length) removerTaquilla(taqs[i].taquillaID);
+            else {
+              updateView();
+              cont.html("");
+              remTaqI.prop("disabled", 0);
+            }
           }
         }
-      });
+      );
     }
   });
 
@@ -497,120 +560,145 @@ function bancasTaquillas_nav(p, args) {
       }
     });
 
-    $('#taquillas-body').html(jsrender($('#rd-taquilla-row'), $taquillas.filter(function (a) {
-      return _papelera == a.papelera;
-    })));
-    var psw = $('.password');
-    psw.on('mouseover', function (e) {
-      $(e.target).html($(e.target).data('clave'));
+    $("#taquillas-body").html(
+      jsrender(
+        $("#rd-taquilla-row"),
+        $taquillas.filter(function (a) {
+          return _papelera == a.papelera;
+        })
+      )
+    );
+    var psw = $(".password");
+    psw.on("mouseover", function (e) {
+      $(e.target).html($(e.target).data("clave"));
     });
-    psw.on('mouseout', function (e) {
+    psw.on("mouseout", function (e) {
       $(e.target).html("***");
     });
 
-    var toggles = $('.activart');
+    var toggles = $(".activart");
     toggles.each(function (index) {
       var me = $(this);
       me.toggles({
         text: {
           on: "SI",
-          off: "NO"
+          off: "NO",
         },
-        on: me.data('activa'),
-        click: puedeActivar == 1
+        on: me.data("activa"),
+        click: puedeActivar == 1,
       });
     });
     toggles.on("toggle", function (e, act) {
-      var id = $(e.target).data('target');
+      var id = $(e.target).data("target");
       var taquilla = findBy("taquillaID", id, $taquillas);
-      socket.sendMessage("taquilla-activa", {
-        taquillaID: taquilla.taquillaID,
-        activa: act
-      }, function (e, d) {
-        if (d.ok) taquilla.activa = act;
-        else {
-          alert("ERROR AL MODIFICAR ESTADO ACTIVO DE TAQUILLA")
+      socket.sendMessage(
+        "taquilla-activa",
+        {
+          taquillaID: taquilla.taquillaID,
+          activa: act,
+        },
+        function (e, d) {
+          if (d.ok) taquilla.activa = act;
+          else {
+            alert("ERROR AL MODIFICAR ESTADO ACTIVO DE TAQUILLA");
+          }
         }
-      })
+      );
     });
     //fingerlock
-    var fingerlock = $('.fingerlock');
+    var fingerlock = $(".fingerlock");
     fingerlock.each(function (index) {
       var me = $(this);
       me.toggles({
         text: {
           on: "SI",
-          off: "NO"
+          off: "NO",
         },
-        on: me.data('activa'),
-        click: true
+        on: me.data("activa"),
+        click: true,
       });
     });
     fingerlock.on("toggle", function (e, act) {
-      var id = $(e.target).data('target');
+      var id = $(e.target).data("target");
       var taquilla = findBy("taquillaID", id, $taquillas);
-      socket.sendMessage("taquilla-flock", {
-        taquillaID: taquilla.taquillaID,
-        activa: act
-      }, function (e, d) {
-        if (d.ok === 1) {
-          taquilla.fingerlock = act;
-          if (act == false) {
-            alert('ADVERTENCIA: Al desactivar el sistema de proteccion por huella, SRQ no podra, ni se hara responsable por posibles fraudes por ventas no autorizadas por parte de la agencia.');
-          }
-        } else alert("ERROR AL MODIFICAR VALIDACION DE HUELLA")
-      })
+      socket.sendMessage(
+        "taquilla-flock",
+        {
+          taquillaID: taquilla.taquillaID,
+          activa: act,
+        },
+        function (e, d) {
+          if (d.ok === 1) {
+            taquilla.fingerlock = act;
+            if (act == false) {
+              alert(
+                "ADVERTENCIA: Al desactivar el sistema de proteccion por huella, SRQ no podra, ni se hara responsable por posibles fraudes por ventas no autorizadas por parte de la agencia."
+              );
+            }
+          } else alert("ERROR AL MODIFICAR VALIDACION DE HUELLA");
+        }
+      );
     });
 
     //fingerclear
-    $('.fingerclear').click(function (e) {
+    $(".fingerclear").click(function (e) {
       e.preventDefault(e);
       var b = $(e.currentTarget);
-      var id = parseInt(b.attr('val'));
-      socket.sendMessage("taquilla-fpclear", {
-        taquillaID: id
-      }, function (e, d) {
-        if (d.ok === 1) b.parent().html('<i class="fa fa-shield"></i>');
-        else alert("ERROR AL MODIFICAR HUELLA DE LA TAQUILLA")
-      })
+      var id = parseInt(b.attr("val"));
+      socket.sendMessage(
+        "taquilla-fpclear",
+        {
+          taquillaID: id,
+        },
+        function (e, d) {
+          if (d.ok === 1) b.parent().html('<i class="fa fa-shield"></i>');
+          else alert("ERROR AL MODIFICAR HUELLA DE LA TAQUILLA");
+        }
+      );
     });
 
-    $('.bn-remove-req').click(function (e) {
+    $(".bn-remove-req").click(function (e) {
       e.preventDefault(e);
       var tID = $(this).attr("taqID");
-      var r = confirm('Seguro desea eliminar esta taquilla?');
+      var r = confirm("Seguro desea eliminar esta taquilla?");
       if (r === true) {
-        socket.sendMessage("taquilla-remover", {
-          taquillaID: tID,
-          papelera: 1
-        }, function (e, d) {
-          if (d.code == 1) {
-            var taquilla = findBy("taquillaID", tID, $taquillas);
-            taquilla.papelera = 1;
-            updateView();
+        socket.sendMessage(
+          "taquilla-remover",
+          {
+            taquillaID: tID,
+            papelera: 1,
+          },
+          function (e, d) {
+            if (d.code == 1) {
+              var taquilla = findBy("taquillaID", tID, $taquillas);
+              taquilla.papelera = 1;
+              updateView();
+            }
           }
-        })
+        );
       }
       return false;
     });
-    $('.bn-remove-res').click(function (e) {
+    $(".bn-remove-res").click(function (e) {
       e.preventDefault(e);
       var tID = $(this).attr("taqID");
-      socket.sendMessage("taquilla-remover", {
-        taquillaID: tID,
-        papelera: 0
-      }, function (e, d) {
-        if (d.code == 1) {
-          var taquilla = findBy("taquillaID", tID, $taquillas);
-          taquilla.papelera = 0;
-          updateView();
+      socket.sendMessage(
+        "taquilla-remover",
+        {
+          taquillaID: tID,
+          papelera: 0,
+        },
+        function (e, d) {
+          if (d.code == 1) {
+            var taquilla = findBy("taquillaID", tID, $taquillas);
+            taquilla.papelera = 0;
+            updateView();
+          }
         }
-      });
+      );
       return false;
     });
-
   }
-
 
   if ($taquillas) updateView();
   else {
@@ -620,14 +708,18 @@ function bancasTaquillas_nav(p, args) {
     });
   }
 
-  $('#taquilla-nueva').submit(function (e) {
+  $("#taquilla-nueva").submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     var f = formLock(this);
     socket.sendMessage("taquilla-nueva", data, function (e, d) {
       if (d.hasOwnProperty("code")) {
         formLock(f, false);
-        notificacion("DISCULPE: USUARIO NO DISPONIBLE", "El usuario que esta asignando a la taquilla, ya esta en uso intente con uno distinto.", "growl-danger");
+        notificacion(
+          "DISCULPE: USUARIO NO DISPONIBLE",
+          "El usuario que esta asignando a la taquilla, ya esta en uso intente con uno distinto.",
+          "growl-danger"
+        );
       } else {
         formReset(f);
         taqActivar.val(taqActiva);
@@ -637,31 +729,35 @@ function bancasTaquillas_nav(p, args) {
         $taquillas.push(d);
         updateView();
       }
-    })
+    });
   });
 }
 nav.paginas.addListener("bancas/taquillas", bancasTaquillas_nav);
 
 function bancasTaquilla_nav(p, args) {
   var taquilla;
-  var rm = $('#remover');
+  var rm = $("#remover");
   if (args && args.length == 1) {
-    socket.sendMessage("taquilla", {
-      id: args[0]
-    }, function (e, d) {
-      if (d) {
-        taquilla = d;
-        formSet($('#taquilla-nueva'), taquilla);
-        updateComision();
-        for (var m in d.meta) {
-          $('#' + m).val(d.meta[m]);
+    socket.sendMessage(
+      "taquilla",
+      {
+        id: args[0],
+      },
+      function (e, d) {
+        if (d) {
+          taquilla = d;
+          formSet($("#taquilla-nueva"), taquilla);
+          updateComision();
+          for (var m in d.meta) {
+            $("#" + m).val(d.meta[m]);
+          }
+        } else {
+          nav.nav("406");
         }
-      } else {
-        nav.nav("406");
       }
-    });
+    );
 
-    $('#taquilla-nueva').submit(function (e) {
+    $("#taquilla-nueva").submit(function (e) {
       e.preventDefault(e);
       var data = formControls(this);
       data.taquillaID = taquilla.taquillaID;
@@ -669,14 +765,18 @@ function bancasTaquilla_nav(p, args) {
       socket.sendMessage("taquilla-editar", data, function (e, d) {
         formLock(f, false);
         if (d == 1) {
-          notificacion('TAQUILLA', 'CAMBIOS REALIZADOS EXITOSAMENTE', 'growl-success');
+          notificacion(
+            "TAQUILLA",
+            "CAMBIOS REALIZADOS EXITOSAMENTE",
+            "growl-success"
+          );
           $taquillas = null;
         } else {
           notificacion("DISCULPE: USUARIO NO DISPONIBLE", "", "growl-danger");
         }
-      })
+      });
     });
-    $('#cambiar-clave').submit(function (e) {
+    $("#cambiar-clave").submit(function (e) {
       e.preventDefault(e);
       var data = formControls(this);
       data.taquillaID = taquilla.taquillaID;
@@ -684,91 +784,116 @@ function bancasTaquilla_nav(p, args) {
       socket.sendMessage("taquilla-editar", data, function (e, d) {
         formLock(f, false);
         if (d == 1) {
-          notificacion('TAQUILLA', 'CAMBIO DE CLAVE EXITOSO', 'growl-success');
+          notificacion("TAQUILLA", "CAMBIO DE CLAVE EXITOSO", "growl-success");
           $taquillas = null;
         } else {
-          notificacion('CAMPOS INVALIDOS', "<p>CAMBIO DE CLAVE FALLIDO</p>", 'growl-danger');
+          notificacion(
+            "CAMPOS INVALIDOS",
+            "<p>CAMBIO DE CLAVE FALLIDO</p>",
+            "growl-danger"
+          );
         }
       });
     });
 
-    $('#meta').submit(function (e) {
+    $("#meta").submit(function (e) {
       e.preventDefault(e);
       var data = formControls(this);
       formLock(this);
       for (var m in data) {
         if (data[m] == taquilla.meta[m]) delete data[m];
       }
-      socket.sendMessage("taquilla-metas", {
-        taq: taquilla.taquillaID,
-        meta: data
-      }, function (e, d) {
-        formLock($('#meta'), false);
-        for (var m in d) {
-          taquilla.meta[m] = d[m];
+      socket.sendMessage(
+        "taquilla-metas",
+        {
+          taq: taquilla.taquillaID,
+          meta: data,
+        },
+        function (e, d) {
+          formLock($("#meta"), false);
+          for (var m in d) {
+            taquilla.meta[m] = d[m];
+          }
+          notificacion("DATOS GUARDADOS");
         }
-        notificacion("DATOS GUARDADOS");
-      });
+      );
     });
     rm.click(function () {
       rm.prop("disabled", true);
-      rm.html('<i class="fa fa-spinner fa-spin"></i> ESPERE, ESTO PUEDE TOMAR UN MOMENTO...');
-      socket.sendMessage("taquilla-remover", {
-        taquillaID: taquilla.taquillaID,
-        papelera: 1
-      }, function (e, d) {
-        if ($taquillas && $taquillas.length > 0) {
-          var i = findIndex("taquillaID", taquilla.taquillaID, $taquillas);
-          $taquillas[i].papelera = 1;
+      rm.html(
+        '<i class="fa fa-spinner fa-spin"></i> ESPERE, ESTO PUEDE TOMAR UN MOMENTO...'
+      );
+      socket.sendMessage(
+        "taquilla-remover",
+        {
+          taquillaID: taquilla.taquillaID,
+          papelera: 1,
+        },
+        function (e, d) {
+          if ($taquillas && $taquillas.length > 0) {
+            var i = findIndex("taquillaID", taquilla.taquillaID, $taquillas);
+            $taquillas[i].papelera = 1;
+          }
+          nav.back();
         }
-        nav.back();
-      })
+      );
     });
 
     //comision
     var comisiones;
-    var sorteo = $('#sorteo'),
-      comForm = $('#com-form'),
-      comBody = $('#com-tbody');
-    sorteo.html(jsrender($('#rd-sorteos-option'), $sorteos));
+    var sorteo = $("#sorteo"),
+      comForm = $("#com-form"),
+      comBody = $("#com-tbody");
+    sorteo.html(jsrender($("#rd-sorteos-option"), $sorteos));
     sorteo.select2("val", 0);
     sorteo.trigger("change");
     var hlp = copyTo(_helpers);
     hlp.sorteo = function (s) {
       return findBy("sorteoID", s, $sorteos).nombre;
-    }
+    };
     comForm.submit(function (e) {
       e.preventDefault(e);
       var data = formControls(this);
       data.taquillaID = taquilla.taquillaID;
       if (findBy("sorteo", data.sorteo, comisiones)) {
-        notificacion('VALOR DUPLICADO', 'El sorteo que esta intentando modificar ya existe, remueva el valor existente y vuelva a intentarlo.')
+        notificacion(
+          "VALOR DUPLICADO",
+          "El sorteo que esta intentando modificar ya existe, remueva el valor existente y vuelva a intentarlo."
+        );
         return;
       }
-      socket.sendMessage('taquilla-comision-nv', data, function (e, d) {
+      socket.sendMessage("taquilla-comision-nv", data, function (e, d) {
         updateComision(); //optimizar local
-      })
-    })
+      });
+    });
 
     function updateComision() {
-      comBody.html('Cargando...');
-      socket.sendMessage('taquilla-comisiones', {
-        taquillaID: taquilla.taquillaID
-      }, function (e, d) {
-        comisiones = d || {};
-        if (d) {
-          comBody.html(jsrender($('#rd-com-row'), d || {}, hlp));
-          $('.comDL').click(function (e) {
-            e.preventDefault(e);
-            var id = parseInt($(this).attr('comID'));
-            socket.sendMessage('taquilla-comision-dl', {
-              comID: id
-            }, function (e, d) {
-              updateComision(); //optimizar local
-            })
-          })
-        } else comBody.html('');
-      });
+      comBody.html("Cargando...");
+      socket.sendMessage(
+        "taquilla-comisiones",
+        {
+          taquillaID: taquilla.taquillaID,
+        },
+        function (e, d) {
+          comisiones = d || {};
+          if (d) {
+            comBody.html(jsrender($("#rd-com-row"), d || {}, hlp));
+            $(".comDL").click(function (e) {
+              e.preventDefault(e);
+              var id = parseInt($(this).attr("comID"));
+              socket.sendMessage(
+                "taquilla-comision-dl",
+                {
+                  comID: id,
+                },
+                function (e, d) {
+                  updateComision(); //optimizar local
+                }
+              );
+            });
+          } else comBody.html("");
+        }
+      );
     }
   }
 }
@@ -786,7 +911,7 @@ function bancasTopes_nav(p, args) {
     },
     srt: function (id) {
       if (id == 0) return "TODOS";
-      else return '<a href="#sorteo|' + id + '">#' + padding(id, 5) + '</a>';
+      else return '<a href="#sorteo|' + id + '">#' + padding(id, 5) + "</a>";
     },
     eliminar: function (compartido) {
       if (compartido == 0) return true;
@@ -794,14 +919,14 @@ function bancasTopes_nav(p, args) {
       else {
         return topeGrupo;
       }
-    }
+    },
   };
   var data;
-  var taqs = $('#taquilla'),
-    sorteos = $('#sorteos'),
-    sorteo = $('#sorteo'),
-    elemento = $('#elemento'),
-    monto = $('#monto');
+  var taqs = $("#taquilla"),
+    sorteos = $("#sorteos"),
+    sorteo = $("#sorteo"),
+    elemento = $("#elemento"),
+    monto = $("#monto");
   var sDia;
 
   function onTopes(e, d) {
@@ -811,33 +936,33 @@ function bancasTopes_nav(p, args) {
       d = d.filter(soloActivas);
       d.unshift({
         taquillaID: 0,
-        nombre: "TODAS"
+        nombre: "TODAS",
       });
 
-      taqs.html(jsrender($('#rd-taquilla-option'), d));
-      taqs.select2('val', 0);
+      taqs.html(jsrender($("#rd-taquilla-option"), d));
+      taqs.select2("val", 0);
 
       var lsorteos = $sorteos.slice();
       lsorteos.unshift({
         sorteoID: 0,
-        nombre: "TODOS"
+        nombre: "TODOS",
       });
-      sorteo.html(jsrender($('#rd-sorteos-option'), lsorteos));
+      sorteo.html(jsrender($("#rd-sorteos-option"), lsorteos));
       sorteo.on("change", function () {
         var v = sorteo.val();
         var elem = exploreBy("s", v, $elementos);
         elem.unshift({
           id: 0,
-          d: "TODOS"
+          d: "TODOS",
         });
-        elemento.html(jsrender($('#rd-elemento-option'), elem));
-        elemento.select2('val', 0);
+        elemento.html(jsrender($("#rd-elemento-option"), elem));
+        elemento.select2("val", 0);
 
         dsp_sorteos(sDia);
       });
       sorteo.trigger("change");
 
-      sfecha.trigger('change');
+      sfecha.trigger("change");
     });
 
     function soloActivas(a) {
@@ -851,23 +976,25 @@ function bancasTopes_nav(p, args) {
         item.nsorteo = findBy("sorteoID", item.sorteo, $sorteos).nombre;
       }
     });
-    $('#topes-body').html(jsrender($('#rd-topes-row'), d || [], help));
-    $('.tope-rem').click(function (e) {
+    $("#topes-body").html(jsrenderMerge($("#rd-topes-row"), d || [], help));
+    $(".tope-rem").click(function (e) {
       e.preventDefault(e);
       var b = $(this);
       var data = {};
-      data.topeID = parseInt(b.attr('topeID'));
-      data.taquillaID = parseInt(b.attr('taquillaID'));
-      data.bancaID = parseInt(b.attr('bancaID'));
+      data.topeID = parseInt(b.attr("topeID"));
+      data.taquillaID = parseInt(b.attr("taquillaID"));
+      data.bancaID = parseInt(b.attr("bancaID"));
       socket.sendMessage("tope-remover", data, function (e, t) {
-        $('#tope' + data.topeID).remove();
+        $("#tope" + data.topeID).remove();
       });
     });
   }
 
   function dsp_sorteos(d) {
     if (!d) {
-      $('#hlp-sorteos').html('<i>No hay sorteos disponibles para este dia.</i>');
+      $("#hlp-sorteos").html(
+        "<i>No hay sorteos disponibles para este dia.</i>"
+      );
       d = [];
     }
     d = d.filter(function (item) {
@@ -875,126 +1002,128 @@ function bancasTopes_nav(p, args) {
     });
     d.unshift({
       sorteoID: 0,
-      descripcion: "TODOS"
+      descripcion: "TODOS",
     });
-    sorteos.html(jsrender($('#rd-sorteo-option'), d));
-    sorteos.select2('val', 0);
-    $('#hlp-sorteos').html('');
+    sorteos.html(jsrender($("#rd-sorteo-option"), d));
+    sorteos.select2("val", 0);
+    $("#hlp-sorteos").html("");
   }
 
-  var sfecha = $('#sorteo-fecha');
+  var sfecha = $("#sorteo-fecha");
   sfecha.change(function (e) {
     var _fecha = $(e.target).val();
-    $('#hlp-sorteos').html('<i class="fa fa-spinner fa-spin"></i> Espere, recibiendo sorteos...</i>');
-    socket.sendMessage('sorteos', {
-      fecha: _fecha
-    }, function (e, d) {
-      sDia = d || [];
-      dsp_sorteos(sDia);
-    });
+    $("#hlp-sorteos").html(
+      '<i class="fa fa-spinner fa-spin"></i> Espere, recibiendo sorteos...</i>'
+    );
+    socket.sendMessage(
+      "sorteos",
+      {
+        fecha: _fecha,
+      },
+      function (e, d) {
+        sDia = d || [];
+        dsp_sorteos(sDia);
+      }
+    );
   });
 
-  $('#tope-nuevo').submit(function (e) {
+  $("#tope-nuevo").submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     if (data.taquillaID > 0 && data.compartido > 0) {
-      alert('ERROR: Al asignar un cupo a una taquilla especifica, dicho cupo debera ser INDIVIDUAL por obligacion.');
+      alert(
+        "ERROR: Al asignar un cupo a una taquilla especifica, dicho cupo debera ser INDIVIDUAL por obligacion."
+      );
       return;
     }
     var f = formLock(this);
     socket.sendMessage("tope-nuevo", data, function (e, d) {
       formLock(f, false);
-      monto.val('');
+      monto.val("");
       socket.sendMessage("topes", null, dsp_topes);
-    })
+    });
   });
 
-  var toggles = $('.toggle');
+  var toggles = $(".toggle");
   toggles.each(function (index) {
     var me = $(this);
     me.toggles({
       text: {
         on: "SI",
-        off: "NO"
+        off: "NO",
       },
       on: false,
-      click: true
+      click: true,
     });
   });
   toggles.on("toggle", function (e, act) {
-    if (act) $('.tp-avanzado').removeClass('hidden')
-    else $('.tp-avanzado').addClass('hidden')
-
+    if (act) $(".tp-avanzado").removeClass("hidden");
+    else $(".tp-avanzado").addClass("hidden");
   });
 
-  if ($elementos) {
-    data = $elementos.slice();
-    data.unshift({
-      elementoID: 0,
-      descripcion: 'TODAS'
+  socket.sendMessage("topes", null, onTopes);
+
+  var tcomp = [
+    {
+      val: 0,
+      desc: "INDIVIDUAL",
+    },
+  ];
+  var tcompe = $("#tp-compartido");
+  if (topeGrupo)
+    tcomp.push({
+      val: 1,
+      desc: "GRUPO",
     });
-    socket.sendMessage("topes", null, onTopes);
-  } else {
-    socket.sendMessage("topes", null, onTopes);
-    /* socket.sendMessage("elementos", null, function (e, d) {
-        $elementos = d;
-        socket.sendMessage("topes", null, onTopes);
-    }) */
-  }
-
-  var tcomp = [{
-    val: 0,
-    desc: "INDIVIDUAL"
-  }];
-  var tcompe = $('#tp-compartido');
-  if (topeGrupo) tcomp.push({
-    val: 1,
-    desc: "GRUPO"
-  });
-  else tcompe.prop('disabled', 'disabled');
-  tcompe.html(jsrender($('#rd-topes-comp'), tcomp));
-
+  else tcompe.prop("disabled", "disabled");
+  tcompe.html(jsrender($("#rd-topes-comp"), tcomp));
 }
 nav.paginas.addListener("bancas/topes", bancasTopes_nav);
 
 function reporteGeneral_nav(p, args) {
-  var f1 = $('#reporte-fecha1');
-  var f2 = $('#reporte-fecha2');
-  var reporte = $('#reporte');
-  var grp = $('#rp-agrupar');
+  var f1 = $("#reporte-fecha1");
+  var f2 = $("#reporte-fecha2");
+  var reporte = $("#reporte");
+  var grp = $("#rp-agrupar");
   var rpt;
   var hlp = {
     bn: function () {
       return $usuario.nombre;
-    }
+    },
   };
 
   function init() {
     reporte.submit(function (e) {
       e.preventDefault(e);
       var data = formControls(this);
-      buscarReporte(data, grp.val())
-      nav.setURL(`#reporte/general|${[f1.val(),f2.val(),grp.val()].join('|')}`)
+      buscarReporte(data, grp.val());
+      nav.setURL(
+        `#reporte/general|${[f1.val(), f2.val(), grp.val()].join("|")}`
+      );
     });
   }
   init();
 
   function buscarReporte(data, grupo) {
     formLock(reporte);
-    $('#pheader').html(jsrender($('#rd-prtaq'), data, hlp));
-    socket.sendMessage("reporte-banca", {
-      s: data,
-      g: grupo
-    }, function (e, d) {
-      formLock(reporte, false);
-      rpt = d || [];
-      updateView();
-    })
+    $("#pheader").html(jsrender($("#rd-prtaq"), data, hlp));
+    socket.sendMessage(
+      "reporte-banca",
+      {
+        s: data,
+        g: grupo,
+      },
+      function (e, d) {
+        formLock(reporte, false);
+        rpt = d || [];
+        updateView();
+      }
+    );
   }
 
   function updateView() {
-    $('.clr-val').html('--');
-    $('#reporte-body').html('');
+    $(".clr-val").html("--");
+    $("#reporte-body").html("");
 
     if (rpt.length == 0) return;
     var j = 0,
@@ -1006,7 +1135,7 @@ function reporteGeneral_nav(p, args) {
       b = 0,
       rv = false;
     rpt.forEach(function (item) {
-      item.balance = item.jugada - item.premio
+      item.balance = item.jugada - item.premio;
       b += item.balance;
       j += item.jugada;
       pr += item.premio;
@@ -1023,72 +1152,76 @@ function reporteGeneral_nav(p, args) {
       j: j.format(2),
       pr: pr.format(2),
       cm: cm.format(2),
-      cmb: cmb.format(2)
+      cmb: cmb.format(2),
     };
-    $('#mnt-jugado').html(j.format(2));
-    $('#mnt-premios').html(pr.format(2));
-    $('#mnt-pagos').html(pg.format(2));
+    $("#mnt-jugado").html(j.format(2));
+    $("#mnt-premios").html(pr.format(2));
+    $("#mnt-pagos").html(pg.format(2));
     if (rv) {
       total.b = (b - cmb - cm).format(2);
-      $('#mnt-balance').html((b - cmb - cm).format(2));
-      $('#tg-descuento').html((Math.abs(cmb + cm)).format(2));
+      $("#mnt-balance").html((b - cmb - cm).format(2));
+      $("#tg-descuento").html(Math.abs(cmb + cm).format(2));
     } else {
       total.b = (b - (cmb || cm)).format(2);
-      $('#mnt-balance').html((b - (cmb || cm)).format(2));
-      $('#tg-descuento').html((Math.abs(cmb - cm)).format(2));
+      $("#mnt-balance").html((b - (cmb || cm)).format(2));
+      $("#tg-descuento").html(Math.abs(cmb - cm).format(2));
     }
-    $('#tg-comision').html(cm.format(2));
-    $('#tg-renta').html(cmb.format(2));
+    $("#tg-comision").html(cm.format(2));
+    $("#tg-renta").html(cmb.format(2));
 
-    $('#bheader').html(jsrender($('#rd-total'), total));
+    $("#bheader").html(jsrender($("#rd-total"), total));
 
-
-    $('#reporte-body').html(jsrender($('#rd-reporte2'), rpt));
+    $("#reporte-body").html(jsrender($("#rd-reporte2"), rpt));
   }
 
   if (args && args.length > 0) {
     var a = args[0].split("-");
     var b = args[1].split("-");
-    f1.datepicker('setDate', new Date(a[0], parseInt(a[1]) - 1, a[2]));
-    f2.datepicker('setDate', new Date(b[0], parseInt(b[1]) - 1, b[2]));
+    f1.datepicker("setDate", new Date(a[0], parseInt(a[1]) - 1, a[2]));
+    f2.datepicker("setDate", new Date(b[0], parseInt(b[1]) - 1, b[2]));
     const busq = {
       inicio: args[0],
-      fin: args[1]
-    }
+      fin: args[1],
+    };
     if (args[2]) {
-      setTimeout(() => grp.select2('val', args[2]), 100);
-      buscarReporte(busq, args[2])
-    } else buscarReporte(busq, 0)
-
+      setTimeout(() => grp.select2("val", args[2]), 100);
+      buscarReporte(busq, args[2]);
+    } else buscarReporte(busq, 0);
   }
 }
 nav.paginas.addListener("reporte/general", reporteGeneral_nav);
 
 function reporteTaquilla_nav(p, args) {
-  var premios = $('#prm-select');
+  var premios = $("#prm-select");
   var rpt;
   var hlp = {
     taq: function (id) {
       return findBy("taquillaID", id, $taquillas).nombre;
-    }
+    },
   };
   if ($taquillas) {
-    $('#taquillas').html(jsrender($('#rd-taquilla-option'), $taquillas.filter(soloActivas)));
+    $("#taquillas").html(
+      jsrender($("#rd-taquilla-option"), $taquillas.filter(soloActivas))
+    );
   } else {
-    var hbtaq = $('#hb-taquilla');
-    hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...');
+    var hbtaq = $("#hb-taquilla");
+    hbtaq.html(
+      '<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...'
+    );
     socket.sendMessage("taquillas", null, function (e, d) {
       $taquillas = d;
-      $('#taquillas').html(jsrender($('#rd-taquilla-option'), d.filter(soloActivas)));
+      $("#taquillas").html(
+        jsrender($("#rd-taquilla-option"), d.filter(soloActivas))
+      );
       hbtaq.remove();
     });
   }
 
-  $('#reporte').submit(function (e) {
+  $("#reporte").submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     var f = formLock(this);
-    $('#pheader').html(jsrender($('#rd-prtaq'), data, hlp));
+    $("#pheader").html(jsrender($("#rd-prtaq"), data, hlp));
     socket.sendMessage("reporte-taquilla", data, function (e, d) {
       formLock(f, false);
       rpt = d || [];
@@ -1101,9 +1234,9 @@ function reporteTaquilla_nav(p, args) {
         return b.jugada - a.jugada;
       });
       bnc = rank[0];
-      $('#tj-banca').html(bnc.fecha);
-      $('#tj-jugada').html(bnc.jugada.format(2));
-      $('#tj-balance').html(bnc.balance.format(2));
+      $("#tj-banca").html(bnc.fecha);
+      $("#tj-jugada").html(bnc.jugada.format(2));
+      $("#tj-balance").html(bnc.balance.format(2));
 
       //top ganancia
       rank = d.slice();
@@ -1111,17 +1244,18 @@ function reporteTaquilla_nav(p, args) {
         return b.balance - a.balance;
       });
       bnc = rank[0];
-      $('#tg-banca').html(bnc.fecha);
-      $('#tg-jugada').html(bnc.jugada.format(2));
-      $('#tg-balance').html(bnc.balance.format(2));
-    })
+      $("#tg-banca").html(bnc.fecha);
+      $("#tg-jugada").html(bnc.jugada.format(2));
+      $("#tg-balance").html(bnc.balance.format(2));
+    });
   });
   premios.change(updateView);
 
   function updateView() {
     var total;
-    if (premios.val() == 0) $('#reporte-body').html(jsrender($('#rd-reporte'), rpt));
-    else $('#reporte-body').html(jsrender($('#rd-reporte2'), rpt));
+    if (premios.val() == 0)
+      $("#reporte-body").html(jsrender($("#rd-reporte"), rpt));
+    else $("#reporte-body").html(jsrender($("#rd-reporte2"), rpt));
 
     var j = 0,
       pg = 0,
@@ -1135,60 +1269,60 @@ function reporteTaquilla_nav(p, args) {
       cm += item.comision;
     });
 
-    $('#mnt-jugado').html(j.format(2));
-    $('#mnt-premios').html(pr.format(2));
-    $('#mnt-pagos').html(pg.format(2));
+    $("#mnt-jugado").html(j.format(2));
+    $("#mnt-premios").html(pr.format(2));
+    $("#mnt-pagos").html(pg.format(2));
     if (premios.val() == 0) {
-      $('#mnt-balance').html((j - pg - cm).format(2));
+      $("#mnt-balance").html((j - pg - cm).format(2));
       total = {
         j: j.format(2),
         pr: pr.format(2),
         b: (j - pg - cm).format(2),
-        cm: cm.format(2)
+        cm: cm.format(2),
       };
     } else {
-      $('#mnt-balance').html((j - pr - cm).format(2));
+      $("#mnt-balance").html((j - pr - cm).format(2));
       total = {
         j: j.format(2),
         pr: pr.format(2),
         b: (j - pr - cm).format(2),
-        cm: cm.format(2)
+        cm: cm.format(2),
       };
     }
 
-    $('#tg-descuento').html((cm).format(2));
-    $('#tg-comision').html(cm.format(2));
+    $("#tg-descuento").html(cm.format(2));
+    $("#tg-comision").html(cm.format(2));
 
-    $('#bheader').html(jsrender($('#rd-total'), total));
+    $("#bheader").html(jsrender($("#rd-total"), total));
   }
 
-  $('#btn-imprimir').click(function () {
-    if (!$('body').hasClass('leftpanel-collapsed')) {
-      $('.menutoggle').trigger("click");
+  $("#btn-imprimir").click(function () {
+    if (!$("body").hasClass("leftpanel-collapsed")) {
+      $(".menutoggle").trigger("click");
     }
     window.print();
-  })
+  });
 }
 nav.paginas.addListener("reporte/taquilla", reporteTaquilla_nav);
 
 function reporteSorteo_nav(p, args) {
-  var f1 = $('#reporte-fecha1');
-  var f2 = $('#reporte-fecha2');
-  var sorteos = $('#sorteos')
-  var reporte = $('#reporte');
+  var f1 = $("#reporte-fecha1");
+  var f2 = $("#reporte-fecha2");
+  var sorteos = $("#sorteos");
+  var reporte = $("#reporte");
 
-  var ebalance = $('#mnt-balance');
-  var eventa = $('#mnt-venta');
-  var epremios = $('#mnt-premios');
-  var ecomisionTaq = $('#mnt-comision-taq');
+  var ebalance = $("#mnt-balance");
+  var eventa = $("#mnt-venta");
+  var epremios = $("#mnt-premios");
+  var ecomisionTaq = $("#mnt-comision-taq");
 
   function init() {
-    sorteos.html(jsrender($('#rd-sorteos-option'), $sorteos))
-    reporte.submit(e => {
+    sorteos.html(jsrender($("#rd-sorteos-option"), $sorteos));
+    reporte.submit((e) => {
       e.preventDefault(e);
       formLock(reporte);
       var data = formControls(reporte);
-      nav.setUrl(`#reporte/sorteo`, f1.val(), f2.val(), sorteos.val())
+      nav.setUrl(`#reporte/sorteo`, f1.val(), f2.val(), sorteos.val());
       solicitarReporte(data);
     });
   }
@@ -1197,60 +1331,66 @@ function reporteSorteo_nav(p, args) {
   function solicitarReporte(data) {
     socket.sendMessage("reporte-sorteo", data, function (e, d) {
       formLock(reporte, false);
-      if (!d) $('#reporte-body').html('');
-      reporte_mostrar(d || [])
+      if (!d) $("#reporte-body").html("");
+      reporte_mostrar(d || []);
     });
   }
 
   function reporte_mostrar(d) {
-    var venta = 0
-    var premios = 0
-    var comisionAgencia = 0
+    var venta = 0;
+    var premios = 0;
+    var comisionAgencia = 0;
 
-    d.forEach(item => {
-      venta += item.jugada
-      premios += item.premio
-      item.comisionMonto = parseFloat(item.jugada * item.comision / 100)
-      comisionAgencia += item.comisionMonto
+    d.forEach((item) => {
+      venta += item.jugada;
+      premios += item.premio;
+      item.comisionMonto = parseFloat((item.jugada * item.comision) / 100);
+      comisionAgencia += item.comisionMonto;
     });
 
-    $('#reporte-body').html(jsrender($('#rd-reporte'), d));
-    eventa.html(venta.format())
-    epremios.html(premios.format())
-    ebalance.html((venta - premios - comisionAgencia).format())
-    ecomisionTaq.html(comisionAgencia.format())
+    $("#reporte-body").html(jsrender($("#rd-reporte"), d));
+    eventa.html(venta.format());
+    epremios.html(premios.format());
+    ebalance.html((venta - premios - comisionAgencia).format());
+    ecomisionTaq.html(comisionAgencia.format());
   }
 
   if (args && args.length > 0) {
     var a = args[0].split("-");
     var b = args[1].split("-");
-    f1.datepicker('setDate', new Date(a[0], parseInt(a[1]) - 1, a[2]));
-    f2.datepicker('setDate', new Date(b[0], parseInt(b[1]) - 1, b[2]));
+    f1.datepicker("setDate", new Date(a[0], parseInt(a[1]) - 1, a[2]));
+    f2.datepicker("setDate", new Date(b[0], parseInt(b[1]) - 1, b[2]));
     if (args[2]) {
-      var c = args[2]
+      var c = args[2];
       setTimeout(() => {
-        sorteos.select2("val", c)
+        sorteos.select2("val", c);
         reporte.trigger("submit");
       }, 100);
     }
   }
 }
-nav.paginas.addListener('reporte/sorteo', reporteSorteo_nav);
+nav.paginas.addListener("reporte/sorteo", reporteSorteo_nav);
 
 function reporteVentas_nav(p, args) {
   var hlp = {
     taq: function (id) {
       return findBy("taquillaID", id, $taquillas).nombre;
-    }
+    },
   };
   if ($taquillas) {
-    $('#taquillas').html(jsrender($('#rd-taquilla-option'), $taquillas.filter(soloActivas)));
+    $("#taquillas").html(
+      jsrender($("#rd-taquilla-option"), $taquillas.filter(soloActivas))
+    );
   } else {
-    var hbtaq = $('#hb-taquilla');
-    hbtaq.html('<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...');
+    var hbtaq = $("#hb-taquilla");
+    hbtaq.html(
+      '<i class="fa fa-spinner fa-spin" ></i> Espere, recibiendo taquillas...'
+    );
     socket.sendMessage("taquillas", null, function (e, d) {
       $taquillas = d;
-      $('#taquillas').html(jsrender($('#rd-taquilla-option'), d.filter(soloActivas)));
+      $("#taquillas").html(
+        jsrender($("#rd-taquilla-option"), d.filter(soloActivas))
+      );
       hbtaq.remove();
     });
   }
@@ -1262,45 +1402,45 @@ function reporteVentas_nav(p, args) {
     an = 0,
     anm = 0;
 
-  var rf = $('#reporte-fecha');
-  var body = $('#reporte-body');
-  var nav = $('#nav-table');
+  var rf = $("#reporte-fecha");
+  var body = $("#reporte-body");
+  var nav = $("#nav-table");
   var all = [];
 
-  $('#rpt-vpremio').click(function () {
+  $("#rpt-vpremio").click(function () {
     var d = all.filter(function (item) {
       return item.pr > 0;
     });
     updateBody(d);
-    $('.nav-btn').addClass("disabled");
+    $(".nav-btn").addClass("disabled");
   });
-  $('#rpt-vjugado').click(function () {
+  $("#rpt-vjugado").click(function () {
     updateBody(rpt[cindex]);
-    $('.nav-btn').removeClass("disabled");
+    $(".nav-btn").removeClass("disabled");
   });
-  $('#rpt-vanulado').click(function () {
+  $("#rpt-vanulado").click(function () {
     var d = all.filter(function (item) {
       return item.a > 0;
     });
     updateBody(d);
-    $('.nav-btn').addClass("disabled");
+    $(".nav-btn").addClass("disabled");
   });
-  $('#rpt-vpend').click(function () {
+  $("#rpt-vpend").click(function () {
     var d = all.filter(function (item) {
       return item.pg < item.pr;
     });
     updateBody(d);
-    $('.nav-btn').addClass("disabled");
+    $(".nav-btn").addClass("disabled");
   });
-  $('#rpt-vpagos').click(function () {
+  $("#rpt-vpagos").click(function () {
     var d = all.filter(function (item) {
       return item.pg > 0;
     });
     updateBody(d);
-    $('.nav-btn').addClass("disabled");
+    $(".nav-btn").addClass("disabled");
   });
 
-  $('#reporte').submit(function (e) {
+  $("#reporte").submit(function (e) {
     e.preventDefault(e);
     all.length = 0;
     j = 0;
@@ -1313,7 +1453,7 @@ function reporteVentas_nav(p, args) {
     var f = formLock(this);
     resetForm();
     socket.sendMessage("reporte-ventas", data, function (e, d) {
-      if (!d.last) socket.addListener('reporte-ventas', prefetch);
+      if (!d.last) socket.addListener("reporte-ventas", prefetch);
       all = all.concat(d.data);
       formLock(f, false);
       if (d.data) {
@@ -1322,13 +1462,13 @@ function reporteVentas_nav(p, args) {
         updateBody(d.data);
         nav.html('<button class="btn btn-primary nav-btn">1</button>');
       }
-    })
+    });
   });
 
   function resetForm() {
-    body.html('');
-    nav.html('');
-    $('.es-reset').html('--');
+    body.html("");
+    nav.html("");
+    $(".es-reset").html("--");
     nindex = 1;
     cindex = 0;
   }
@@ -1340,16 +1480,18 @@ function reporteVentas_nav(p, args) {
       rpt.push(d.data);
       all = all.concat(d.data);
       updateTotal(d.data);
-      nav.append('<button class="btn btn-default nav-btn">' + (++nindex) + '</button>');
+      nav.append(
+        '<button class="btn btn-default nav-btn">' + ++nindex + "</button>"
+      );
     }
     if (d.last) {
-      socket.removeListener('reporte-ventas', prefetch);
-      $('.nav-btn').click(function () {
+      socket.removeListener("reporte-ventas", prefetch);
+      $(".nav-btn").click(function () {
         var b = $(this);
         cindex = parseInt(b.html()) - 1;
-        if (b.hasClass('btn-default')) {
-          $('.nav-btn').switchClass('btn-primary', 'btn-default');
-          b.switchClass('btn-default', 'btn-primary');
+        if (b.hasClass("btn-default")) {
+          $(".nav-btn").switchClass("btn-primary", "btn-default");
+          b.switchClass("btn-default", "btn-primary");
           updateBody(rpt[cindex]);
         }
       });
@@ -1357,17 +1499,17 @@ function reporteVentas_nav(p, args) {
   }
 
   function updateBody(d) {
-    body.html(jsrender($('#rd-reporte-diario'), d));
-    $('.fticket').click(function () {
-      var md = $('#md-ticket');
-      var val = $(this).data('id');
-      md.on('shown.bs.modal', function (e) {
-        md.off('shown.bs.modal', arguments.callee);
-        var input = $('#md-pagar-ticket');
+    body.html(jsrender($("#rd-reporte-diario"), d));
+    $(".fticket").click(function () {
+      var md = $("#md-ticket");
+      var val = $(this).data("id");
+      md.on("shown.bs.modal", function (e) {
+        md.off("shown.bs.modal", arguments.callee);
+        var input = $("#md-pagar-ticket");
         input.val(parseInt(val));
         input.focus();
       });
-      md.modal('show');
+      md.modal("show");
     });
   }
 
@@ -1384,103 +1526,104 @@ function reporteVentas_nav(p, args) {
       }
     });
 
-    $('#mnt-jugado').html(j.format(2));
-    $('#mnt-premios').html(pr.format(2));
-    $('#mnt-pagos').html(pg.format(2));
-    $('#mnt-balance').html((j - pr).format(2));
+    $("#mnt-jugado").html(j.format(2));
+    $("#mnt-premios").html(pr.format(2));
+    $("#mnt-pagos").html(pg.format(2));
+    $("#mnt-balance").html((j - pr).format(2));
 
-    $('#mnt-pendiente').html((pr - pg).format(2));
-    $('#mnt-ppagos').html(((pg / pr) * 100).format(2));
-    $('#mnt-tanulados').html(an.format(2));
-    $('#mnt-anulados').html(anm.format(2));
+    $("#mnt-pendiente").html((pr - pg).format(2));
+    $("#mnt-ppagos").html(((pg / pr) * 100).format(2));
+    $("#mnt-tanulados").html(an.format(2));
+    $("#mnt-anulados").html(anm.format(2));
   }
 
-  $('#print-reporte').click(function () {
+  $("#print-reporte").click(function () {
     var now = new Date();
 
-    var _lineas = [{
+    var _lineas = [
+      {
         type: "linea",
         text: $usuario.nombre,
-        align: "center"
+        align: "center",
       },
       {
         type: "linea",
-        text: now.format('yy-mm-dd') + " " + now.format('TZ:240 h:MM:s TT'),
-        align: "center"
+        text: now.format("yy-mm-dd") + " " + now.format("TZ:240 h:MM:s TT"),
+        align: "center",
       },
       {
         type: "linea",
         text: "REPORTE TICKETS",
-        align: "center"
-      }
+        align: "center",
+      },
     ];
 
     _lineas.push({
       type: "linea",
       text: "JUGADO: " + j.format(2),
-      align: "left"
+      align: "left",
     });
     _lineas.push({
       type: "linea",
       text: "PREMIOS: " + pr.format(2),
-      align: "left"
+      align: "left",
     });
     _lineas.push({
       type: "linea",
       text: "PAGOS: " + pg.format(2),
-      align: "left"
+      align: "left",
     });
     _lineas.push({
       type: "linea",
       text: "PENDIENTE: " + (pr - pg).format(2),
-      align: "left"
+      align: "left",
     });
     _lineas.push({
       type: "linea",
       text: "BALANCE: " + (j - pg).format(2),
-      align: "left"
+      align: "left",
     });
     _lineas.push({
       type: "linea",
       text: " ",
-      align: "left"
+      align: "left",
     });
 
     print.sendMessage("print", {
       data: _lineas,
-      printer: 1
+      printer: 1,
     });
   });
 
   if (args && args.length == 1) {
     var a = args[0].split("-");
-    rf.datepicker('setDate', new Date(a[0], parseInt(a[1]) - 1, a[2]));
-    $('#reporte').trigger("submit");
+    rf.datepicker("setDate", new Date(a[0], parseInt(a[1]) - 1, a[2]));
+    $("#reporte").trigger("submit");
   }
 }
-nav.paginas.addListener('reporte/ventas', reporteVentas_nav);
+nav.paginas.addListener("reporte/ventas", reporteVentas_nav);
 
 function reporteDiario_nav(p, args) {
-  var f1 = $('#reporte-fecha1');
-  var reporte = $('#rp-diario');
-  var premios = $('#prm-select'),
-    grp = $('#rp-agrupar');
+  var f1 = $("#reporte-fecha1");
+  var reporte = $("#rp-diario");
+  var premios = $("#prm-select"),
+    grp = $("#rp-agrupar");
   var rpt;
   var hlp = {
     bn: function () {
       return $usuario.nombre;
-    }
+    },
   };
   reporte.submit(function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     var f = formLock(this);
-    $('#pheader').html(jsrender($('#rd-prtaq'), data, hlp));
+    $("#pheader").html(jsrender($("#rd-prtaq"), data, hlp));
     socket.sendMessage("reporte-diario", data, function (e, d) {
       formLock(f, false);
       rpt = d.data || [];
       updateView();
-    })
+    });
   });
   premios.change(updateView);
 
@@ -1493,7 +1636,8 @@ function reporteDiario_nav(p, args) {
       cmb = 0,
       b = 0;
     rpt.forEach(function (item) {
-      item.balance = item.jugado - (premios.val() == 0 ? item.pago : item.premio);
+      item.balance =
+        item.jugado - (premios.val() == 0 ? item.pago : item.premio);
 
       b += item.balance;
       j += item.jugado;
@@ -1506,19 +1650,19 @@ function reporteDiario_nav(p, args) {
       j: j.format(2),
       pr: pr.format(2),
       cm: cm.format(2),
-      cmb: cmb.format(2)
+      cmb: cmb.format(2),
     };
-    $('#mnt-jugado').html(j.format(2));
-    $('#mnt-premios').html(pr.format(2));
-    $('#mnt-pagos').html(pg.format(2));
+    $("#mnt-jugado").html(j.format(2));
+    $("#mnt-premios").html(pr.format(2));
+    $("#mnt-pagos").html(pg.format(2));
 
-    $('#mnt-balance').html((b - cm).format(2));
-    $('#tg-descuento').html(cm.format(2));
+    $("#mnt-balance").html((b - cm).format(2));
+    $("#tg-descuento").html(cm.format(2));
 
-    $('#tg-comision').html(cm.format(2));
-    $('#tg-renta').html(cmb.format(2));
+    $("#tg-comision").html(cm.format(2));
+    $("#tg-renta").html(cmb.format(2));
 
-    $('#bheader').html(jsrender($('#rd-total'), total));
+    $("#bheader").html(jsrender($("#rd-total"), total));
 
     var rank, bnc;
     //top jugado
@@ -1527,9 +1671,9 @@ function reporteDiario_nav(p, args) {
       return b.jugado - a.jugado;
     });
     bnc = rank[0];
-    $('#tj-banca').html(bnc.desc);
-    $('#tj-jugada').html(bnc.jugado.format(2));
-    $('#tj-balance').html(bnc.balance.format(2));
+    $("#tj-banca").html(bnc.desc);
+    $("#tj-jugada").html(bnc.jugado.format(2));
+    $("#tj-balance").html(bnc.balance.format(2));
 
     //top ganancia
     rank = rpt.slice();
@@ -1537,134 +1681,151 @@ function reporteDiario_nav(p, args) {
       return b.balance - a.balance;
     });
     bnc = rank[0];
-    $('#tg-banca').html(bnc.desc);
-    $('#tg-jugada').html(bnc.jugado.format(2));
-    $('#tg-balance').html(bnc.balance.format(2));
+    $("#tg-banca").html(bnc.desc);
+    $("#tg-jugada").html(bnc.jugado.format(2));
+    $("#tg-balance").html(bnc.balance.format(2));
 
-    if (premios.val() == 0) $('#reporte-body').html(jsrender($('#rd-reporte'), rpt));
-    else $('#reporte-body').html(jsrender($('#rd-reporte2'), rpt));
+    if (premios.val() == 0)
+      $("#reporte-body").html(jsrender($("#rd-reporte"), rpt));
+    else $("#reporte-body").html(jsrender($("#rd-reporte2"), rpt));
   }
 
   if (args && args.length > 0) {
     var a = args[0].split("-");
-    f1.datepicker('setDate', new Date(a[0], parseInt(a[1]) - 1, a[2]));
+    f1.datepicker("setDate", new Date(a[0], parseInt(a[1]) - 1, a[2]));
     reporte.trigger("submit");
   }
 }
-nav.paginas.addListener('reporte/diario', reporteDiario_nav);
+nav.paginas.addListener("reporte/diario", reporteDiario_nav);
 
 function conexiones_nav(p, args) {
-  var tb = $('#con-table');
+  var tb = $("#con-table");
   setTimeout(updateView, 3000);
-  $('#con-off').click(function () {
+  $("#con-off").click(function () {
     socket.sendMessage("taquilla-panic", null, updateView);
   });
-  $('#con-view').click(updateView);
+  $("#con-view").click(updateView);
 
   function updateView() {
-    tb.html('<tr><td colspan="2"><i class="fa fa-spinner fa-spin"></i> Espere, cargando...</td></tr>');
-    socket.sendMessage('conexiones', null, function (e, d) {
-      tb.html(jsrender($('#rd-conexiones'), d));
+    tb.html(
+      '<tr><td colspan="2"><i class="fa fa-spinner fa-spin"></i> Espere, cargando...</td></tr>'
+    );
+    socket.sendMessage("conexiones", null, function (e, d) {
+      tb.html(jsrender($("#rd-conexiones"), d));
     });
   }
 }
-nav.paginas.addListener('conexiones', conexiones_nav);
-
+nav.paginas.addListener("conexiones", conexiones_nav);
 
 function sms_nav(p, args) {
   socket.sendMessage("sms-bandeja", null, function (e, d) {
     d = d || [];
-    $('#sms-bandeja').html(jsrender($('#rd-sms'), d));
+    $("#sms-bandeja").html(jsrender($("#rd-sms"), d));
 
     //Check
-    $('.ckbox input').click(function () {
+    $(".ckbox input").click(function () {
       var t = jQuery(this);
-      if (t.is(':checked')) {
-        t.closest('tr').addClass('selected');
+      if (t.is(":checked")) {
+        t.closest("tr").addClass("selected");
       } else {
-        t.closest('tr').removeClass('selected');
+        t.closest("tr").removeClass("selected");
       }
     });
 
     // Star
-    $('.star').click(function () {
-      if (!jQuery(this).hasClass('star-checked')) {
-        jQuery(this).addClass('star-checked');
-      } else
-        jQuery(this).removeClass('star-checked');
+    $(".star").click(function () {
+      if (!jQuery(this).hasClass("star-checked")) {
+        jQuery(this).addClass("star-checked");
+      } else jQuery(this).removeClass("star-checked");
       return false;
     });
 
     // Read mail
-    $('.table-email .media').click(function () {
+    $(".table-email .media").click(function () {
       var ruta = $(this).attr("ruta");
       location.href = "#sms/m|" + ruta;
     });
-  })
+  });
 }
-nav.paginas.addListener('sms', sms_nav);
+nav.paginas.addListener("sms", sms_nav);
 
 function smsNuevo_nav(p, args) {
-  select2w($('.s2dest'), {
-    placeholder: "Dejar en blanco para enviar mensaje a su banquero/administrador"
+  select2w($(".s2dest"), {
+    placeholder:
+      "Dejar en blanco para enviar mensaje a su banquero/administrador",
   });
-  $('#wys').html('<textarea id="wysiwyg" placeholder="Tu mensaje aqui..." class="form-control" rows="20" name="contenido"></textarea>');
-  jQuery('#wysiwyg').wysihtml5();
+  $("#wys").html(
+    '<textarea id="wysiwyg" placeholder="Tu mensaje aqui..." class="form-control" rows="20" name="contenido"></textarea>'
+  );
+  jQuery("#wysiwyg").wysihtml5();
 
-  var send = $('#sms-send');
-  var destino = $('#destino');
+  var send = $("#sms-send");
+  var destino = $("#destino");
 
-  socket.sendMessage("taquillas-act", {
-    activa: 1
-  }, function (e, d) {
-    d = d || [];
-    d.push();
-    destino.html(jsrender($('#rd-taquilla-option'), d || []));
-  });
+  socket.sendMessage(
+    "taquillas-act",
+    {
+      activa: 1,
+    },
+    function (e, d) {
+      d = d || [];
+      d.push();
+      destino.html(jsrender($("#rd-taquilla-option"), d || []));
+    }
+  );
 
-  $('#sms-form').submit(function (e) {
+  $("#sms-form").submit(function (e) {
     e.preventDefault(e);
 
     var data = formControls(this);
     data.hilo = 0;
-    socket.sendMessage('sms-nuevo', data, function (e, d) {
+    socket.sendMessage("sms-nuevo", data, function (e, d) {
       console.log(e, d);
-    })
+    });
   });
 }
-nav.paginas.addListener('sms/nuevo', smsNuevo_nav);
+nav.paginas.addListener("sms/nuevo", smsNuevo_nav);
 
 function smsLeer_nav(p, args) {
   if (args && args.length > 0) {
     var sms;
     var rutaID = args[0];
-    socket.sendMessage("sms-leer", {
-      rutaID: rutaID
-    }, function (e, d) {
-      sms = d;
-      $('#read-sms').html(jsrender($('#rd-sms-body'), sms));
-      jQuery('#wysiwyg').wysihtml5({
-        color: true
-      });
+    socket.sendMessage(
+      "sms-leer",
+      {
+        rutaID: rutaID,
+      },
+      function (e, d) {
+        sms = d;
+        $("#read-sms").html(jsrender($("#rd-sms-body"), sms));
+        jQuery("#wysiwyg").wysihtml5({
+          color: true,
+        });
 
-      socket.sendMessage("sms-respuestas", {
-        hilo: sms.smsID
-      }, function (e, d) {
-        $('#sms-respuestas').html(jsrender($('#rd-sms-respuesta'), d || []));
-      });
+        socket.sendMessage(
+          "sms-respuestas",
+          {
+            hilo: sms.smsID,
+          },
+          function (e, d) {
+            $("#sms-respuestas").html(
+              jsrender($("#rd-sms-respuesta"), d || [])
+            );
+          }
+        );
+      }
+    );
 
-    });
-
-    $('#sms-form').submit(function (e) {
+    $("#sms-form").submit(function (e) {
       e.preventDefault(e);
       var data = formControls(this);
       data.hilo = sms.smsID;
       data.titulo = "RE: " + sms.titulo;
       data.destino = [sms.destino];
-      socket.sendMessage('sms-nuevo', data, function (e, d) {
+      socket.sendMessage("sms-nuevo", data, function (e, d) {
         console.log(e, d);
-      })
-    })
+      });
+    });
   }
 }
-nav.paginas.addListener('sms/m', smsLeer_nav);
+nav.paginas.addListener("sms/m", smsLeer_nav);

@@ -37,7 +37,7 @@
             <div class="form-group tp-avanzado hidden">
                 <label class="col-sm-3 control-label">Numero</label>
                 <div class="col-sm-6">
-                    <select class="s2 form-control" name="elemento" id="elemento"></select>
+                    <input type="number" class="form-control" name="elemento" id="elemento"></input>
                 </div>
             </div>
             <div class="form-group">
@@ -52,7 +52,9 @@
                     <select class="s2 form-control" name="compartido" id="tp-compartido">
 
                     </select>
-                    <span class="text-danger"><i class="fa fa-warning"></i> IMPORTANTE: Al asignar el tope como compartido, el campo taquillas deber&aacute; ser para <strong>TODAS</strong>, de lo contrario el tope no funcionara como se espera.</span>
+                    <span class="text-danger"><i class="fa fa-warning"></i> IMPORTANTE: Al asignar el tope como
+                        compartido, el campo taquillas deber&aacute; ser para <strong>TODAS</strong>, de lo contrario el
+                        tope no funcionara como se espera.</span>
                 </div>
             </div>
             <div class="form-group">
@@ -89,8 +91,8 @@
         {{if sorteoID>0}} <td>#{{:sorteoID}} {{:descripcion}}</td>
         {{else sorteo>0}} <td>{{:nsorteo}}</td>
         {{else}} <td>TODOS</td> {{/if}}
-        <td>{{:~elm(elemento)}}</td>
-        <td>{{:monto}}</td>
+        <td>{{:elemento}}</td>
+        <td>{{:~formatNumber(monto)}}</td>
         {{if compartido==1}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> GRUPO</td>
         {{else compartido==2}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> BANCA</td>
         {{else}}
