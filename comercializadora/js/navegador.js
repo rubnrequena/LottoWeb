@@ -376,8 +376,7 @@ function sorteoBuscar_nav(p, args) {
 nav.paginas.addListener("sorteos/buscar", sorteoBuscar_nav);
 
 function sorteoPublicar_nav(p, args) {
-  var tq_srt, taquillas, grupos;
-  var hlp = {
+  const hlp = {
     taq: function (id) {
       if (id > 0) {
         var tq = findBy("taquillaID", id, taquillas);
@@ -388,36 +387,48 @@ function sorteoPublicar_nav(p, args) {
       return findBy("sorteoID", id, $sorteos);
     },
   };
-  var bancas = $("#bancas"),
-    taqs = $("#taquillas"),
-    sorteos = $("#sorteos"),
-    htaq = $("#hb-taquilla"),
-    grupos_s2 = $("#grupos"),
-    rdGrupo_op = $("#rd-grupo-option");
+  const bancas = $("#bancas"),
+    rdBanca = $("#rd-usuario-option");
 
-  bancas.html(jsrender($("#rd-usuario-option"), $bancas));
-  bancas.select2("val", 0);
-  bancas.on("change", bancas_onChange);
-  grupos_s2.on("change", grupos_onChange);
+  const grupos = $("#grupos"),
+    rdGrupo = $("#rd-grupo-option");
+  const taquillas = $("#taquillas"),
+    rdTaquilla = $("#rd-taquilla-option");
 
-  sorteos.html(jsrender($("#rd-sorteos-option"), $sorteos));
+  const operadora = $("#sorteos"),
+    rdOperadora = $("#rd-sorteos-option");
+  const sorteosTabla = $("#tb-sorteos"),
+    rdTablaRow = $("#rd-srt-row");
+  let sorteosPublicados = [];
 
-  $("#reporte").submit(function (e) {
-    e.preventDefault(e);
+  const form = $("#publicar-form");
+  function init() {
+    bancas.html(
+      jsrender(rdBanca, [{ nombre: "SELECCIONE BANCA" }, ...$bancas])
+    );
+    bancas.select2("val", 0);
+    bancas.on("change", bancas_change);
+    grupos.on("change", grupos_change);
+    operadora.html(jsrender(rdOperadora, $sorteos));
+    form.submit(publicarSorteo);
+  }
+  init();
+  function publicarSorteo(e) {
+    e.preventDefault();
     var data = formControls(this);
-    data.bancaID = grupos_s2.val();
+    data.bancaID = grupos.val();
     if (!data.hasOwnProperty("taquillas")) data.taquillas = [0];
 
     var i,
       j,
       ex = [];
     for (i = data.taquillas.length - 1; i >= 0; i--) {
-      for (j = tq_srt.length - 1; j >= 0; j--) {
+      for (j = sorteosPublicados.length - 1; j >= 0; j--) {
         if (
-          data.taquillas[i] == tq_srt[j].taquilla &&
-          data.sorteo == tq_srt[j].sorteo
+          data.taquillas[i] == sorteosPublicados[j].taquilla &&
+          data.sorteo == sorteosPublicados[j].sorteo
         ) {
-          ex.push(tq_srt[j].ID);
+          ex.push(sorteosPublicados[j].ID);
         }
       }
     }
@@ -428,25 +439,22 @@ function sorteoPublicar_nav(p, args) {
         $("#r" + item).addClass("danger");
       });
     } else {
-      socket.sendMessage("publicar", data, function (e, d) {
-        socket.sendMessage(
-          "sorteos-publicos",
-          {
-            bancaID: grupos_s2.val(),
-          },
-          sorteos_publicos
-        );
-      });
+      socket.sendMessage("publicar", data, leerSorteosPublicos);
     }
-  });
-
-  function sorteos_publicos(e, d) {
-    tq_srt = d || [];
-    updateView();
   }
-
-  function updateView() {
-    $("#tb-sorteos").html(jsrender($("#rd-srt-row"), tq_srt, hlp));
+  function leerSorteosPublicos() {
+    socket.sendMessage(
+      "sorteos-publicos",
+      { bancaID: grupos.val() },
+      updateView
+    );
+  }
+  function updateView(e, data) {
+    data = data || [];
+    sorteosPublicados = data;
+    sorteosTabla.html(jsrender(rdTablaRow, data, hlp));
+    if (data.lenth == 0) return;
+    //#region toggles
     var toggles = $(".toggle");
     toggles.each(function (index) {
       var me = $(this);
@@ -461,78 +469,63 @@ function sorteoPublicar_nav(p, args) {
     });
     toggles.on("toggle", function (e, act) {
       var id = $(e.target).data("target");
-      var taquilla = findBy("ID", id, tq_srt);
+      var taquilla = findBy("ID", id, data);
       socket.sendMessage(
         "pb_editar",
         {
           id: taquilla.ID,
           publico: act,
-          bancaID: grupos_s2.val(),
+          bancaID: grupos.val(),
         },
         function (e, d) {
           taquilla.publico = act;
         }
       );
     });
-
+    //#endregion
     $(".tqsrt_rem").on("click", remover_publicacion);
   }
-
+  function clearView() {
+    sorteosTabla.html("");
+  }
   function remover_publicacion(e) {
     var _id = parseInt($(e.target).attr("sid"));
     socket.sendMessage(
       "pb_remover",
       {
         id: _id,
-        bancaID: bancas.val(),
+        bancaID: grupos.val(),
       },
-      function (e, d) {
-        var i = findIndex("ID", _id, tq_srt);
-        tq_srt.splice(i, 1);
-        updateView();
-      }
+      leerSorteosPublicos
     );
   }
-
-  function updateTaquillas(e, d) {
-    htaq.html("");
-    taquillas = d || [];
-    taquillas.unshift({
-      taquillaID: 0,
-      nombre: "TODAS",
-    });
-    taqs.html(jsrender($("#rd-taquilla-option"), taquillas));
-
-    socket.sendMessage(
-      "sorteos-publicos",
-      {
-        bancaID: grupos_s2.val(),
-      },
-      sorteos_publicos
-    );
-  }
-  function updateGrupos(e, d) {
-    grupos = d || [];
-    grupos_s2.html(jsrender(rdGrupo_op, grupos));
-    grupos_s2.select2("val", null);
-  }
-
-  function bancas_onChange() {
-    htaq.html(
-      '<i class="fa fa-spinner fa-spin"></i> Espere, recibiendo taquillas..'
-    );
+  function bancas_change() {
+    clearView();
     socket.sendMessage(
       "usuario-grupos",
       { usuarioID: bancas.val() },
       updateGrupos
     );
   }
-  function grupos_onChange() {
-    socket.sendMessage(
-      "taquillas",
-      { banca: grupos_s2.val() },
-      updateTaquillas
-    );
+  function grupos_change() {
+    clearView();
+    socket.sendMessage("taquillas", { banca: grupos.val() }, (e, d) => {
+      updateTaquillas(e, d);
+      leerSorteosPublicos();
+    });
+  }
+  function updateGrupos(e, d) {
+    grupos.html(jsrender(rdGrupo, d || []));
+    grupos.select2("val", null);
+  }
+  function updateTaquillas(e, data) {
+    data = data || [];
+    data.unshift({
+      taquillaID: 0,
+      nombre: "TODAS",
+    });
+    taquillas.html(jsrender(rdTaquilla, data));
+    taquillas.select2("val", 0);
   }
 }
 nav.paginas.addListener("sorteos/publicar", sorteoPublicar_nav);
