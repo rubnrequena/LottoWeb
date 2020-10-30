@@ -175,7 +175,7 @@
         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
         <h4 class="modal-title">Repetir Jugada</h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="md-repetir-body">
         <div class="row">
           <div class="col-sm-3"><strong>NUMERO</strong></div>
           <div class="col-sm-6"><strong>SORTEO</strong></div>
@@ -422,21 +422,30 @@
 </script>
 <script type="text/x-jsrender" id="rd-md-sorteos">
   <div class="row">
-      <h3>
+     <div class="col-lg-3">
+      <h4>
         <label>
           <input sorteo="{{:sorteo.sorteo}}" class="srt-hub-padre srt-hub" type="checkbox">
           {{:sorteo.descripcion}}
         </label>
-      </h3>
+      </h4>
+     </div>
+     <div class="col-lg-9">
+         {{for sorteos}}
+           <div class="col-xs-4 col-lg-2">
+             <label>
+                 <input sorteo="{{:sorteoID}}" class="sorteo-hub-item srt-hub-{{:sorteo}}" type="checkbox">
+                 {{:~horario(descripcion)}}
+             </label>
+           </div>
+         {{/for}}
+     </div>
   </div>
-  <div class="row">
-      {{for sorteos}}
-        <div class="col-xs-4 col-lg-2">
-          <label>
-              <input sorteo="{{:sorteoID}}" class="sorteo-hub-item srt-hub-{{:sorteo}}" type="checkbox">
-              {{:~horario(descripcion)}}
-          </label>
-        </div>
-      {{/for}}
-  </div>
+  <hr/>
 </script>
+<style>
+  #md-repetir-body {
+    max-height: 450px;
+    overflow-y: auto;
+  }
+</style>
