@@ -12,12 +12,6 @@
   <div class="panel-body">
     <form class="form-horizontal" id="comision-form">
       <div class="form-group">
-        <label class="col-sm-3 control-label">Operadora</label>
-        <div class="col-sm-6">
-          <select class="s2 form-control" name="operadora" id="operadoras" required />
-        </div>
-      </div>
-      <div class="form-group">
         <label class="col-sm-3 control-label">Banca</label>
         <div class="col-sm-6">
           <select class="s2 form-control" name="usuario" id="bancas" required />
@@ -26,7 +20,13 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Grupo</label>
         <div class="col-sm-6">
-          <select class="s2 form-control" name="usuario" id="grupos" />
+          <select class="s2 form-control" name="grupo" id="grupos" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Operadora</label>
+        <div class="col-sm-6">
+          <select class="s2 form-control" multiple name="operadora" id="operadoras" required />
         </div>
       </div>
       <div class="form-group">
@@ -65,7 +65,7 @@
         <thead>
           <tr>
             <th></th>
-            <th>USUARIO</th>
+            <th>OPERADORA</th>
             <th>COMISION</th>
             <th>PARTICIPACION</th>
           </tr>
@@ -80,7 +80,7 @@
 </script>
 <script type="text/x-jsrender" id="rd-comision-row">
   <tr>
-    <td><a href="#" usuario="{{:usuarioID || bancaID}}" operadora="{{:operadora}}" class="rm_comision text-danger"><i class="fa fa-trash"></i></a></td>
+    <td><a href="#" usuario="{{:usuario}}" operadora="{{:operadora}}" class="rm_comision text-danger"><i class="fa fa-trash"></i></a></td>
     <td class="text-uppercase">{{:nombre}}</td>
     <td>{{:~formatNumber(comision,0)}}</td>
     <td>{{:~formatNumber(participacion,0)}}</td>

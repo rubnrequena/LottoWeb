@@ -379,7 +379,7 @@ function sorteoPublicar_nav(p, args) {
   const hlp = {
     taq: function (id) {
       if (id > 0) {
-        var tq = findBy("taquillaID", id, taquillas);
+        var tq = findBy("taquillaID", id, taquillasLista);
         return tq ? tq.nombre : "ERROR: TAQ NO ENCONTRADA, ID:" + id;
       } else return "TODAS";
     },
@@ -394,6 +394,7 @@ function sorteoPublicar_nav(p, args) {
     rdGrupo = $("#rd-grupo-option");
   const taquillas = $("#taquillas"),
     rdTaquilla = $("#rd-taquilla-option");
+  let taquillasLista = [];
 
   const operadora = $("#sorteos"),
     rdOperadora = $("#rd-sorteos-option");
@@ -519,12 +520,12 @@ function sorteoPublicar_nav(p, args) {
     grupos.select2("val", null);
   }
   function updateTaquillas(e, data) {
-    data = data || [];
-    data.unshift({
+    taquillasLista = data || [];
+    taquillasLista.unshift({
       taquillaID: 0,
       nombre: "TODAS",
     });
-    taquillas.html(jsrender(rdTaquilla, data));
+    taquillas.html(jsrender(rdTaquilla, taquillasLista));
     taquillas.select2("val", 0);
   }
 }
@@ -623,70 +624,54 @@ function sorteoComisiones_nav(p, args) {
 
   function init() {
     operadoras_select.html(jsrender(rd_operadora_option, [todos, ...$sorteos]));
-    operadoras_select.change(operadora_change);
+    //operadoras_select.change(operadora_change);
     bancas_select.html(jsrender(rd_banca_option, [todos, ...$bancas]));
     bancas_select.select2("val", "");
     bancas_select.change(bancas_change);
     comision_form.submit(comision_nuevo);
+    grupo_select.change(grupo_change);
+  }
+  async function grupo_change() {
+    const grupo = grupo_select.val();
+    if (grupo == 0) comision_banca();
+    else {
+      let comisiones = await sqlAPI("comisiones_grupo", { grupoID: grupo });
+      const pred = await sqlAPI("comisiones_grupo_pred", { grupoID: grupo });
+      const { comision, participacion } = pred[0];
+      if (!comisiones)
+        comisiones = [{ comision, participacion, nombre: "OTROS" }];
+      else comisiones.push({ comision, participacion, nombre: "OTROS" });
+      update_comision(comisiones);
+    }
+  }
+  async function bancas_change(event) {
+    reset();
+    comision_banca();
+    const _grupos = await sqlAPI("lista_grupos_min", { usuarioID: event.val });
+    grupo_select.html(jsrender(rd_grupo_option, [todos, ..._grupos]));
     grupo_select.select2("val", "");
-    grupo_select.change(operadora_change);
   }
-  function operadora_change() {
-    reset();
-    let data = formControls(comision_form);
-    if (data.operadora == "") comision_banca(data);
-    else {
-      grupo_select.prop("disabled", false);
-      let rol = data.usuario == "" || data.usuario[1] == "" ? "banca" : "grupo";
-      let usuario = "";
-      usuario = data.usuario[0] || data.usuario;
-      socket.sendMessage(
-        `comisiones_${rol}`,
-        { operadora: data.operadora, usuario },
-        (e, d) => {
-          d = d.map((item) => {
-            item.operadora = data.operadora;
-            return item;
-          });
-          update_comision(d);
-        }
-      );
-    }
-  }
-  function bancas_change(event) {
-    reset();
-    const form = formControls(comision_form);
-    if (form.operadora == "") comision_banca(form);
-    else {
-      socket.sendMessage(
-        "sql",
-        {
-          comando: "533a1c25611f9f98d8d405f302e7ed71",
-          data: { usuarioID: event.val, operadora: form.operadora },
-        },
-        (e, d) => {
-          update_comision(d.data);
-        }
-      );
-
-      socket.sendMessage("usuario-grupos", { usuarioID: event.val }, (e, d) => {
-        grupo_select.html(jsrender(rd_grupo_option, [todos, ...d]));
-      });
-    }
-  }
-  function comision_nuevo(e) {
+  async function comision_nuevo(e) {
     e.preventDefault(e);
     let data = formControls(this);
-    data.rol = data.usuario[1] == "" ? 3 : 2;
-    data.usuario = data.usuario
-      .reverse()
-      .find((item) => isNaN(parseInt(item)) == false);
+    const payloads = [];
+    for (let i = 0; i < data.operadora.length; i++) {
+      const operadora = data.operadora[i];
+      payloads.push({
+        usuario: data.grupo == "" ? data.usuario : data.grupo,
+        rol: data.grupo == "" ? 3 : 2,
+        operadora: operadora,
+        tipo: data.tipo,
+        valor: data.valor,
+      });
+    }
     formLock(this);
-    socket.sendMessage("comision_producto_nv", data, (e, d) => {
-      formLock(comision_form, false);
-      if (d.error) return notificacion("Error al registrar comision", d.error);
-      operadora_change();
-    });
+    for (let i = 0; i < payloads.length; i++) {
+      const payload = payloads[i];
+      await sendPromise("comision_producto_nv", payload);
+    }
+    formLock(this, false);
+    grupo_change();
   }
   function remover_comision(e) {
     e.preventDefault(e);
@@ -697,32 +682,24 @@ function sorteoComisiones_nav(p, args) {
       { usuario, operadora: operadora },
       (e, d) => {
         notificacion("COMISION RESTABLECIDA A VALORES PREDETERMINADOS");
-        operadora_change();
+        grupo_change();
       }
     );
   }
   function update_comision(data) {
     if (!data) return;
-    data = data.sort((a, b) => {
-      a.nombre = a.nombre.toUpperCase();
-      b.nombre = b.nombre.toUpperCase();
-      if (a.nombre > b.nombre) return 1;
-      else if (a.nombre < b.nombre) return -1;
-      else return 0;
-    });
+    const form = formControls(comision_form);
+    const usuario = form.grupo == "" ? form.usuario : form.grupo;
+    data.forEach((item) => (item.usuario = usuario));
     bancas_body.html(jsrender(rd_comision_row, data));
     $(rm_comision).click(remover_comision);
   }
-  function comision_banca(form) {
-    grupo_select.prop("disabled", true);
-    const usuarioID = form.usuario[0] || form.usuario;
-    socket.sendMessage(
-      "sql",
-      { comando: "f3714ca394491659136687c08635958b", data: { usuarioID } },
-      (e, d) => {
-        update_comision(d.data);
-      }
-    );
+  async function comision_banca() {
+    const usuarioID = bancas_select.val();
+    const comisiones = await sqlAPI("f3714ca394491659136687c08635958b", {
+      usuarioID,
+    });
+    update_comision(comisiones);
   }
   function reset() {
     bancas_body.html("");
@@ -1284,7 +1261,6 @@ function bancasGrupo_nav(p, args) {
   if (args && args.length == 1) {
     var editar = $("#banca-nueva");
     var clave = $("#banca-psw");
-    var renta = $("#banca-renta");
     var banca, taquillas;
     var multiplo = 0;
 
@@ -1298,6 +1274,7 @@ function bancasGrupo_nav(p, args) {
       var data = formControls(this);
       data.bancaID = banca.bancaID;
       data.comision = data.comision / 100;
+      data.participacion = data.participacion / 100;
       if ($("#alquiler").is(":checked")) {
         data.comision = data.comision * -1;
       }
@@ -1313,18 +1290,7 @@ function bancasGrupo_nav(p, args) {
         } else notificacion("Error al realizar cambios", "", "growl-danger");
       });
     });
-    renta.submit(function (e) {
-      e.preventDefault(e);
-      var data = formControls(this);
-      data.bancaID = banca.bancaID;
-      data.renta = data.renta / 100;
-      formLock(this);
-      socket.sendMessage("banca-editar", data, function (e, d) {
-        formLock(renta[0], false);
-        if (d == 1) notificacion("Cambios guardados con exito");
-        else notificacion("Error al realizar cambios", "", "growl-danger");
-      });
-    });
+
     clave.submit(function (e) {
       e.preventDefault(e);
       formLock(this);
@@ -1352,10 +1318,12 @@ function bancasGrupo_nav(p, args) {
         banca = d;
         formSet(editar, banca, function (val, field) {
           if (field == "comision") return Math.abs(val * 100);
+          if (field == "participacion") return Math.abs(val * 100);
           if (val === false) return 0;
           else if (val === true) return 1;
           else return val;
         });
+
         if (banca.comision < 0) $("#alquiler").prop("checked", 1);
         if (banca.comision == 0) $("#radioNormal").prop("checked", true);
         else if (banca.comision > 0) $("#radioRecogedor").trigger("click");
