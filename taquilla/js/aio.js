@@ -388,6 +388,7 @@ var init = function () {
       return;
     }
     var triplesAcciones = $("#triples-acciones");
+    var triplesConTerminal = $("#terminales-marca");
     //#region serie
     const mdSerie = $("#md-serie");
     mdSerie.on("shown.bs.modal", (e) => $("#serie-numero").focus());
@@ -405,6 +406,7 @@ var init = function () {
     }
     function crearSerie(input) {
       input = parseInt(input);
+      if (isNaN(input)) return;
       const exp = 100;
       const max = 1000;
       let ultValor = input;
@@ -439,6 +441,7 @@ var init = function () {
       const inputs = input.split(" ");
       let min = parseInt(inputs[0]);
       const max = parseInt(inputs[1]);
+      if (isNaN(min) || isNana(max)) return;
       let valores = [];
       while (min <= max) {
         valores.push(formatoTriple(min++));
@@ -468,6 +471,7 @@ var init = function () {
     }
     function permutar(input) {
       input = formatoTriple(input);
+      if (isNaN(input)) return;
       let result = input
         .toString()
         .split("")
@@ -538,7 +542,10 @@ var init = function () {
         });
       return previous;
     }, []);
-
+    //TODO: filtrar sorteos cerrados correctamente
+    xsorteos = xsorteos.filter((s) => {
+      return s.sorteo.abierta == true;
+    });
     xsorteos.forEach((srt) => {
       srt.sorteo.descripcion = srt.sorteo.descripcion.replace(
         /\d{2}[APM]+/,
@@ -584,6 +591,7 @@ var init = function () {
       $("#md-sorteos").modal("show");
     });
 
+    //#region formato impresion
     var formatoImpresion = config.formatoImpresion || 0;
     if (formatoImpresion > 0) {
       if (formatoImpresion == 1)
@@ -632,6 +640,8 @@ var init = function () {
         srqag.modal();
       });
     }
+
+    //#endregion
 
     //ticketPendiente
     if (localStorage.getItem("lastTk")) {
@@ -682,8 +692,14 @@ var init = function () {
           }
         }
       }
-      if (triples) triplesAcciones.removeClass("hidden");
-      else triplesAcciones.addClass("hidden");
+      if (triples) {
+        triplesAcciones.removeClass("hidden");
+        $("#terminal-marca-group").removeClass("hidden");
+      } else {
+        triplesAcciones.addClass("hidden");
+        $("#terminal-marca-group").addClass("hidden");
+        triplesConTerminal.prop("checked", false);
+      }
     });
     var monto = $("#vnt-monto");
     var total = $("#vnt-total");
@@ -1199,6 +1215,7 @@ var init = function () {
         }
         //corrida
       }
+
       let noExisten = false;
       data.numero.forEach(function (numero) {
         var n = parseInt(numero);
@@ -1209,18 +1226,17 @@ var init = function () {
             "",
             "growl-danger"
           );
+
+        const terminal = triplesConTerminal.is(":checked");
         data.sorteos.forEach(function (sorteo) {
           var srt = findBy("sorteoID", sorteo, $sorteos);
           var num;
           if (srt.zodiacal == 0) {
             num = elementoSorteo(srt.sorteo, numero);
-            if (num > -1) addNum(num, sorteo);
-            else {
-              noExisten = true;
-              /* var c = confirm("El numero " + numero + " no se encontro para el sorteo " + srt.descripcion + ", puede probar restaurar esta data en preferencias y volver a intentar.")
-              if (c) return nav.url("preferencias|restaurar");
-              else return */
-            }
+            if (num > -1) {
+              addNum(num, sorteo, numero);
+              if (terminal) asignarTerminales(numero, srt);
+            } else noExisten = true;
           } else {
             var zs = vntzodiaco.select2("val");
             if (zs.length > 0) {
@@ -1231,11 +1247,11 @@ var init = function () {
               }
               for (i = 0; i < zs.length; i++) {
                 num = elementoSorteo(srt.sorteo, numero + zs[i]);
-                addNum(num, sorteo);
+                addNum(num, sorteo, numero);
               }
             } else {
               num = elementoSorteo(srt.sorteo, numero);
-              addNum(num, sorteo);
+              addNum(num, sorteo, numero);
             }
           }
         });
@@ -1256,7 +1272,19 @@ var init = function () {
           });
         }
       }
-
+      function asignarTerminales(numero, sorteo) {
+        if (sorteo.descripcion.indexOf("TRIPLE") > -1) {
+          const desc = sorteo.descripcion.replace("TRIPLE", "TERMINAL");
+          const sorteoTerminal = $sorteos.find(
+            (sorteo) => sorteo.descripcion == desc
+          );
+          if (sorteoTerminal) {
+            numero = formatoTriple(numero).substr(1);
+            const num = elementoSorteo(sorteoTerminal.sorteo, numero);
+            addNum(num, sorteoTerminal.sorteoID, numero);
+          }
+        }
+      }
       function addNum(num, sorteo) {
         if (num > -1) {
           var idx = elementoCesto(sorteo, num);
@@ -1462,9 +1490,9 @@ var init = function () {
       if (index == 0) sorteoInput = this.id;
     });
     $(document).on("keydown", onKeyboardDown);
-    num.on("keydown", numInput_keyDown);
+    $(document).on("keydown", numInput_keyDown);
     function numInput_keyDown(e) {
-      if (e.ctrlKey) {
+      if (e.altKey) {
         //tecla P
         if (e.which == 80) {
           e.preventDefault(e);
@@ -1485,6 +1513,12 @@ var init = function () {
           const nm = num.val();
           const numeros = crearCorrida(nm);
           num.val(numeros.join(" "));
+        }
+        if (e.which == 84) {
+          e.preventDefault(e);
+          const terminal = $("#terminales-marca");
+          const isCheck = terminal.is(":checked");
+          terminal.prop("checked", !isCheck);
         }
       }
     }

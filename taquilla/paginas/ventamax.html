@@ -101,6 +101,10 @@
                   <input class="form-control" id="vnt-monto" name="monto" type="number" min="0.01" max="999999"
                     step="any" autocomplete="off">
                 </div>
+                <label id="terminal-marca-group" class="hidden">
+                  <input id="terminales-marca" type="checkbox" value="0">
+                  Incluir terminales
+                </label>
               </div>
             </div>
             <div class="form-group hidden" id="fg-zodiaco">
@@ -205,7 +209,7 @@
         </div>
       </div>
       <div class="modal-body md-sorteos-body">
-        asdasd
+
       </div>
       <div class="modal-footer hidden-xs">
         <button class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
@@ -422,7 +426,7 @@
 </script>
 <script type="text/x-jsrender" id="rd-md-sorteos">
   <div class="row">
-     <div class="col-lg-3">
+     <div class="col-md-6 col-lg-3">
       <h4>
         <label>
           <input sorteo="{{:sorteo.sorteo}}" class="srt-hub-padre srt-hub" type="checkbox">
@@ -430,7 +434,7 @@
         </label>
       </h4>
      </div>
-     <div class="col-lg-9">
+     <div class="col-md-6 col-lg-9">
          {{for sorteos}}
            <div class="col-xs-4 col-lg-2">
              <label>
@@ -447,5 +451,10 @@
   #md-repetir-body {
     max-height: 450px;
     overflow-y: auto;
+  }
+
+  hr {
+    margin-top: 0px;
+    margin-bottom: 5px;
   }
 </style>
