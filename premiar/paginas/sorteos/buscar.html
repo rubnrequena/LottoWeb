@@ -23,19 +23,21 @@
 <div class="panel padding10">
     <div class="panel-body">
         <div class="row">
-            <label id="flt-alerta" class="text-danger">*EL FILTRO ESTA ACTIVADO, PARA VISUALIZAR LA LISTA ENTERA DE SORTEOS DESACTIVE EL FILTRO</label>
+            <label id="flt-alerta" class="text-danger">*EL FILTRO ESTA ACTIVADO, PARA VISUALIZAR LA LISTA ENTERA DE
+                SORTEOS DESACTIVE EL FILTRO</label>
             <form class="form-horizontal">
                 <div class="form-group">
                     <label class="col-sm-3 text-right mt10">Sorteo</label>
                     <div class="col-sm-6">
-                        <select name="sorteoID" class="s2 form-control" id="buscar-sorteos" data-placeholder="No hay sorteos para la fecha" required>
+                        <select name="sorteoID" class="s2 form-control" id="buscar-sorteos"
+                            data-placeholder="No hay sorteos para la fecha" required>
                             <option value=""></option>
                         </select>
                     </div>
                 </div>
             </form>
         </div>
-        <div class="row mt10">        
+        <div class="row mt10">
             <div class="col-md-3 col-sm-3 col-xs-3">
                 <label>Filtrar</label>
                 <select id="srt-flt" class="bfiltro s2">
@@ -44,7 +46,7 @@
                 </select>
             </div>
             <div class="col-md-3 col-sm-3 col-xs-3">
-                    <label>Abierto</label>
+                <label>Abierto</label>
                 <select id="srt-abr" class="bfiltro s2">
                     <option value="1">SI</option>
                     <option value="0" selected>NO</option>
@@ -62,12 +64,13 @@
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
-                    <tr>
-                        <th>Sorteo</th>
-                        <th>Hora</th>
-                        <th>Ganador</th>
-                        <th>Abierta</th>
-                    </tr>
+                        <tr>
+                            <th>Sorteo</th>
+                            <th>Hora</th>
+                            <th>Ganador</th>
+                            <th>Abierta</th>
+                            <th>Reiniciar</th>
+                        </tr>
                     </thead>
                     <tbody id="sorteos-body"></tbody>
                 </table>
@@ -80,11 +83,14 @@
         <td><a href="#sorteo|{{:sorteoID}}">{{:~padding(sorteoID,6)}}</a></td>
         <td><span class="text-uppercase">{{:descripcion}}</span></td>
         <td>
-            <select id="s{{:sorteoID}}" class="s3 form-control sorteosel" data-srt="{{:sorteo}}" data-sorteo="{{:sorteoID}}" data-select="{{:gid}}">
-                {{:~sorteos(sorteo)}}
-            </select>
+            <form class="sorteosel">
+                <input type="hidden" class="form-control" name="sorteoID" value="{{:sorteoID}}"/>
+                <input type="hidden" class="form-control" name="sorteo" value="{{:sorteo}}"/>
+                <input placeholder="Introduzca Numero. Ej: 22" id="s{{:sorteoID}}" type="text" class="form-control" value="{{:gn}}"  name="numero">
+            </form>
         </td>
         <td><div data-target="{{:sorteoID}}" data-activa="{{:abierta}}" class="toggle toggle-success ttgl"></div></td>
+        <td><button sorteoID="{{:sorteoID}}" class="btn btn-default srt-reiniciar"><i class="fa fa-refresh"></i></button></td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-operadora-option">

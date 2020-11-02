@@ -90,7 +90,7 @@ function sorteoBuscar_nav(p, args) {
       return s;
     },
   };
-  var srts = [];
+  var sorteosTodos = [];
 
   var toggles = $(".tgl");
   toggles.each(function (index) {
@@ -119,14 +119,14 @@ function sorteoBuscar_nav(p, args) {
     var f = formLock(this);
     socket.sendMessage("sorteos", data, function (e, d) {
       formLock(f, false);
-      srts = d || [];
+      sorteosTodos = d || [];
       update_sorteosView();
     });
   });
 
   function update_sorteosView() {
     var bsorteo = $("#buscar-sorteos");
-    var s = uniqueVal(srts, "sorteo");
+    var s = uniqueVal(sorteosTodos, "sorteo");
     var smin = [];
     s.forEach(function (item) {
       smin.push(findBy("sorteoID", item.sorteo, $sorteos));
@@ -142,30 +142,8 @@ function sorteoBuscar_nav(p, args) {
 
     bsorteo.change(function (ev) {
       var sorteo = ev.target.value;
-      var sorteos = exploreBy("sorteo", sorteo, srts);
-      //cargar elementos
-      var elm = findBy("sorteo", sorteo, $elementos);
-      if (elm) initUI();
-      else {
-        socket.sendMessage(
-          "elementos",
-          {
-            csorteo: sorteo,
-          },
-          function (e, d) {
-            d = d.map((item) => {
-              if (!item.d) item.descripcion = item.n;
-              else item.descripcion = item.d;
-              item.elementoID = item.id;
-              item.numero = item.n;
-              item.sorteo = sorteo;
-              return item;
-            });
-            $elementos = $elementos ? $elementos.concat(d) : d;
-            initUI();
-          }
-        );
-      }
+      var sorteos = exploreBy("sorteo", sorteo, sorteosTodos);
+      initUI();
 
       function initUI() {
         //filtros
@@ -189,6 +167,39 @@ function sorteoBuscar_nav(p, args) {
 
         //init
         $("#sorteos-body").html(jsrender($("#rd-sorteo-row"), fsorteos, help));
+        $(".srt-reiniciar").click(function (e) {
+          const sorteoID = $(this).attr("sorteoID");
+          socket.sendMessage("sorteo-reiniciar", { sorteoID }, function (e, d) {
+            notificacion(
+              "SORTEOS",
+              "SORTEO #" + sorteoID + " REINICIADO SATISFACTORIAMENTE"
+            );
+            $("#s" + sorteoID).val("");
+            fsorteos.forEach((s) => {
+              if (s.sorteoID == sorteoID) {
+                s.g = s.gid = s.gn = null;
+              }
+            });
+          });
+        });
+        $(".sorteosel").submit(async function (e) {
+          e.preventDefault(e);
+          const data = formControls(this);
+          const elemento = await sqlAPI("numero_id", {
+            numero: data.numero,
+            sorteo: data.sorteo,
+          });
+          if (!elemento) {
+            return notificacion("NUMERO NO REGISTRADO EN SORTEO");
+          }
+          if (confirm(`Confirma premiar #${elemento[0].descripcion}`)) {
+            const payload = {
+              elemento: elemento[0],
+              sorteoID: data.sorteoID,
+            };
+            premiar(payload);
+          }
+        });
 
         var toggles = $(".ttgl");
         toggles.each(function (index) {
@@ -211,124 +222,66 @@ function sorteoBuscar_nav(p, args) {
             console.log(e, d);
           });
         });
-
-        select2w($(".s3"), {
-          allowClear: true,
-        });
-        $("select.sorteosel").each(function (idx, item) {
-          var s = $(item).data("select");
-          $(item).val(s);
-          $(item).select2("val", s);
-        });
-        $(".sorteosel").change(function (ev) {
-          var val = ev.target.value;
-          var e = $(this);
-          var sorteo = e.data("sorteo");
-          var el = findBy("elementoID", val, $elementos);
-          var sr = findBy("sorteoID", sorteo, srts);
-          var r = confirm(
-            "Confirma que desea registrar #" +
-              sr.sorteoID +
-              " " +
-              sr.descripcion +
-              " #" +
-              el.numero +
-              " " +
-              el.descripcion
-          );
-          if (r) {
-            var data = {
-              sorteoID: sorteo,
-              elemento: val,
-            };
-            premiar(data, e);
-          } else {
-            e.select2("val", e.data("select"));
-            e.val(e.data("select"));
-          }
-        });
-      }
-
-      function premiar(data, elm) {
-        socket.sendMessage("sorteo-premiar", data, function (e, d) {
-          var el;
-          if (d.code == 1) {
-            el = findBy("elementoID", data.elemento, $elementos);
-            notificacion(
-              "SORTEO PREMIADO",
-              "SORTEO #" +
-                data.sorteoID +
-                " PREMIADO<p>GANADOR: #" +
-                el.numero +
-                " " +
-                el.descripcion +
-                "</p>"
-            );
-          } else if (d.code == 0) {
-            el = findBy("elementoID", data.elemento, $elementos);
-            notificacion(
-              "[JV] SOLICITUD ACEPTADA",
-              "SORTEO #" +
-                data.sorteoID +
-                "<p>GANADOR: #" +
-                el.numero +
-                " " +
-                el.descripcion +
-                "</p>"
-            );
-          } else if (d.code == 4) {
-            notificacion(
-              "SORTEOS",
-              "SORTEO #" + data.sorteoID + " YA ESTA PREMIADO",
-              "growl-danger"
-            );
-            var r = confirm("Este sorteo ya esta premiado, desea reiniciarlo");
-            if (r) {
-              socket.sendMessage(
-                "sorteo-reiniciar",
-                {
-                  sorteoID: data.sorteoID,
-                },
-                function (e, d) {
-                  notificacion(
-                    "SORTEOS",
-                    "SORTEO #" +
-                      data.sorteoID +
-                      " REINICIADO SATISFACTORIAMENTE"
-                  );
-                  if (
-                    confirm(
-                      "DESEA VOLVER A PREMIAR CON EL NUMERO SELECCIONADO?"
-                    )
-                  )
-                    premiar(data, elm);
-                }
-              );
-            } else {
-              elm.select2("val", elm.data("select"));
-              elm.val(elm.data("select"));
-            }
-          } else if (d.code == 8) {
-            notificacion("SORTEOS", "SORTEO ABIERTO", "growl-danger");
-            elm.select2("val", null);
-            elm.val(null);
-          } else if (d.code == 3)
-            notificacion(
-              "SORTEOS",
-              "SORTEO #" +
-                data.sorteoID +
-                " PREMIADO, PERO SIN VENTAS REGISTRADAS",
-              "growl-danger"
-            );
-          else if (d.code == 5)
-            notificacion(
-              "SORTEO ABIERTO",
-              " SORTEO #" + data.sorteoID + " AUN ESTA ABIERTO",
-              "growl-danger"
-            );
-        });
       }
     });
+    function premiar(data, elm) {
+      const payload = {
+        elemento: data.elemento.elementoID,
+        sorteoID: data.sorteoID,
+      };
+      socket.sendMessage("sorteo-premiar", payload, function (e, d) {
+        if (d.code == 1) {
+          $("#s" + data.sorteoID).val(data.elemento.descripcion);
+          sorteosTodos
+            .filter((s) => s.sorteoID == data.sorteoID)
+            .forEach((s) => {
+              s.gid = data.elemento.elementoID;
+              s.gn = data.elemento.descripcion;
+              s.g = data.elemento.descripcion.split(" ").shift();
+            });
+          notificacion(
+            "SORTEO PREMIADO",
+            "SORTEO #" +
+              data.sorteoID +
+              " PREMIADO<p>GANADOR: #" +
+              data.elemento.descripcion +
+              "</p>"
+          );
+        } else if (d.code == 0) {
+          notificacion(
+            "[JV] SOLICITUD ACEPTADA",
+            "SORTEO #" +
+              data.sorteoID +
+              "<p>GANADOR: #" +
+              data.sorteoID +
+              " PREMIADO<p>GANADOR: #" +
+              data.elemento.descripcion +
+              "</p>"
+          );
+        } else if (d.code == 4) {
+          notificacion(
+            "SORTEOS",
+            "SORTEO #" + data.sorteoID + " YA ESTA PREMIADO",
+            "growl-danger"
+          );
+        } else if (d.code == 8) {
+          notificacion("SORTEOS", "SORTEO ABIERTO", "growl-danger");
+        } else if (d.code == 3)
+          notificacion(
+            "SORTEOS",
+            "SORTEO #" +
+              data.sorteoID +
+              " PREMIADO, PERO SIN VENTAS REGISTRADAS",
+            "growl-danger"
+          );
+        else if (d.code == 5)
+          notificacion(
+            "SORTEO ABIERTO",
+            " SORTEO #" + data.sorteoID + " AUN ESTA ABIERTO",
+            "growl-danger"
+          );
+      });
+    }
   }
 
   function filtrar(item) {
