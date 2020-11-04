@@ -1,3 +1,4 @@
+'use strict'
 var CONFIG = {
   INTERFAZ_MODO: "srq.taq.modoInterfaz",
   IMPRIMIR_TECLA: "srq.taq.imprimirTecla",
@@ -173,8 +174,10 @@ var init = function () {
     return s.cierra > $servidor.hora && s.abierta == true;
   }
 
-  function getElemento(id) {
-    return findBy("id", id, $elementos);
+  function getElemento(id, sorteoID) {
+    const sorteo = $sorteos.find((s) => s.sorteoID == sorteoID);
+    const elementos = $elementos[sorteo.sorteo];
+    return elementos.find((e) => e.id == id);
   }
 
   function getSorteo(id) {
@@ -441,7 +444,7 @@ var init = function () {
       const inputs = input.split(" ");
       let min = parseInt(inputs[0]);
       const max = parseInt(inputs[1]);
-      if (isNaN(min) || isNana(max)) return;
+      if (isNaN(min) || isNaN(max)) return;
       let valores = [];
       while (min <= max) {
         valores.push(formatoTriple(min++));
@@ -706,12 +709,12 @@ var init = function () {
     var btnImprimir = $("#vnt-btn");
     var _ultimoTicket;
     var helper = {
-      pleno: function (num) {
-        var e = getElemento(num);
-        return "#" + e.d;
+      pleno: function (numID, srt) {
+        const elemento = getElemento(numID, srt);
+        return "#" + elemento.d;
       },
-      num: function (n) {
-        return getElemento(n).n;
+      num: function (n, sorteo) {
+        return getElemento(n, sorteo).n;
       },
       sorteo: function (sorteo) {
         var s = findBy("sorteoID", sorteo, $sorteos);
@@ -1151,15 +1154,40 @@ var init = function () {
     }
 
     function elementoSorteo(sorteo, numero) {
-      numero = numero != "00" ? parseInt(numero) : numero;
-      for (var i = 0; i < $elementos.length; i++) {
-        if ($elementos[i].s == sorteo) {
-          let numElemento = parseInt($elementos[i].n);
-          if (numElemento === numero || $elementos[i].n == numero)
-            return $elementos[i].id;
+      return new Promise((resolve, reject) => {
+        numero = numero != "00" ? parseInt(numero) : numero;
+        const numeros = $elementos[sorteo];
+        if (!numeros) {
+          recargarElementosSync().then(() => {
+            elementoSorteo(sorteo, numero).then((id) => {
+              resolve(id);
+            });
+          });
+        } else {
+          const elemento = numeros.find((num) => {
+            return num === numero || num.n == numero;
+          });
+          if (!elemento)
+            notificacion(
+              `El numero ${numero} no esta registrado, favor ingrese un numero valido.`
+            );
+          else resolve(elemento.id);
         }
-      }
-      return -1;
+      });
+    }
+
+    function recargarElementosSync() {
+      return new Promise((resolve) => {
+        function recarga_complete(e, d) {
+          if (d.hasOwnProperty("hash")) {
+            socket.removeListener(e, recarga_complete);
+            resolve();
+          }
+        }
+        socket.addListener("elementos-init", recarga_complete);
+        elementosRecibidos = {};
+        socket.sendMessage("elementos-init");
+      });
     }
 
     //UI HANDLERES
@@ -1216,8 +1244,8 @@ var init = function () {
         //corrida
       }
 
-      let noExisten = false;
-      data.numero.forEach(function (numero) {
+      for (let nindex = 0; nindex < data.numero.length; nindex++) {
+        let numero = data.numero[nindex];
         var n = parseInt(numero);
         if (n > 0 && n < 10) numero = "0" + n;
         if (!data.sorteos)
@@ -1228,16 +1256,21 @@ var init = function () {
           );
 
         const terminal = triplesConTerminal.is(":checked");
-        data.sorteos.forEach(function (sorteo) {
-          var srt = findBy("sorteoID", sorteo, $sorteos);
-          var num;
+        for (let sindex = 0; sindex < data.sorteos.length; sindex++) {
+          const sorteo = data.sorteos[sindex];
+          const srt = findBy("sorteoID", sorteo, $sorteos);
+
           if (srt.zodiacal == 0) {
-            num = elementoSorteo(srt.sorteo, numero);
-            if (num > -1) {
-              addNum(num, sorteo, numero);
-              if (terminal) asignarTerminales(numero, srt);
-            } else noExisten = true;
+            elementoSorteo(srt.sorteo, numero).then((num) => {
+              if (num > -1) {
+                addNum(num, sorteo, numero);
+                if (terminal)
+                  asignarTerminales(numero, srt).then(actualizarCesto);
+                else actualizarCesto();
+              }
+            });
           } else {
+            //zodiacal
             var zs = vntzodiaco.select2("val");
             if (zs.length > 0) {
               var i;
@@ -1254,36 +1287,24 @@ var init = function () {
               addNum(num, sorteo, numero);
             }
           }
-        });
-      });
-      if (noExisten) {
-        noExisten = false;
-        if (
-          confirm(
-            "Se detectaron numeros que no estan en los sorteos seleccionados, desea actualizar el listado de numeros?"
-          )
-        ) {
-          storage.removeItem(CONFIG.ELEMENTOS);
-          storage.removeItem(CONFIG.ELEMENTOS_HASH);
-          socket.sendMessage("elementos-init", null, (e, d) => {
-            alert(
-              "Numeros actualizados, intente nuevamente realizar su jugada"
-            );
-          });
         }
       }
       function asignarTerminales(numero, sorteo) {
-        if (sorteo.descripcion.indexOf("TRIPLE") > -1) {
-          const desc = sorteo.descripcion.replace("TRIPLE", "TERMINAL");
-          const sorteoTerminal = $sorteos.find(
-            (sorteo) => sorteo.descripcion == desc
-          );
-          if (sorteoTerminal) {
-            numero = formatoTriple(numero).substr(1);
-            const num = elementoSorteo(sorteoTerminal.sorteo, numero);
-            addNum(num, sorteoTerminal.sorteoID, numero);
-          }
-        }
+        return new Promise((resolve, reject) => {
+          if (sorteo.descripcion.indexOf("TRIPLE") > -1) {
+            const desc = sorteo.descripcion.replace("TRIPLE", "TERMINAL");
+            const sorteoTerminal = $sorteos.find(
+              (sorteo) => sorteo.descripcion == desc
+            );
+            if (sorteoTerminal) {
+              numero = formatoTriple(numero).substr(1);
+              elementoSorteo(sorteoTerminal.sorteo, numero).then((num) => {
+                addNum(num, sorteoTerminal.sorteoID, numero);
+                resolve();
+              });
+            } else resolve();
+          } else resolve();
+        });
       }
       function addNum(num, sorteo) {
         if (num > -1) {
@@ -1298,12 +1319,14 @@ var init = function () {
           }
         }
       }
-      cesto_updateView();
+      function actualizarCesto() {
+        cesto_updateView();
 
-      num.val(null).trigger("change");
-      if (p == "venta") num.select2("focus");
-      else $(num).focus();
-      //$('#vnt-monto').val('');
+        num.val(null).trigger("change");
+        if (p == "venta") num.select2("focus");
+        else $(num).focus();
+        //$('#vnt-monto').val('');
+      }
     });
 
     sorteos.on("change", function (e) {
@@ -1673,7 +1696,7 @@ var init = function () {
           });
         }
         linea = cesto[i];
-        el = getElemento(linea.num || linea.numero);
+        el = getElemento(linea.num || linea.numero, linea.sorteoID);
         _lineas.push({
           type: "linea",
           text: ["#" + el.d, formatNumber(linea.monto, 0) + config.moneda].join(
@@ -1822,7 +1845,7 @@ var init = function () {
           lo = {};
         }
         linea = cesto[i];
-        el = getElemento(linea.num || linea.numero);
+        el = getElemento(linea.num || linea.numero, linea.sorteoID);
         if (ci == 2) {
           ci = 1;
           lo.l2 = el.d + " " + formatNumber(linea.monto, 0) + config.moneda;
@@ -2054,7 +2077,7 @@ var init = function () {
           lo = {};
         }
         linea = cesto[i];
-        el = getElemento(linea.num || linea.numero);
+        el = getElemento(linea.num || linea.numero, linea.sorteoID);
         if (ci == 2) {
           ci = 1;
           lo.l2 =
@@ -2221,7 +2244,7 @@ var init = function () {
           lo = {};
         }
         linea = cesto[i];
-        el = getElemento(linea.num || linea.numero);
+        el = getElemento(linea.num || linea.numero, linea.sorteoID);
         if (ci == 3) {
           ci = 1;
           lo.l3 = [el.n + "x" + formatNumber(linea.monto, 0)].join("\t ");
@@ -2436,13 +2459,13 @@ var init = function () {
       var tx;
       var e = c[0];
       var n = [];
-      var el;
       for (var i = 0; i < c.length; i++) {
         if (c[i].monto != e.monto) {
           parseItems(n, e);
           n = [];
         }
-        el = getElemento(c[i].num || c[i].numero);
+        const nnum = c[i].num || c[i].numero;
+        const el = getElemento(nnum, c[i].sorteoID);
         n.push(el.n);
         e = c[i];
       }
@@ -3675,6 +3698,18 @@ var init = function () {
         notificacion("MENSAJE SERVIDOR", $meta.msg_srv, "", true);
       }
     });
+    var elementosRecibidos = {};
+    socket.addListener("elementos-init", function (e, d) {
+      if (d.hasOwnProperty("hash")) {
+        console.log(elementosRecibidos);
+        storage.setItem(CONFIG.ELEMENTOS_HASH, d.hash);
+        storage.setItem(CONFIG.ELEMENTOS, JSON.stringify(elementosRecibidos));
+        $elementos = elementosRecibidos;
+        notificacion("Lista de numeros actualizados");
+      } else {
+        elementosRecibidos[d[0].s] = d;
+      }
+    });
     socket.connect();
     var timer = $("#pre-timer");
     var socket_conectando = 0;
@@ -3790,20 +3825,10 @@ var init = function () {
           "Espere...",
           '<p id="ntf-cargaelem"><i class="fa fa-spinner fa-spin"></i> Recibiendo listado animales</p>'
         );
-        var elm = [];
-        socket.addListener("elementos-init", function (e, d) {
-          if (d.hasOwnProperty("hash")) {
-            storage.setItem(CONFIG.ELEMENTOS_HASH, d.hash);
-            storage.setItem(CONFIG.ELEMENTOS, JSON.stringify(elm));
-            $("#ntf-cargaelem").html(
-              '<i class="fa fa-check"></i> Lista de animales recibido'
-            );
-            socket.removeListeners(e);
-            loadLocal();
-            cb();
-          } else elm = elm.concat(d);
+        elementosRecibidos = {};
+        socket.sendMessage("elementos-init", null, (e, d) => {
+          nav.navUrl();
         });
-        socket.sendMessage("elementos-init", null);
       }
     }
 

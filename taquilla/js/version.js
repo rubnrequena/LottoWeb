@@ -1,3 +1,4 @@
+"use strict";
 const versionActual = 201008;
 const versionRegistrada = parseFloat(localStorage.getItem("srq.tq.version"));
 

@@ -367,7 +367,7 @@
 <script type="text/x-jsrender" id="rd-cesta-row">
   <tr>
         <td><span class="cesto-indice">{{:#index+1}}</span> <a class="rem-cesto" href="#remover" indice="{{:#index}}"><i class="fa fa-trash"></i> </a></td>
-        <td>{{:~pleno(numero)}}</td>
+        <td>{{:~pleno(numero,sorteoID)}}</td>
         {{if tpte}}
         <td><span class="label label-warning"><i class="fa fa-warning"></i> {{:monto}}</span></td>
         {{else}}
@@ -395,7 +395,7 @@
         <div class="col-sm-3">
             <div class="input-group">
                 <span class="input-group-addon">#</span>
-                <input class="form-control" name="numero" value="{{:~num(numero)}}" readonly>
+                <input class="form-control" name="numero" value="{{:~num(numero,sorteoID)}}" readonly>
             </div>
         </div>
         <div class="col-sm-6">
