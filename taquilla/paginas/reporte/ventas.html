@@ -12,11 +12,17 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-search"></i>
+                        BUSCAR</button>
                 </div>
             </div>
         </form>
     </div>
+</div>
+<div class="row" style="padding-right: 10px;">
+    <label class="label label-danger pull-right"><i class="fa fa-info"></i> Para un reporte con comisiones debe
+        dirigirse
+        al <a style="color:darkblue; font-weight: bold;" href="#reporte/general">reporte general</a></label>
 </div>
 <div class="row hidden-print">
     <div class="col-sm-6">
@@ -28,24 +34,26 @@
                             <small class="stat-label">Balance</small>
                             <h2 class="es-reset" id="mnt-balance">--</h2>
                         </div>
-                        <div class="col-xs-6" title="Este valor es referencial y esta sujeto a cambios en el tiempo, dependiendo el valor asignado por el banquero.">
-                            <small class="stat-label">Comision <span class="fa fa-info-circle"></span></small>
-                            <h2 class="es-reset" id="mnt-comision">--</h2>
-                        </div>
                     </div><!-- row -->
                     <div class="mb15"></div>
                     <div class="row">
                         <div class="col-xs-4">
                             <small class="stat-label">Jugado</small>
-                            <button class="btn btn-sm btn-success" id="rpt-vjugado"><h4 class="es-reset" id="mnt-jugado">--</h4></button>
+                            <button class="btn btn-sm btn-success" id="rpt-vjugado">
+                                <h4 class="es-reset" id="mnt-jugado">--</h4>
+                            </button>
                         </div>
                         <div class="col-xs-4">
                             <small class="stat-label">Premios</small>
-                            <button class="btn btn-sm btn-darkblue" id="rpt-vpremio"><h4 class="es-reset" id="mnt-premios">--</h4></button>
+                            <button class="btn btn-sm btn-darkblue" id="rpt-vpremio">
+                                <h4 class="es-reset" id="mnt-premios">--</h4>
+                            </button>
                         </div>
                         <div class="col-xs-4">
                             <small class="stat-label">Pagos</small>
-                            <button class="btn btn-sm btn-darkblue" id="rpt-vpagos"><h4 class="es-reset" id="mnt-pagos">--</h4></button>
+                            <button class="btn btn-sm btn-darkblue" id="rpt-vpagos">
+                                <h4 class="es-reset" id="mnt-pagos">--</h4>
+                            </button>
                         </div>
                     </div><!-- row -->
                 </div><!-- stat -->
@@ -54,35 +62,39 @@
         </div><!-- panel -->
     </div><!-- col-sm-6 -->
     <div class="col-sm-6">
-    <div class="panel panel-primary panel-stat">
-        <div class="panel-heading">
-            <div class="stat">
-                <div class="row">
-                    <div class="col-xs-8">
-                        <small class="stat-label">Premios Pendientes</small>
-                        <button class="btn btn-xs btn-darkblue" id="rpt-vpend"><h2 class="es-reset" id="mnt-pendiente">--</h2></button>
-                    </div>
-                </div><!-- row -->
-                <div class="mb15"></div>
-                <div class="row">
-                    <div class="col-xs-4">
-                        <small class="stat-label">Pagados</small>
-                        <h4><span class="es-reset" id="mnt-ppagos">--</span> %</h4>
-                    </div>
-                    <div class="col-xs-4">
-                        <small class="stat-label">Tickets Anulados</small>
-                        <h4><span class="es-reset" id="mnt-tanulados">--</span></h4>
-                    </div>
-                    <div class="col-xs-4">
-                        <small class="stat-label">Monto Anulado</small>
-                        <button class="btn btn-xs btn-danger" id="rpt-vanulado"><h4><span class="es-reset" id="mnt-anulados">--</span></h4></button>
-                    </div>
-                </div><!-- row -->
-            </div><!-- stat -->
+        <div class="panel panel-primary panel-stat">
+            <div class="panel-heading">
+                <div class="stat">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <small class="stat-label">Premios Pendientes</small>
+                            <button class="btn btn-xs btn-darkblue" id="rpt-vpend">
+                                <h2 class="es-reset" id="mnt-pendiente">--</h2>
+                            </button>
+                        </div>
+                    </div><!-- row -->
+                    <div class="mb15"></div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <small class="stat-label">Pagados</small>
+                            <h4><span class="es-reset" id="mnt-ppagos">--</span> %</h4>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Tickets Anulados</small>
+                            <h4><span class="es-reset" id="mnt-tanulados">--</span></h4>
+                        </div>
+                        <div class="col-xs-4">
+                            <small class="stat-label">Monto Anulado</small>
+                            <button class="btn btn-xs btn-danger" id="rpt-vanulado">
+                                <h4><span class="es-reset" id="mnt-anulados">--</span></h4>
+                            </button>
+                        </div>
+                    </div><!-- row -->
+                </div><!-- stat -->
 
-        </div><!-- panel-heading -->
-    </div><!-- panel -->
-</div><!-- col-sm-6 -->
+            </div><!-- panel-heading -->
+        </div><!-- panel -->
+    </div><!-- col-sm-6 -->
 </div>
 <div class="row">
     <div class="panel">
@@ -99,12 +111,12 @@
             <div class="table-responsive">
                 <table id="tb" class="table table-hover table-condensed">
                     <thead>
-                    <tr>
-                        <th>TICKET</th>
-                        <th>CANTIDAD</th>
-                        <th>PREMIO</th>
-                        <th>PAGADO</th>
-                    </tr>
+                        <tr>
+                            <th>TICKET</th>
+                            <th>CANTIDAD</th>
+                            <th>PREMIO</th>
+                            <th>PAGADO</th>
+                        </tr>
                     </thead>
                     <tbody id="reporte-body"></tbody>
                 </table>

@@ -87,7 +87,8 @@
               <select class="s2a form-control" id="vnt-sorteos" multiple="multiple" name="sorteos" required></select>
               <!-- <a class="text-muted" href="#" id="todoElDia"><i class="fa fa-align-justify"></i> Todo el
                 dia</a> -->
-              <a class="text-muted" href="#" id="sorteosHub"><i class="fa fa-align-justify"></i> Seleccione sorteos</a>
+              <a class="text-muted" href="#" id="sorteosHub"><i class="fa fa-align-justify"></i> Seleccione sorteos
+                (F10)</a>
             </div>
             <div class="form-group">
               <div class="row">
@@ -140,6 +141,10 @@
       </div>
     </div>
     <div class="col-sm-7">
+      <div class="pull-right" title="Tecla de acceso directo para imprimir, puedes cambiarla en las PREFERENCIAS">
+        <i class="fa fa-print"></i> <span class="text-uppercase" id="teclaimprimir"></span><i
+          class="fa fa-question"></i>
+      </div>
       <div class="btn-group btn-group-justified mt10">
         <div class="btn-group" id="print-group">
           <button id="vnt-btn" class="btn btn-success"><span id="printbtn"><i class="fa fa-print"></i>
@@ -208,8 +213,21 @@
           Seleccione uno o varios sorteos
         </div>
       </div>
+      <div class="row" style="padding: 5px;">
+        <div class="col-lg-3">
+          <button class="btn btn-primary btn-block md-filtrar-sorteo">TODOS</button>
+        </div>
+        <div class="col-lg-3">
+          <button class="btn btn-primary btn-block md-filtrar-sorteo">ANIMALES</button>
+        </div>
+        <div class="col-lg-3">
+          <button class="btn btn-primary btn-block md-filtrar-sorteo">TERMINALES</button>
+        </div>
+        <div class="col-lg-3">
+          <button class="btn btn-primary btn-block md-filtrar-sorteo">TRIPLES</button>
+        </div>
+      </div>
       <div class="modal-body md-sorteos-body">
-
       </div>
       <div class="modal-footer hidden-xs">
         <button class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
@@ -426,7 +444,7 @@
 </script>
 <script type="text/x-jsrender" id="rd-md-sorteos">
   <div class="row">
-     <div class="col-md-6 col-lg-3">
+     <div class="col-md-6 col-lg-4">
       <h4>
         <label>
           <input sorteo="{{:sorteo.sorteo}}" class="srt-hub-padre srt-hub" type="checkbox">
@@ -434,15 +452,17 @@
         </label>
       </h4>
      </div>
-     <div class="col-md-6 col-lg-9">
+     <div class="col-md-6 col-lg-8">
+       <div class="row">
          {{for sorteos}}
-           <div class="col-xs-4 col-lg-2">
-             <label>
-                 <input sorteo="{{:sorteoID}}" class="sorteo-hub-item srt-hub-{{:sorteo}}" type="checkbox">
-                 {{:~horario(descripcion)}}
-             </label>
+           <div class="col-xs-4 col-lg-3">
+            <label>
+              <input sorteo="{{:sorteoID}}" class="sorteo-hub-item srt-hub-{{:sorteo}}" type="checkbox">
+              {{:~horario(descripcion)}}
+            </label>
            </div>
          {{/for}}
+        </div>
      </div>
   </div>
   <hr/>

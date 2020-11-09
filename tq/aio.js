@@ -35,7 +35,10 @@ var init = function () {
   function setConfig(key, val) {
     storage.setItem(key, val);
     config[key.split(".").pop()] = val;
+
+    if (key == CONFIG.INTERFAZ_MODO) $("#ventalink").attr("href", `#${val}`);
   }
+  $("#ventalink").attr("href", `#${config.modoInterfaz || "ventamax"}`);
   $("#rutaAlt").click((e) => {
     e.preventDefault();
     let uri = $(e.target).attr("url");
@@ -277,14 +280,10 @@ var init = function () {
   });
   nav.paginas.addListener("inicio", function (p, a) {
     var help = {
-      gano: function (numeroID, sorteoID) {
-        if (numeroID == 0) return "";
-        else {
-          const sorteo = $sorteos.find((s) => s.sorteoID == sorteoID);
-          const numeros = $elementos[sorteo.sorteo];
-          const numero = numeros.find((n) => n.id == numeroID);
-          return numero ? numero.d : "NA";
-        }
+      gano: function (g) {
+        var e = findBy("id", g, $elementos);
+        if (e) return g == 0 ? "" : "#" + e.n + " " + e.d;
+        else return "NA";
       },
       formatDate: dateFormat,
     };
@@ -393,7 +392,6 @@ var init = function () {
       nav.nav("101");
       return;
     }
-    $("#teclaimprimir").html(getKeyName(config.imprimirTecla));
     var triplesAcciones = $("#triples-acciones");
     var triplesConTerminal = $("#terminales-marca");
     //#region serie
@@ -533,7 +531,6 @@ var init = function () {
       btn.attr("href", `https://api.whatsapp.com/send?${phone}text=${msg}`);
     });
 
-    //#region Modal Sorteos
     let xsorteos = $sorteos
       .filter(sorteosDisponibles_filtro)
       .reduce((previous, current) => {
@@ -552,19 +549,18 @@ var init = function () {
           });
         return previous;
       }, []);
-    const reg1 = /\d{1,2}[APM]+/,
-      reg2 = /\d{1,2}:\d{1,2}[ APM]+/,
-      regHorario = /\d{1,2}[AMP]+|\d{1,2}:\d{1,2}[AMP ]+/;
     xsorteos.forEach((srt) => {
-      const numeros = $elementos[srt.sorteo.sorteo];
-      if (numeros) {
-        const contarNumeros = numeros.length;
-        srt.tipo = contarNumeros < 100 ? 0 : contarNumeros < 1000 ? 1 : 2;
-      }
-      srt.sorteo.descripcion = srt.sorteo.descripcion.replace(reg1, "");
-      srt.sorteo.descripcion = srt.sorteo.descripcion.replace(reg2, "");
+      srt.sorteo.descripcion = srt.sorteo.descripcion.replace(
+        /\d{2}[APM]+/,
+        ""
+      );
+      srt.sorteo.descripcion = srt.sorteo.descripcion.replace(
+        /\d{1,2}:\d{1,2}[ APM]+/,
+        ""
+      );
       srt.sorteos.sort((a, b) => a.cierra - b.cierra);
     });
+    const regHorario = /\d{1,2}[AMP]+|\d{1,2}:\d{2}[AMP ]+/;
     xsorteos = xsorteos.sort((a, b) => {
       if (a.sorteo.descripcion < b.sorteo.descripcion) return -1;
       else if (b.sorteo.descripcion < a.sorteo.descripcion) return 1;
@@ -597,23 +593,7 @@ var init = function () {
       e.preventDefault();
       $("#md-sorteos").modal("show");
     });
-    $(".md-filtrar-sorteo").click((e) => {
-      const name = $(e.target).html();
-      let sorteos = xsorteos;
-      if (name == "ANIMALES") sorteos = xsorteos.filter((s) => s.tipo == 0);
-      else if (name == "TERMINALES")
-        sorteos = xsorteos.filter((s) => s.tipo == 1);
-      else if (name == "TRIPLES") sorteos = xsorteos.filter((s) => s.tipo == 2);
-      $(".md-sorteos-body").html(
-        jsrender($("#rd-md-sorteos"), sorteos, {
-          horario: (desc) => {
-            return regHorario.exec(desc)[0];
-          },
-        })
-      );
-    });
 
-    //#endregion
     //#region formato impresion
     var formatoImpresion = config.formatoImpresion || 0;
     if (formatoImpresion > 0) {
@@ -1364,7 +1344,7 @@ var init = function () {
         }
       }
       if (s) {
-        var el = $elementos[s.sorteo];
+        var el = elementos[s.sorteo];
         num.html(jsrender($("#rd-elemento-sorteo-option"), el));
       } else {
         num.html(jsrender($("#rd-elemento-option"), $numeros));
@@ -1567,10 +1547,6 @@ var init = function () {
     }
 
     function onKeyboardDown(e) {
-      if (e.which == 121) {
-        e.preventDefault(e);
-        $("#md-sorteos").modal("show");
-      }
       if (e.altKey) {
         //num.focus();
         if (e.which >= 96 && e.which <= 105) {
@@ -1582,7 +1558,6 @@ var init = function () {
       }
       if (e.ctrlKey) {
         if (e.which == 88) {
-          e.preventDefault(e);
           $("#md-anularTicket").modal();
         }
       }
@@ -2975,7 +2950,7 @@ var init = function () {
   }
   nav.paginas.addListener("reporte/general", reporteGeneral_nav);
 
-  function reporteOperadoras_nav(p, args) {
+  function reporteGeneral_nav(p, args) {
     const rdReporte = $("#rd-reporte");
     const reporte = $("#reporte-body");
     const form = $("#reporte");
@@ -2998,7 +2973,7 @@ var init = function () {
       $(".clr-val").html("--");
     }
   }
-  nav.paginas.addListener("reporte/operadoras", reporteOperadoras_nav);
+  nav.paginas.addListener("reporte/operadoras", reporteGeneral_nav);
 
   function reporteSorteo_nav(p, args) {
     var rf = $("#reporte-fecha");

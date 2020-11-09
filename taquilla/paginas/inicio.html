@@ -16,11 +16,11 @@
         <div class="table-responsive">
             <table class="table table-bordered mb30">
                 <thead>
-                <tr>
-                    <th>Sorteo</th>
-                    <th>Ganador</th>
-                    <th>Tiempo restante</th>
-                </tr>
+                    <tr>
+                        <th>Sorteo</th>
+                        <th>Ganador</th>
+                        <th>Tiempo restante</th>
+                    </tr>
                 </thead>
                 <tbody id="sorteos-body"></tbody>
             </table>
@@ -30,7 +30,7 @@
 <script type="text/x-jsrender" id="rd-inicio-sorteos-row">
     <tr>
         <td>{{:descripcion}}</td>
-            <td>{{:~gano(ganador)}}</td>
+            <td>{{:~gano(ganador,sorteoID)}}</td>
             <td id="srt-resta-{{:sorteoID}}">CALCULANDO</td>
     </tr>
 </script>

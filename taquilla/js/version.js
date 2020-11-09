@@ -1,5 +1,5 @@
 "use strict";
-const versionActual = 201008;
+const versionActual = 201105;
 const versionRegistrada = parseFloat(localStorage.getItem("srq.tq.version"));
 
 function parche_201008() {
@@ -7,9 +7,15 @@ function parche_201008() {
   localStorage.setItem("srq.tq.version", 201008);
   console.log("aplicando parche 201008");
 }
+function parche_201105() {
+  localStorage.removeItem("srq.taq.helementos");
+  localStorage.removeItem("srq.taq.elementos");
+  localStorage.setItem("srq.tq.version", 201105);
+}
 
 const parches = {
   201008: parche_201008,
+  201105: parche_201105,
 };
 
 if (versionRegistrada) {
@@ -24,7 +30,7 @@ function verificar_parches(version) {
     if (parches.hasOwnProperty(parche)) {
       /** @type {Function} */
       const parcheHandler = parches[parche];
-      if (parseFloat(parche) > version) {
+      if (parseFloat(parche) >= version) {
         parcheHandler.call();
         reiniciar = true;
       }

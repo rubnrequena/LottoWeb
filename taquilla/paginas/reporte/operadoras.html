@@ -1,0 +1,92 @@
+<div class="pageheader hidden-xs">
+  <h2><i class="fa fa-area-chart"></i> Reporte Operadoras</h2>
+</div>
+<div class="panel">
+  <div class="panel-body">
+    <form class="form-horizontal" id="reporte">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Fecha</label>
+        <div class="col-sm-3">
+          <input class="date now form-control" onfocus="blur()" name="inicio">
+        </div>
+        <div class="col-sm-3">
+          <input class="date now form-control" onfocus="blur()" name="fin">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-6 col-sm-offset-3">
+          <button class="btn btn-darkblue btn-block"><i class="fa fa-search"></i> BUSCAR</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-dark panel-stat">
+      <div class="panel-heading">
+        <div class="stat">
+          <div class="row">
+            <div class="col-xs-8" title="Balance = Jugado - Premios - Comision">
+              <small class="stat-label">Balance Banca <span class="fa fa-info-circle"></span></small>
+              <h2 class="clr-val" id="mnt-balance">--</h2>
+            </div>
+
+          </div><!-- row -->
+
+          <div class="mb15"></div>
+
+          <div class="row">
+            <div class="col-xs-4">
+              <small class="stat-label">Jugado</small>
+              <h4 class="clr-val" id="mnt-jugado">--</h4>
+            </div>
+            <div class="col-xs-4" title="Total premios a pagar">
+              <small class="stat-label">Premios <span class="fa fa-info-circle"></span></small>
+              <h4 class="clr-val" id="mnt-premios">--</h4>
+            </div>
+            <div class="col-xs-4">
+              <small class="stat-label">Comision Agencia</small>
+              <h4 class="clr-val" id="comision">--</h4>
+            </div>
+          </div><!-- row -->
+        </div><!-- stat -->
+
+      </div><!-- panel-heading -->
+    </div><!-- panel -->
+  </div><!-- col-sm-6 -->
+</div>
+<div class="row">
+  <div class="panel">
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table id="tb" class="table table-hover table-condensed">
+          <thead>
+            <tr>
+              <th>OPERADORA</th>
+              <th>JUGADO</th>
+              <th>COMISION</th>
+              <th>PREMIO</th>
+              <th>BALANCE</th>
+            </tr>
+          </thead>
+          <tbody id="reporte-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button id="print-reporte" class="btn btn-lightblue"><i class="fa fa-print"></i> IMPRIMIR</button>
+    </div>
+  </div>
+</div>
+<script type="text/x-jsrender" id="rd-reporte">
+  <tr>
+      <td>{{:operadora}}
+        <span style="color:grey;font-size: 10px;">{{:~formatNumber(cm*100/jg,2)}}%</span>
+      </td>
+      <td class="rcono">{{:~formatNumber(jg,2)}}</td>
+      <td class="rcono">{{:~formatNumber(cm,2)}}</td>
+      <td class="rcono">{{:~formatNumber(pr,2)}}</td>
+      <td class="rcono">{{:~formatNumber(jg-cm-pr,2)}}</td>
+  </tr>
+</script>
