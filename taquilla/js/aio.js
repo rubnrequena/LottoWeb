@@ -3071,6 +3071,7 @@ var init = function () {
   nav.paginas.addListener("reporte/sorteo", reporteSorteo_nav);
 
   function reporteVentas_nav(p, args) {
+    const mdTicket = $("#md-ticket");
     var rpt;
     var j = 0,
       pg = 0,
@@ -3175,18 +3176,20 @@ var init = function () {
     }
 
     function updateBody(d) {
+      let ticketID;
       body.html(jsrender($("#rd-reporte-diario"), d));
       $(".fticket").click(function () {
-        var md = $("#md-ticket");
-        var val = $(this).data("id");
-        md.on("shown.bs.modal", function (e) {
-          md.off("shown.bs.modal", arguments.callee);
-          var input = $("#md-pagar-ticket");
-          input.val(parseInt(val));
-          input.focus();
-        });
-        md.modal("show");
+        ticketID = $(this).data("id");
+        mdTicket.on("shown.bs.modal", modal_handler);
+        mdTicket.modal("show");
       });
+
+      function modal_handler() {
+        mdTicket.off("shown.bs.modal", modal_handler);
+        var input = $("#md-pagar-ticket");
+        input.val(parseInt(ticketID));
+        input.focus();
+      }
     }
 
     function updateTotal(d) {
