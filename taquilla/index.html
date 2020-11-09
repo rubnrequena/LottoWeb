@@ -202,7 +202,7 @@
     <script type="text/x-jsrender" id="rd-premio-ticket">
         <tr><td>TICKET</td><td>{{:ticketID}}</td></tr>
     <tr><td>HORA</td><td>{{:hora}}</td></tr>
-    <tr><td>MONTO</td><td>{{:monto}}</td></tr>
+    <tr><td>MONTO</td><td>{{:~formatNumber(monto,2)}}</td></tr>
     <tr><td>ANULADO</td><td>{{if anulado}}<span id="anulado-labelstamp"><a id="anulado-timestamp" ticketID="{{:ticketID}}" href="#tiempo">SI <i class="fa fa-clock-o"></i></a></span> {{else}} NO {{/if}}  </td></tr>
 </script>
     <script type="text/x-jsrender" id="rd-print-alert">
