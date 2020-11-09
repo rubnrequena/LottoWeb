@@ -1,7 +1,13 @@
 /*
  * Created by SRQ on 05/05/2016.
  */
-
+function sqlAPISocket(comando, data, socket) {
+  return new Promise((resolve, reject) => {
+    socket.sendMessage("sql", { comando, data }, (e, d) => {
+      resolve(d.data);
+    });
+  });
+}
 /**
  *
  * @param {String} comando
