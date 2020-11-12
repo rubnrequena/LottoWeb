@@ -646,7 +646,7 @@ function sorteoComisiones_nav(p, args) {
   }
   async function bancas_change(event) {
     reset();
-    comision_banca();
+    await comision_banca();
     const _grupos = await sqlAPI("lista_grupos_min", { usuarioID: event.val });
     grupo_select.html(jsrender(rd_grupo_option, [todos, ..._grupos]));
     grupo_select.select2("val", "");
@@ -1286,6 +1286,8 @@ function bancasGrupo_nav(p, args) {
           if (d.hasOwnProperty("activa")) banca.activa = d.activa;
           if (d.hasOwnProperty("nombre")) banca.nombre = d.nombre;
           if (d.hasOwnProperty("comision")) banca.comision = d.comision;
+          if (d.hasOwnProperty("participacion"))
+            banca.participacion = d.participacion;
           if (d.hasOwnProperty("usuario")) banca.usuario = d.usuario;
         } else notificacion("Error al realizar cambios", "", "growl-danger");
       });
