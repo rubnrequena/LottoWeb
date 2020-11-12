@@ -1403,16 +1403,26 @@ function bancasTaquilla_nav(p, args) {
     });
 
     function updateComision() {
-      comBody.html("Cargando...");
       socket.sendMessage(
         "taquilla-comisiones",
-        {
-          taquillaID: taquilla.taquillaID,
-        },
+        { taquillaID: taquilla.taquillaID },
         function (e, d) {
-          comisiones = d || {};
           if (d) {
-            comBody.html(jsrender($("#rd-com-row"), d || {}, hlp));
+            d = d
+              .map((comision) => {
+                const sorteo = $sorteos.find(
+                  (sorteo) => sorteo.sorteoID == comision.sorteo
+                );
+                comision.nombre = sorteo.nombre;
+                return comision;
+              })
+              .sort((a, b) => {
+                if (a.nombre > b.nombre) return 1;
+                else if (a.nombre < b.nombre) return -1;
+                else return 0;
+              });
+            comisiones = d;
+            comBody.html(jsrender($("#rd-com-row"), d, hlp));
             $(".comDL").click(function (e) {
               e.preventDefault(e);
               var id = parseInt($(this).attr("comID"));
@@ -1426,7 +1436,10 @@ function bancasTaquilla_nav(p, args) {
                 }
               );
             });
-          } else comBody.html("");
+          } else {
+            comBody.html("");
+            comsiones = [];
+          }
         }
       );
     }

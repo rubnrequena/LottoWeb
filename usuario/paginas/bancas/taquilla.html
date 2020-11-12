@@ -19,12 +19,14 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Comisi&oacute;n</label>
                 <div class="col-sm-6">
-                    <input type="number" min="0" max="100" step="1" value="0" class="form-control" name="comision" required>
+                    <input type="number" min="0" max="100" step="1" value="0" class="form-control" name="comision"
+                        required>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Registrar </button>
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Registrar
+                    </button>
                 </div>
             </div>
         </form>
@@ -47,7 +49,8 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Cambiar </button>
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Cambiar
+                    </button>
                 </div>
             </div>
         </form>
@@ -65,13 +68,15 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Minimo por Animal</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="vnt_min_num" id="vnt_min_num" autocomplete="off" required>
+                    <input type="text" class="form-control" name="vnt_min_num" id="vnt_min_num" autocomplete="off"
+                        required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Minimo por Ticket</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" name="vnt_min_tkt" id="vnt_min_tkt" autocomplete="off" required>
+                    <input type="text" class="form-control" name="vnt_min_tkt" id="vnt_min_tkt" autocomplete="off"
+                        required>
                 </div>
             </div>
             <div class="form-group">
@@ -82,7 +87,8 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-6 col-sm-offset-3">
-                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-save"></i> Guardar </button>
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-save"></i> Guardar
+                    </button>
                 </div>
             </div>
         </form>
@@ -107,14 +113,16 @@
                 <label class="col-sm-3 control-label">Comision</label>
                 <div class="col-sm-6">
                     <div class="input-group">
-                        <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control" name="comision" required>
+                        <input id="bn-comision" type="number" min="0" step="any" max="100" class="form-control"
+                            name="comision" required>
                         <span class="input-group-addon">%</span>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-6">
-                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i> Confirmar</button>
+                    <button type="submit" class="btn btn-darkblue btn-block"><i class="fa fa-send"></i>
+                        Confirmar</button>
                 </div>
             </div>
         </form>
@@ -122,11 +130,11 @@
         <div class="table-responsive">
             <table class="table">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>SORTEO</th>
-                    <th>COMISION</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>SORTEO</th>
+                        <th>COMISION</th>
+                    </tr>
                 </thead>
                 <tbody id="com-tbody">
 
@@ -141,10 +149,13 @@
     </div>
     <div class="panel-body">
         <div class="alert alert-danger">
-            <i class="fa fa-warning"></i> ALERTA: Una vez la taquilla sea enviada a la papelera, en cualquier momento podra ser recolectada por el servidor y ser eliminada permanentemente, como consecuencia no se podra recuperar la informacion (ventas, reportes, topes) relacionada con la mimsa.
+            <i class="fa fa-warning"></i> ALERTA: Una vez la taquilla sea enviada a la papelera, en cualquier momento
+            podra ser recolectada por el servidor y ser eliminada permanentemente, como consecuencia no se podra
+            recuperar la informacion (ventas, reportes, topes) relacionada con la mimsa.
         </div>
         <div class="col-md-6 col-md-offset-3">
-            <button id="remover" class="btn btn-maroon btn-lg btn-block"><i class="fa fa-trash fa-x2"></i> ENVIAR A PAPELERA</button>
+            <button id="remover" class="btn btn-maroon btn-lg btn-block"><i class="fa fa-trash fa-x2"></i> ENVIAR A
+                PAPELERA</button>
         </div>
     </div>
 </div>
@@ -152,7 +163,7 @@
 <script type="text/x-jsrender" id="rd-com-row">
     <tr>
         <td><a href="#remover-{{:comID}}" comID="{{:comID}}" class="comDL"><i class="fa fa-trash text-danger"></i></a></td>
-        <td>{{:~sorteo(sorteo)}}</td>
+        <td>{{:nombre}}</td>
         <td>{{:comision}}</td>
     </tr>
 </script>

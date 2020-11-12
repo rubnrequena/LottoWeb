@@ -9,11 +9,6 @@ if (loc == "animales") loc = "104.129.171.16:4003";
 else if (loc == "animal") loc = "104.129.171.162:4013";
 else if (loc == "animalitos") loc = "104.129.171.162:4023";
 var host = $.cookie("usuario") || "127.0.0.1:4023";
-
-/* var customHost = /host=(?<host>\d*.\d*.\d*.\d*):(?<puerto>\d*)/g.exec(
-  window.location.search
-if (customHost) host = `${customHost.groups.host}:${customHost.groups.puerto}`;
-); */
 var socket = new Net("ws://" + host, false);
 
 //NAVEGADOR
