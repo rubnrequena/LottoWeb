@@ -242,7 +242,7 @@
             {{else}}
         <td>0%
         {{/if}}
-            <label class="label label-default">{{:~formatNumber(participacion,1)}}%</label>
+            <label class="label label-default">{{:~formatNumber(participacion*100,1)}}%</label>
         </td>
         <td class="password" data-clave="{{:clave}}">***</td>
         <td><div data-target="{{:bancaID}}" data-activa="{{:activa}}" class="toggle toggle-success btgl"></div></td>
