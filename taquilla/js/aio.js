@@ -1,4 +1,5 @@
 "use strict";
+
 var CONFIG = {
   INTERFAZ_MODO: "srq.taq.modoInterfaz",
   IMPRIMIR_TECLA: "srq.taq.imprimirTecla",
@@ -11,6 +12,7 @@ var CONFIG = {
   ELEMENTOS: "srq.taq.elementos",
   MONEDA: "srq.taq.moneda",
   NOMBRE_CLIENTE: "srq.taq.nombreCliente",
+  PROTOCOLO: "srq.taq.protocolo",
 };
 var init = function () {
   // VARS
@@ -29,6 +31,7 @@ var init = function () {
     modoInterfaz: storage.getItem(CONFIG.INTERFAZ_MODO) || "ventamax",
     moneda: storage.getItem(CONFIG.MONEDA) || "",
     nombreCliente: storage.getItem(CONFIG.NOMBRE_CLIENTE) || 0,
+    protocolo: storage.getItem(CONFIG.PROTOCOLO) || "socket",
   };
   var elementosRecibidos = {};
 
@@ -936,10 +939,12 @@ var init = function () {
         m: meta || {},
         v: cesto,
       };
-      socket.sendMessage("venta", payload, ventaHandler);
-      /* ajax($sesion, payload).then((data) => {
-        ventaHandler("venta", data);
-      }); */
+      if (config.protocolo == "socket")
+        socket.sendMessage("venta", payload, ventaHandler);
+      else
+        ajax($sesion, payload).then((data) => {
+          ventaHandler("venta", data);
+        });
 
       function ventaHandler(e, d) {
         vendiendo = false;
@@ -2651,8 +2656,11 @@ var init = function () {
         var payload = {
           v: t,
         };
-        socket.sendMessage("venta", payload, botResult);
-        //ajax($sesion, payload).then(botResult);
+
+        if (config.protocolo == "socket")
+          socket.sendMessage("venta", payload, botResult);
+        else ajax($sesion, payload).then(botResult);
+
         function botResult() {
           $("#bot").html(
             ++r +
@@ -3643,6 +3651,13 @@ var init = function () {
       setConfig(CONFIG.NOMBRE_CLIENTE, clienteNombre.val());
     });
 
+    let protocolo = $("#protocolo");
+    protocolo.select2("val", config.protocolo);
+    protocolo.val(config.protocolo);
+    protocolo.change(function (e) {
+      setConfig(CONFIG.PROTOCOLO, protocolo.val());
+    });
+
     if (args && args.length > 0) {
       $("html, body").animate(
         {
@@ -3670,7 +3685,7 @@ var init = function () {
 
   // MAIN //
   function main_initSocket(proxy) {
-    host = proxy || host;
+    host = "52cb567bbe99.ngrok.io";
     if (socket) {
       socket.removeListener(NetEvent.SOCKET_CLOSE, socket_CLOSE);
       socket.removeListener(NetEvent.SOCKET_ERROR, socket_ERROR);
@@ -4029,20 +4044,21 @@ var init = function () {
     localStorage.removeItem("loto_taqlogin");
     nav.nav("inicio");
   });
-};
-init();
 
-function ajax(sesion, payload) {
-  return new Promise((resolve, reject) => {
-    payload = JSON.stringify(payload);
-    const host = $.cookie("api") || "127.0.0.1:4025";
-    $.get(
-      `http://${host}/taq/venta?${encodeURI(
-        `sesion=${sesion}&data=${payload}`
-      )}`,
-      function (data) {
-        resolve(data);
-      }
-    );
-  });
-}
+  function ajax(sesion, payload) {
+    return new Promise((resolve, reject) => {
+      payload = JSON.stringify(payload);
+      const host = $.cookie("api") || "127.0.0.1:4025";
+      $.get(
+        `http://${host}/taq/venta?${encodeURI(
+          `sesion=${sesion}&data=${payload}`
+        )}`,
+        function (data) {
+          resolve(data);
+        }
+      );
+    });
+  }
+};
+
+init();

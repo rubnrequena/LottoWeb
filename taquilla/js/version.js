@@ -1,5 +1,5 @@
 "use strict";
-const versionActual = 201105;
+const versionActual = 201115;
 const versionRegistrada = parseFloat(localStorage.getItem("srq.tq.version"));
 
 function parche_201008() {
@@ -12,10 +12,19 @@ function parche_201105() {
   localStorage.removeItem("srq.taq.elementos");
   localStorage.setItem("srq.tq.version", 201105);
 }
+function parche_201115() {
+  var protocolo =
+    navigator.userAgent.toLowerCase().indexOf("firefox") > -1
+      ? "http"
+      : "socket";
+  localStorage.setItem("srq.taq.protocolo", protocolo);
+  localStorage.setItem("srq.tq.version", 201115);
+}
 
 const parches = {
   201008: parche_201008,
   201105: parche_201105,
+  201115: parche_201115,
 };
 
 if (versionRegistrada) {

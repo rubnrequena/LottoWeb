@@ -1,6 +1,7 @@
 <?php	
 	require('../redir.php');
 	setcookie("taquilla",$port["taquilla"]);
+	setcookie("api","216.128.130.103:6025");
 	date_default_timezone_set('America/Caracas');
     $file = "index.html";
     $data = file_get_contents($file);
