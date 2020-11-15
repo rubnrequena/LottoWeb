@@ -14,6 +14,7 @@
             <div class="col-sm-6">
                 <select class="s2 form-control" id="bancas"></select>
             </div>
+            <span id="contador"></span>
         </div>
         <div class="form-group">
             <label class="mt10 col-sm-3 text-right">Grupos</label>
@@ -44,6 +45,10 @@
     </div>
     <div class="panel-body">
         <form class="form-horizontal" id="tope-nuevo">
+            <label class="col-sm-offset-3">
+                <input id="tope-avanzado" type="checkbox">
+                Avanzado
+            </label>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Taquilla</label>
                 <div class="col-sm-6">
@@ -58,7 +63,7 @@
                     <select class="s2 form-control" name="sorteo" id="sorteo"></select>
                 </div>
             </div>
-            <div class="form-group mb5">
+            <div class="form-group mb5 hidden avanzado">
                 <label class="col-sm-3 control-label">Horario</label>
                 <div class="col-sm-3">
                     <input class="date now form-control" onfocus="blur()" id="sorteo-fecha">
@@ -68,7 +73,7 @@
                     <div class="help-block" id="hlp-sorteos"></div>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group hidden avanzado">
                 <label class="col-sm-3 control-label">Numero</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" name="elemento" id="elemento"></input>
@@ -117,8 +122,12 @@
         {{if sorteoID>0}} <td>#{{:sorteoID}} {{:descripcion}}</td>
         {{else sorteo>0}} <td>{{:nsorteo}}</td>
         {{else}} <td>TODOS</td> {{/if}}
-        
-        <td>{{:elemento}}</td>
+        <td>
+            {{if elemento}} 
+            <a id="{{:topeID}}" href="#" class="tope-rem-num" num="{{:num}}" nombre="{{:elemento}}"  style="color:maroon;">
+            <i class="fa fa-remove"></i></a> {{:elemento}}
+            {{/if}}
+        </td>
         <td>{{:monto}}</td>
         {{if compartido==1}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> GRUPO</td>
         {{else compartido==2}} <td><i title="Creado el: {{:creado}}" class="fa fa-clock-o"></i> BANCA</td>

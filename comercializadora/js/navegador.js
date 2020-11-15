@@ -1854,6 +1854,14 @@ function bancasTransferir_nav(p, args) {
 nav.paginas.addListener("bancas/transferir", bancasTransferir_nav);
 
 function topes_nav(p, args) {
+  const topeAvanzado = $("#tope-avanzado");
+  topeAvanzado.change((e) => {
+    const activo = $(topeAvanzado).is(":checked");
+    const avanzados = $(".avanzado");
+    if (activo) avanzados.removeClass("hidden");
+    else avanzados.addClass("hidden");
+  });
+
   var sorteo = $("#sorteo"),
     taqs = $("#taquilla"),
     sorteos = $("#sorteos"),
@@ -1866,7 +1874,7 @@ function topes_nav(p, args) {
   var b = $bancas.slice();
   b.unshift({
     bancaID: 0,
-    nombre: "",
+    nombre: "TODOS",
   });
   bancas.html(jsrender($("#rd-usuario-option"), b));
   bancas.select2("val", "");
@@ -1877,7 +1885,7 @@ function topes_nav(p, args) {
         usuarioID: bancas.val(),
       },
       function (e, d) {
-        dsp_topes(e, d);
+        actualizar_topes(e, d);
         socket.sendMessage(
           "usuario-grupos",
           {
@@ -1902,7 +1910,7 @@ function topes_nav(p, args) {
     };
     if (grupos.val() > 0) filtro.bancaID = grupos.val();
     socket.sendMessage("topes", filtro, function (e, d) {
-      dsp_topes(e, d);
+      actualizar_topes(e, d);
       socket.sendMessage(
         "taquillas",
         {
@@ -1931,7 +1939,7 @@ function topes_nav(p, args) {
     elemento.html(jsrender($("#rd-elemento-option"), elem));
     elemento.select2("val", 0);
 
-    dsp_sorteos(sDia);
+    actualizar_sorteos(sDia);
   });
   sorteo.select2("val", 0);
   sorteo.trigger("change");
@@ -1952,7 +1960,7 @@ function topes_nav(p, args) {
   var data;
   var sDia;
 
-  function dsp_topes(e, d) {
+  function actualizar_topes(e, d) {
     if (d.hasOwnProperty("message")) return notificacion(d.message);
     d.forEach(function (item) {
       if (item.sorteo > 0) {
@@ -1973,9 +1981,33 @@ function topes_nav(p, args) {
         });
       }
     });
+    $(".tope-rem-num").click(function (e) {
+      e.preventDefault(e);
+      const nombre = $(e.currentTarget).attr("nombre");
+      const numero = $(e.currentTarget).attr("num");
+      if (confirm(`SEGURO DESEA ELIMINAR TODOS LOS TOPES DEL "${nombre}"`)) {
+        $(e.currentTarget).html('<i class="fa fa-spinner fa-spin"></i>');
+        sqlAPI("topes_elemento", { elemento: numero }).then(async (topes) => {
+          if (!topes || topes.lenth == 0)
+            return notificacion("NO SE ENCONTRARON TOPES PARA ESTE NUMERO");
+          for (let i = 0; i < topes.length; i++) {
+            const tope = topes[i];
+            await removerTope(tope);
+          }
+          notificacion(`${topes.length} TOPES REMOVIDOS EXITOSAMENTE`);
+          actualizarTopes();
+        });
+      }
+    });
   }
-
-  function dsp_sorteos(d) {
+  function removerTope(tope) {
+    return new Promise((resolve) => {
+      socket.sendMessage("tope-remover", tope, function (e, t) {
+        resolve();
+      });
+    });
+  }
+  function actualizar_sorteos(d) {
     if (!d) {
       $("#hlp-sorteos").html(
         "<i>No hay sorteos disponibles para este dia.</i>"
@@ -1999,38 +2031,64 @@ function topes_nav(p, args) {
     $("#hlp-sorteos").html(
       '<i class="fa fa-spinner fa-spin"></i> Espere, recibiendo sorteos...</i>'
     );
-    socket.sendMessage(
-      "sorteos",
-      {
-        fecha: _fecha,
-      },
-      function (e, d) {
-        sDia = d || [];
-        dsp_sorteos(sDia);
-      }
-    );
+    socket.sendMessage("sorteos", { fecha: _fecha }, function (e, d) {
+      sDia = d || [];
+      actualizar_sorteos(sDia);
+    });
   });
 
-  $("#tope-nuevo").submit(function (e) {
+  function actualizarTopes() {
+    socket.sendMessage(
+      "topes",
+      {
+        usuarioID: bancas.val(),
+        bancaID: grupos.val(),
+      },
+      actualizar_topes
+    );
+  }
+
+  const form = $("#tope-nuevo");
+  form.submit(async function (e) {
     e.preventDefault(e);
     var data = formControls(this);
     data.bancaID = grupos.val();
     data.usuarioID = bancas.val();
-    var f = formLock(this);
-    socket.sendMessage("tope-nuevo", data, function (e, d) {
-      formLock(f, false);
-      if (d.error) return notificacion(d.error);
-      monto.val("");
-      socket.sendMessage(
-        "topes",
-        {
-          usuarioID: bancas.val(),
-          bancaID: grupos.val(),
-        },
-        dsp_topes
-      );
-    });
+    if (data.usuarioID == 0) {
+      data.bancaID = 0;
+      const contador = $("#contador");
+      for (let i = 0; i < $bancas.length; i++) {
+        const banca = $bancas[i];
+        data.usuarioID = banca.usuarioID;
+        await topeNuevo(data);
+        contador.html(`${i}/${$bancas.length}`);
+      }
+      contador.html('<i class="fa fa-check success"></i>');
+      setTimeout(() => contador.html(""), 2000);
+    } else {
+      formLock(form);
+      topeNuevo(data).then(() => {
+        formLock(form, false);
+        socket.sendMessage(
+          "topes",
+          {
+            usuarioID: bancas.val(),
+            bancaID: grupos.val(),
+          },
+          actualizar_topes
+        );
+      });
+    }
   });
+  function topeNuevo(data) {
+    return new Promise((resolve, reject) => {
+      socket.sendMessage("tope-nuevo", data, function (e, d) {
+        if (d.error) return notificacion(d.error);
+        monto.val("");
+        resolve(d);
+      });
+    });
+  }
   sfecha.trigger("change");
 }
 nav.paginas.addListener("bancas/topes", topes_nav);
