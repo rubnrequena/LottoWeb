@@ -1,0 +1,58 @@
+<div class="pageheader hidden-xs">
+  <h2><i class="fa fa-home"></i> Configuración Taquilla</h2>
+</div>
+<div class="panel">
+  <div class="panel-body">
+    <form class="form-horizontal" id="meta-form">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Usuario</label>
+        <div class="col-sm-6">
+          <select class="form-control s2" id="bancas" name="bancaID" required></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Campo</label>
+        <div class="col-sm-6">
+          <select class="form-control s2" name="campo" id="campo" required>
+            <option value="vnt_min_tkt">Jugada Minima Ticket</option>
+            <option value="vnt_min_num">Jugada Minima Numero</option>
+            <option value="msg_init">Mensaje de Bienvenida</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Campo</label>
+        <div class="col-sm-6">
+          <input class="form-control" required name="valor">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-6 col-sm-offset-3">
+          <button class="btn btn-darkblue btn-block" id="btn-form">Registrar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Campo</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody id="meta-table">
+
+      </tbody>
+    </table>
+  </div>
+</div>
+<script type="text/x-jsrender" id="rd-meta-row">
+  <tr>
+    <td><a meta="{{:metaID}}" class="rem-meta" href="#meta-{{:metaID}}"><i style="color:darkred;" class="fa fa-remove"></i></a></td>
+    <td>{{:descripcion}}</td>
+    <td>{{:valor}}</td>
+  </tr>
+</script>

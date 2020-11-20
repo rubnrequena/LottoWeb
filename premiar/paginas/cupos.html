@@ -1,0 +1,56 @@
+<div class="pageheader">
+  <h2><i class="fa fa-trophy"></i> Cupos</h2>
+</div>
+<div class="panel">
+  <div class="panel-body">
+    <form id="bot-buscarForm">
+      <div class="form-group">
+        <div class="form-group">
+          <label class="mt10 col-sm-3 text-right">Operadora</label>
+          <div class="col-sm-6">
+            <select id="operadora" name="operadora" class="s2 form-control"></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="mt10 col-sm-3 text-right">Numero</label>
+          <div class="col-sm-6">
+            <input id="numero" name="numero" type="number" class="form-control"></input>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="mt10 col-sm-3 text-right">Monto</label>
+          <div class="col-sm-6">
+            <input id="monto" name="monto" type="number" class="form-control"></input>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-6">
+            <button type="button" class="btn btn-primary btn-block" id="btn-registrar">Registrar Cupo</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>SORTEO</th>
+            <th>NUMERO</th>
+            <th>MONTO</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-cupos"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/x-jsrender" id="rd-operadora-option">
+  <option value="{{:sorteoID}}" class="text-uppercase">{{:nombre}}</option>
+</script>
+<script type="text/x-jsrender" id="rd-tabla-cupos">
+  <tr>
+    <td></td>
+  </tr>
+</script>

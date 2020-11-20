@@ -3685,7 +3685,6 @@ var init = function () {
 
   // MAIN //
   function main_initSocket(proxy) {
-    host = "52cb567bbe99.ngrok.io";
     if (socket) {
       socket.removeListener(NetEvent.SOCKET_CLOSE, socket_CLOSE);
       socket.removeListener(NetEvent.SOCKET_ERROR, socket_ERROR);
@@ -3723,23 +3722,6 @@ var init = function () {
           "SORTEO <strong>" + sorteo.descripcion + "</strong> " + cierra
         );
     });
-    /* TODO: corregir $elementos 
-    socket.addListener("srt-premio", function (e, d) {
-      var sorteo = findBy("sorteoID", d.sorteoID, $sorteos);
-      var elemento = findBy("id", d.ganador, $elementos);
-      if (sorteo)
-        notificacion(
-          "PREMIOS RECIBIDOS",
-          "SORTEO: " +
-            sorteo.descripcion +
-            "</br>#" +
-            elemento.n +
-            " " +
-            elemento.d,
-          null,
-          false
-        );
-    }); */
     socket.addListener("metas", function (e, d) {
       $meta = d;
 

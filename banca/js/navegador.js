@@ -855,6 +855,7 @@ function bancasTaquilla_nav(p, args) {
       e.preventDefault(e);
       var data = formControls(this);
       data.taquillaID = taquilla.taquillaID;
+      data.grupoID = taquilla.bancaID;
       if (findBy("sorteo", data.sorteo, comisiones)) {
         notificacion(
           "VALOR DUPLICADO",

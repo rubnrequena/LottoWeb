@@ -1827,3 +1827,32 @@ function premiador_nav(p, args) {
   }
 }
 nav.paginas.addListener("premiador", premiador_nav);
+
+function cupos_nav(p, args) {
+  const operadora = $("#operadora"),
+    rdOperadora = $("#rd-operadora-option");
+  const btnRegistrar = $("#btn-registrar");
+  sqlAPI("admin_operadoras", null).then((operadoras) => {
+    operadora.html(jsrender(rdOperadora, operadoras));
+  });
+
+  btnRegistrar.click(() => {
+    socket.sendMessage(
+      "tope-nuevo",
+      {
+        bancaID: "0",
+        compartido: 2,
+        elemento: "11",
+        monto: 10000,
+        sorteo: 34,
+        sorteoID: 0,
+        taquillaID: 0,
+        usuarioID: 0,
+      },
+      (e, d) => {
+        console.log(e, d);
+      }
+    );
+  });
+}
+nav.paginas.addListener("cupos", cupos_nav);

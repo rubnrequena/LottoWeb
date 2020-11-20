@@ -1098,6 +1098,8 @@ function bancasBanca_nav(p, args) {
       e.preventDefault(e);
       var data = formControls(this);
       data.bancaID = banca.usuarioID;
+      data.grupoID = 0;
+      data.taquillaID = 0;
       if (findBy("sorteo", data.sorteo, comisiones)) {
         notificacion(
           "VALOR DUPLICADO",
@@ -1129,6 +1131,7 @@ function bancasBanca_nav(p, args) {
                 "taquilla-comision-dl",
                 {
                   comID: id,
+                  bancaID: banca.usuarioID,
                 },
                 function (e, d) {
                   updateComision();
@@ -1725,6 +1728,8 @@ function bancasTaquilla_nav(p, args) {
       e.preventDefault(e);
       var data = formControls(this);
       data.taquillaID = taquilla.taquillaID;
+      data.grupoID = taquilla.bancaID;
+      data.bancaID = taquilla.usuarioID;
       if (findBy("sorteo", data.sorteo, comisiones)) {
         notificacion(
           "VALOR DUPLICADO",
@@ -1962,6 +1967,7 @@ function topes_nav(p, args) {
 
   function actualizar_topes(e, d) {
     if (d.hasOwnProperty("message")) return notificacion(d.message);
+    if (d == null) return $("#topes-body").html;
     d.forEach(function (item) {
       if (item.sorteo > 0) {
         item.nsorteo = findBy("sorteoID", item.sorteo, $sorteos).nombre;
@@ -3591,3 +3597,86 @@ function usuario_nav(p, args) {
   });
 }
 nav.paginas.addListener("usuario", usuario_nav);
+
+function jugadaminima_nav(p, args) {
+  const bancas = $("#bancas"),
+    rdBanca = $("#rd-usuario-option");
+  const campo = $("#campo");
+  const metas = $("#meta-table"),
+    metaForm = $("#meta-form");
+  (rdMeta = $("#rd-meta-row")),
+    (metaCampos = {
+      vnt_min_tkt: "Jugada Minima Ticket",
+      vnt_min_num: "Jugada Minima Numero",
+      msg_init: "Mensaje de Bienvenida",
+    }),
+    (metaData = []);
+  const btn = $("#btn-form"),
+    btnUI = {
+      cargando: () => {
+        btn.html('<i class="fa fa-spinner fa-spin"></i> Cargando...');
+        btn.prop("disabled", "disabled");
+      },
+      normal: () => {
+        btn.html("Registrar");
+        btn.prop("disabled", "");
+      },
+    };
+
+  //#region init
+  const _bancas = [{ usuarioID: 0, nombre: "TODOS" }, ...$bancas];
+  bancas.html(jsrender(rdBanca, _bancas));
+  bancas.change(bancas_onChange);
+  metaForm.submit(registrarMeta);
+  //#endregion
+
+  function bancas_onChange(e) {
+    const banca = parseInt(e.val);
+    if (banca == 0) limpiarTabla();
+    else actualizarMetas();
+  }
+
+  function registrarMeta(e) {
+    e.preventDefault(e);
+    const data = formControls(metaForm);
+    if (data.bancaID == 0) registrarMulti();
+    else {
+      socket.sendMessage("meta-registrar-banca", data, actualizarMetas);
+    }
+  }
+  async function registrarMulti() {
+    let payload = formControls(metaForm);
+    btnUI.cargando();
+    for (let i = 0; i < $bancas.length; i++) {
+      const banca = $bancas[i];
+      payload.bancaID = banca.usuarioID;
+      await sendPromise("meta-registrar-banca", payload);
+    }
+    btnUI.normal();
+  }
+  function validarMeta(meta) {
+    return meta.campo == campo.val();
+  }
+  function limpiarTabla() {
+    metas.html("");
+  }
+  function renombrarCampos(meta) {
+    meta.descripcion = metaCampos[meta.campo];
+    return meta;
+  }
+  function actualizarMetas(_metas) {
+    btnUI.cargando();
+    sqlAPI("banca_meta", { bancaID: bancas.val() }).then((_metas) => {
+      btnUI.normal();
+      metaData = _metas || [];
+      metas.html(jsrender(rdMeta, metaData.map(renombrarCampos)));
+
+      $(".rem-meta").click((e) => {
+        e.preventDefault(e);
+        const metaID = $(e.currentTarget).attr("meta");
+        socket.sendMessage("meta-banca-rem", { metaID }, actualizarMetas);
+      });
+    });
+  }
+}
+nav.paginas.addListener("bancas/configuracion", jugadaminima_nav);
