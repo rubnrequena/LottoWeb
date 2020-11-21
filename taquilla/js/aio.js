@@ -1444,7 +1444,7 @@ var init = function () {
       $("#tk-last").html('<i class="fa fa-spinner fa-spin"></i>');
       socket.sendMessage("venta-ultima", null, ultimaVenta);
     });
-    $("#vnt-repetir").submit(async function (e) {
+    $("#vnt-repetir").submit(function (e) {
       e.preventDefault(e);
       var data = formControls(this);
       cesto.length = 0;
@@ -1455,19 +1455,22 @@ var init = function () {
         const _sorteo = data.sorteo[i] || data.sorteo;
         const _monto = data.monto[i] || data.monto;
         srt = findBy("sorteoID", _sorteo, $sorteos);
-        num = await elementoSorteo(srt.sorteo, numeros[i]);
-        if (num > -1) {
+        const elementos = $elementos[srt.sorteo];
+        num = elementos.find((e) => e.n == numeros[i]);
+        //num = elementoSorteo(srt.sorteo, numeros[i]);
+        if (num) {
           cesto.push({
-            numero: num,
+            numero: num.id,
             monto: _monto,
             sorteoID: _sorteo,
           });
-        } else
+        } else {
           notificacion(
             "NUMERO INVALIDO",
             "El numero #" + numeros[i] + " NO EXISTE EN SORTEO SELECCIONADO",
             "growl-danger"
           );
+        }
       }
       cesto_updateView();
       $("#md-repetir").modal("hide");
