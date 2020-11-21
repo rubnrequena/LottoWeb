@@ -1273,10 +1273,7 @@ function bancasTaquilla_nav(p, args) {
   var rm = $("#remover");
   if (args && args.length == 1) {
     socket.sendMessage(
-      "taquilla",
-      {
-        id: args[0],
-      },
+      "taquilla", { id: args[0] },
       function (e, d) {
         if (d) {
           taquilla = d;

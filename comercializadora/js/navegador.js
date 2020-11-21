@@ -1637,19 +1637,16 @@ function bancasTaquilla_nav(p, args) {
   var taquilla;
   var rm = $("#remover");
   if (args && args.length == 1) {
-    socket.sendMessage(
-      "taquillas",
-      {
-        id: args[0],
-      },
-      function (e, d) {
-        if (d) {
-          taquilla = d[0];
-          formSet($("#taquilla-nueva"), taquilla);
-          updateComision();
-        } else nav.nav("406");
-      }
-    );
+    socket.sendMessage("taquilla", { id: args[0] }, function (e, d) {
+      if (d) {
+        taquilla = d;
+        formSet($("#taquilla-nueva"), taquilla);
+        for (var m in d.meta) {
+          $("#" + m).val(d.meta[m]);
+        }
+        updateComision();
+      } else nav.nav("406");
+    });
 
     $("#taquilla-nueva").submit(function (e) {
       e.preventDefault(e);
@@ -1689,6 +1686,31 @@ function bancasTaquilla_nav(p, args) {
         }
       });
     });
+
+    $("#meta").submit(function (e) {
+      e.preventDefault(e);
+      var data = formControls(this);
+      formLock(this);
+      for (var m in data) {
+        if (data[m] == taquilla.meta[m]) delete data[m];
+      }
+      socket.sendMessage(
+        "taquilla-metas",
+        {
+          taquilla: taquilla.taquillaID,
+          banca: taquilla.usuarioID,
+          meta: data,
+        },
+        function (e, d) {
+          formLock($("#meta"), false);
+          for (var m in d) {
+            taquilla.meta[m] = d[m];
+          }
+          notificacion("DATOS GUARDADOS");
+        }
+      );
+    });
+
     rm.click(function () {
       rm.prop("disabled", true);
       rm.html(
@@ -1747,21 +1769,29 @@ function bancasTaquilla_nav(p, args) {
       comBody.html("Cargando...");
       socket.sendMessage(
         "taquilla-comisiones",
-        {
-          taquillaID: taquilla.taquillaID,
-        },
+        { taquillaID: taquilla.taquillaID },
         function (e, d) {
           comisiones = d || {};
           if (d) {
-            comBody.html(jsrender($("#rd-com-row"), d || {}, hlp));
+            d = d
+              .map((item) => {
+                const nombre = $sorteos.find((s) => s.sorteoID == item.sorteo)
+                  .nombre;
+                item.nombre = nombre;
+                return item;
+              })
+              .sort((a, b) => {
+                if (a.nombre > b.nombre) return 1;
+                else if (a.nombre < b.nombre) return -1;
+                else return 0;
+              });
+            comBody.html(jsrender($("#rd-com-row"), d));
             $(".comDL").click(function (e) {
               e.preventDefault(e);
               var id = parseInt($(this).attr("comID"));
               socket.sendMessage(
                 "taquilla-comision-dl",
-                {
-                  comID: id,
-                },
+                { comID: id },
                 function (e, d) {
                   updateComision();
                   //optimizar local
@@ -3055,16 +3085,17 @@ function reporteBalance_nav(p, args) {
                   monto: data.monto,
                   cdo: data.cdo,
                 };
-                socket.sendMessage("balance-confirmacion", data, function (
-                  e,
-                  d
-                ) {
-                  $("#md-ask").modal("hide");
-                  $("#cfpago" + id);
-                  getBalanceClientes();
+                socket.sendMessage(
+                  "balance-confirmacion",
+                  data,
+                  function (e, d) {
+                    $("#md-ask").modal("hide");
+                    $("#cfpago" + id);
+                    getBalanceClientes();
 
-                  //nav.url("reporte/balance",[b.usID]);
-                });
+                    //nav.url("reporte/balance",[b.usID]);
+                  }
+                );
                 return false;
               },
             }
