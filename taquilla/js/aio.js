@@ -1449,21 +1449,23 @@ var init = function () {
       var data = formControls(this);
       cesto.length = 0;
       var srt, num;
-      for (var i = 0; i < data.numero.length; i++) {
-        srt = findBy("sorteoID", data.sorteo[i], $sorteos);
-        num = await elementoSorteo(srt.sorteo, data.numero[i]);
+      const numeros =
+        typeof data.numero == "object" ? data.numero : [data.numero];
+      for (var i = 0; i < numeros.length; i++) {
+        const _sorteo = data.sorteo[i] || data.sorteo;
+        const _monto = data.monto[i] || data.monto;
+        srt = findBy("sorteoID", _sorteo, $sorteos);
+        num = await elementoSorteo(srt.sorteo, numeros[i]);
         if (num > -1) {
           cesto.push({
             numero: num,
-            monto: data.monto[i],
-            sorteoID: data.sorteo[i],
+            monto: _monto,
+            sorteoID: _sorteo,
           });
         } else
           notificacion(
             "NUMERO INVALIDO",
-            "El numero #" +
-              data.numero[i] +
-              " NO EXISTE EN SORTEO SELECCIONADO",
+            "El numero #" + numeros[i] + " NO EXISTE EN SORTEO SELECCIONADO",
             "growl-danger"
           );
       }
