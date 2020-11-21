@@ -1444,14 +1444,14 @@ var init = function () {
       $("#tk-last").html('<i class="fa fa-spinner fa-spin"></i>');
       socket.sendMessage("venta-ultima", null, ultimaVenta);
     });
-    $("#vnt-repetir").submit(function (e) {
+    $("#vnt-repetir").submit(async function (e) {
       e.preventDefault(e);
       var data = formControls(this);
       cesto.length = 0;
       var srt, num;
       for (var i = 0; i < data.numero.length; i++) {
         srt = findBy("sorteoID", data.sorteo[i], $sorteos);
-        num = elementoSorteo(srt.sorteo, data.numero[i]);
+        num = await elementoSorteo(srt.sorteo, data.numero[i]);
         if (num > -1) {
           cesto.push({
             numero: num,
