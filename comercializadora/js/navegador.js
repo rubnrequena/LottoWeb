@@ -1908,36 +1908,28 @@ function topes_nav(p, args) {
 
   var b = $bancas.slice();
   b.unshift({
-    bancaID: 0,
+    usuarioID: 0,
     nombre: "TODOS",
   });
   bancas.html(jsrender($("#rd-usuario-option"), b));
-  bancas.select2("val", "");
+  bancas.select2("val", 0);
   bancas.on("change", function () {
-    socket.sendMessage(
-      "topes",
-      {
-        usuarioID: bancas.val(),
-      },
-      function (e, d) {
-        actualizar_topes(e, d);
-        socket.sendMessage(
-          "usuario-grupos",
-          {
-            usuarioID: bancas.val(),
-          },
-          function (e, d) {
-            d = d || [];
-            d.unshift({
-              bancaID: 0,
-              nombre: "TODOS",
-            });
-            grupos.html(jsrender($("#rd-banca-option"), d));
-            grupos.select2("val", 0);
-          }
-        );
-      }
-    );
+    socket.sendMessage("topes", { usuarioID: bancas.val() }, function (e, d) {
+      actualizar_topes(e, d);
+      socket.sendMessage(
+        "usuario-grupos",
+        { usuarioID: bancas.val() },
+        function (e, d) {
+          d = d || [];
+          d.unshift({
+            bancaID: 0,
+            nombre: "TODOS",
+          });
+          grupos.html(jsrender($("#rd-banca-option"), d));
+          grupos.select2("val", 0);
+        }
+      );
+    });
   });
   grupos.on("change", function () {
     var filtro = {
@@ -2022,24 +2014,17 @@ function topes_nav(p, args) {
       const nombre = $(e.currentTarget).attr("nombre");
       const numero = $(e.currentTarget).attr("num");
       if (confirm(`SEGURO DESEA ELIMINAR TODOS LOS TOPES DEL "${nombre}"`)) {
-        $(e.currentTarget).html('<i class="fa fa-spinner fa-spin"></i>');
-        sqlAPI("topes_elemento", { elemento: numero }).then(async (topes) => {
-          if (!topes || topes.lenth == 0)
-            return notificacion("NO SE ENCONTRARON TOPES PARA ESTE NUMERO");
-          for (let i = 0; i < topes.length; i++) {
-            const tope = topes[i];
-            await removerTope(tope);
-          }
-          notificacion(`${topes.length} TOPES REMOVIDOS EXITOSAMENTE`);
-          actualizarTopes();
-        });
+        const tope = {
+          elemento: numero,
+        };
+        removerTope(tope).then(actualizarTopes);
       }
     });
   }
   function removerTope(tope) {
     return new Promise((resolve) => {
       socket.sendMessage("tope-remover", tope, function (e, t) {
-        resolve();
+        resolve(t);
       });
     });
   }
@@ -2090,31 +2075,10 @@ function topes_nav(p, args) {
     var data = formControls(this);
     data.bancaID = grupos.val();
     data.usuarioID = bancas.val();
-    if (data.usuarioID == 0) {
-      data.bancaID = 0;
-      const contador = $("#contador");
-      for (let i = 0; i < $bancas.length; i++) {
-        const banca = $bancas[i];
-        data.usuarioID = banca.usuarioID;
-        await topeNuevo(data);
-        contador.html(`${i}/${$bancas.length}`);
-      }
-      contador.html('<i class="fa fa-check success"></i>');
-      setTimeout(() => contador.html(""), 2000);
-    } else {
-      formLock(form);
-      topeNuevo(data).then(() => {
-        formLock(form, false);
-        socket.sendMessage(
-          "topes",
-          {
-            usuarioID: bancas.val(),
-            bancaID: grupos.val(),
-          },
-          actualizar_topes
-        );
-      });
-    }
+    topeNuevo(data).then(() => {
+      formLock(form, false);
+      actualizarTopes();
+    });
   });
   function topeNuevo(data) {
     return new Promise((resolve, reject) => {
