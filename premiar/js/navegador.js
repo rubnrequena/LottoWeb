@@ -242,21 +242,21 @@ function sorteoBuscar_nav(p, args) {
           notificacion(
             "SORTEO PREMIADO",
             "SORTEO #" +
-              data.sorteoID +
-              " PREMIADO<p>GANADOR: #" +
-              data.elemento.descripcion +
-              "</p>"
+            data.sorteoID +
+            " PREMIADO<p>GANADOR: #" +
+            data.elemento.descripcion +
+            "</p>"
           );
         } else if (d.code == 0) {
           notificacion(
             "[JV] SOLICITUD ACEPTADA",
             "SORTEO #" +
-              data.sorteoID +
-              "<p>GANADOR: #" +
-              data.sorteoID +
-              " PREMIADO<p>GANADOR: #" +
-              data.elemento.descripcion +
-              "</p>"
+            data.sorteoID +
+            "<p>GANADOR: #" +
+            data.sorteoID +
+            " PREMIADO<p>GANADOR: #" +
+            data.elemento.descripcion +
+            "</p>"
           );
         } else if (d.code == 4) {
           notificacion(
@@ -270,8 +270,8 @@ function sorteoBuscar_nav(p, args) {
           notificacion(
             "SORTEOS",
             "SORTEO #" +
-              data.sorteoID +
-              " PREMIADO, PERO SIN VENTAS REGISTRADAS",
+            data.sorteoID +
+            " PREMIADO, PERO SIN VENTAS REGISTRADAS",
             "growl-danger"
           );
         else if (d.code == 5)
@@ -320,24 +320,24 @@ function sorteoPremiar_nav() {
         notificacion(
           "SORTEO PREMIADO",
           "SORTEO #" +
-            data.sorteoID +
-            " PREMIADO<p>GANADOR: #" +
-            el.numero +
-            " " +
-            el.descripcion +
-            "</p>"
+          data.sorteoID +
+          " PREMIADO<p>GANADOR: #" +
+          el.numero +
+          " " +
+          el.descripcion +
+          "</p>"
         );
       } else if (d.code == 0) {
         el = findBy("elementoID", data.elemento, $elementos);
         notificacion(
           "[JV] SOLICITUD ACEPTADA",
           "SORTEO #" +
-            data.sorteoID +
-            " PREMIADO<p>GANADOR: #" +
-            el.numero +
-            " " +
-            el.descripcion +
-            "</p>"
+          data.sorteoID +
+          " PREMIADO<p>GANADOR: #" +
+          el.numero +
+          " " +
+          el.descripcion +
+          "</p>"
         );
       } else if (d.code == 4)
         notificacion(
@@ -1005,12 +1005,12 @@ function sorteoMonitor_nav(e, arg) {
         notificacion(
           "SORTEO PREMIADO",
           "SORTEO #" +
-            data.sorteoID +
-            " PREMIADO<p>GANADOR: #" +
-            el.numero +
-            " " +
-            el.descripcion +
-            "</p>"
+          data.sorteoID +
+          " PREMIADO<p>GANADOR: #" +
+          el.numero +
+          " " +
+          el.descripcion +
+          "</p>"
         );
 
         listarSorteos(fecha.val());
@@ -1020,12 +1020,12 @@ function sorteoMonitor_nav(e, arg) {
         notificacion(
           "[JV] SOLICITUD ACEPTADA",
           "SORTEO #" +
-            data.sorteoID +
-            "<p>GANADOR: #" +
-            el.numero +
-            " " +
-            el.descripcion +
-            "</p>"
+          data.sorteoID +
+          "<p>GANADOR: #" +
+          el.numero +
+          " " +
+          el.descripcion +
+          "</p>"
         );
       } else if (d.code == 4) {
         notificacion(
@@ -1504,7 +1504,10 @@ nav.paginas.addListener("sorteos/pendientes", function (p, args) {
     var sn, s, res;
     socket.sendMessage("sorteo-pendientes", data, function (e, d) {
       formLock(f, false);
-      if (!d || d.length == 0) return;
+      if (!d || d.length == 0) {
+        $('#accordion').html('<h2 style="text-align:center;">No hay sorteos pendientes 😎</h2>')
+        return;
+      }
       res = d;
 
       (sn = []), (s = []);
@@ -1522,130 +1525,22 @@ nav.paginas.addListener("sorteos/pendientes", function (p, args) {
           sr.horarios.push(d[i]);
         }
       }
-
-      if ($elementos && $elementos.length > 0) initUI();
-      else {
-        socket.addListener("elementos", elementos_result);
-        socket.sendMessage("elementos", {
-          sorteos: sn,
-        });
-
-        function elementos_result(e, d) {
-          if (d == "end") initUI();
-          else $elementos = $elementos.concat(d);
-        }
-      }
+      initUI()
+      $('.premiar-btn').submit(function premiarHandler(e) {
+        e.preventDefault(e)
+        const sorteo = $(e.currentTarget).attr('sorteo');
+        const operadora = $(e.currentTarget).attr('operadora');
+        const numero = $(`#resultado-${sorteo}`).val()
+        buscarNumeroID(operadora, numero).then(elemento => {
+          if (confirm(`Confirma premiar #${elemento[0].descripcion}`)) {
+            premiarSorteo(sorteo, elemento[0], $(`#resultado-${sorteo}`));
+          }
+        }).catch(error => notificacion(error, '', "growl-danger"))
+      })
     });
 
     function initUI() {
       $("#accordion").html(jsrender($("#rd-sorteo-row"), s, help));
-      select2w($(".s3"), {
-        allowClear: true,
-      });
-      $("select.sorteosel").each(function (idx, item) {
-        var s = $(item).data("select");
-        $(item).val(s);
-        $(item).select2("val", s);
-      });
-      $(".sorteosel").change(function (ev) {
-        var val = ev.target.value;
-        var e = $(this);
-        var sorteo = e.data("sorteo");
-        var el = findBy("elementoID", val, $elementos);
-        var sr = findBy("sorteoID", sorteo, res);
-        var r = confirm(
-          "Confirma que desea registrar #" +
-            sr.sorteoID +
-            " " +
-            sr.descripcion +
-            " #" +
-            el.numero +
-            " " +
-            el.descripcion
-        );
-        if (r) {
-          var data = {
-            sorteoID: sorteo,
-            elemento: val,
-          };
-          premiar(data, e);
-        } else {
-          e.select2("val", e.data("select"));
-          e.val(e.data("select"));
-        }
-      });
-    }
-
-    function premiar(data, elm) {
-      socket.sendMessage("sorteo-premiar", data, function (e, d) {
-        var el;
-        if (d.code == 1) {
-          el = findBy("elementoID", data.elemento, $elementos);
-          notificacion(
-            "SORTEO PREMIADO",
-            "SORTEO #" +
-              data.sorteoID +
-              " PREMIADO<p>GANADOR: #" +
-              el.numero +
-              " " +
-              el.descripcion +
-              "</p>"
-          );
-        } else if (d.code == 0) {
-          el = findBy("elementoID", data.elemento, $elementos);
-          notificacion(
-            "[JV] SOLICITUD ACEPTADA",
-            "SORTEO #" +
-              data.sorteoID +
-              "<p>GANADOR: #" +
-              el.numero +
-              " " +
-              el.descripcion +
-              "</p>"
-          );
-        } else if (d.code == 4) {
-          notificacion(
-            "SORTEOS",
-            "SORTEO #" + data.sorteoID + " YA ESTA PREMIADO",
-            "growl-danger"
-          );
-          var r = confirm("Este sorteo ya esta premiado, desea reiniciarlo");
-          if (r) {
-            socket.sendMessage(
-              "sorteo-reiniciar",
-              {
-                sorteoID: data.sorteoID,
-              },
-              function (e, d) {
-                notificacion(
-                  "SORTEOS",
-                  "SORTEO #" + data.sorteoID + " REINICIADO SATISFACTORIAMENTE"
-                );
-                if (
-                  confirm("DESEA VOLVER A PREMIAR CON EL NUMERO SELECCIONADO?")
-                )
-                  premiar(data, elm);
-              }
-            );
-          } else {
-            elm.select2("val", elm.data("select"));
-            elm.val(elm.data("select"));
-          }
-        } else if (d.code == 3)
-          notificacion(
-            "SORTEOS",
-            "SORTEO #" +
-              data.sorteoID +
-              " PREMIADO, PERO SIN VENTAS REGISTRADAS",
-            "growl-danger"
-          );
-        else if (d.code == 5)
-          notificacion(
-            "SORTEO ABIERTO",
-            " SORTEO #" + data.sorteoID + " AUN ESTA ABIERTO",
-            "growl-danger"
-          );
-      });
     }
   });
 });
@@ -1856,3 +1751,43 @@ function cupos_nav(p, args) {
   });
 }
 nav.paginas.addListener("cupos", cupos_nav);
+
+
+function buscarNumeroID(sorteo, numero) {
+  return new Promise(async (resolve, reject) => {
+    const elemento = await sqlAPI("numero_id", { numero, sorteo });
+    if (!elemento) {
+      reject("NUMERO NO REGISTRADO EN SORTEO")
+    } else resolve(elemento)
+  });
+}
+function premiarSorteo(sorteoID, elemento, input) {
+  socket.sendMessage("sorteo-premiar", {
+    elemento: elemento.elementoID,
+    sorteoID
+  }, function (e, d) {
+    if (d.code == 1) {
+      input.val(elemento.descripcion)
+      notificacion('SORTEO PREMIADO', `SORTEO #${sorteoID} PREMIADO<br>GANADOR: #${elemento.descripcion}`);
+    } else if (d.code == 4) {
+      notificacion(
+        "SORTEOS",
+        "SORTEO #" + sorteoID + " YA ESTA PREMIADO",
+        "growl-danger"
+      );
+    } else if (d.code == 3)
+      notificacion(
+        "SORTEOS",
+        "SORTEO #" +
+        sorteoID +
+        " PREMIADO, PERO SIN VENTAS REGISTRADAS",
+        "growl-danger"
+      );
+    else if (d.code == 5)
+      notificacion(
+        "SORTEO ABIERTO",
+        " SORTEO #" + sorteoID + " AUN ESTA ABIERTO",
+        "growl-danger"
+      );
+  });
+}

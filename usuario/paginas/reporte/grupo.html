@@ -112,12 +112,9 @@
 <script type="text/x-jsrender" id="rd-reporte">
   <tr>
       <td class="text-uppercase">
-          {{if tipo=="id"}}
-              <a href="#reporte/taquilla|{{:url}}&s={{:desc}}">{{:desc}}</a>
-              <span style="color:grey;font-size: 10px;"><span title="COMISION">{{:~formatNumber(cb*100,2)}}</span></span> </td>
-          {{else}}
-              {{:desc}}
-          {{/if}}
+        {{:desc}}
+        <span style="color:grey;font-size: 10px;"><span title="COMISION">{{:~formatNumber(cb*100,2)}}</span></span>
+      </td>
       <td>{{:~formatNumber(jg)}}</td>
       <td>{{:~formatNumber(pr)}}</td>
       <td>{{:~formatNumber(cm)}}</td>

@@ -32,7 +32,11 @@
         </div>
     </div>
 </div>
-
+<style>
+    .premiar {
+        width: 100px;
+    }
+</style>
 <script type="text/x-jsrender" id="rd-sorteo-row">
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -41,26 +45,25 @@
             </h4>
         </div>
         <div id="sp{{:sorteo}}" class="panel-collapse collapse">
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <tbody id="sorteos-body">
-                            {{for horarios}}
-                                <tr>
-                                    <td><a data-toggle="collapse" data-parent="#accordion" href="#sp{{:sorteo}}"><i class="fa fa-chevron-up"></i></a> {{:fecha}}</td>
-                                    <td><span class="text-uppercase"><span class="label label-primary">{{:~padding(sorteoID,6)}}</span> {{:descripcion}}</span></td>
-                                    <td>
-                                        <select id="s{{:sorteoID}}" class="s3 form-control sorteosel" data-srt="{{:sorteo}}" data-sorteo="{{:sorteoID}}" data-select="{{:gid}}">
-                                            {{:~sorteos(sorteo)}}
-                                        </select>
-                                    </td>
-                                    <td><div data-target="{{:sorteoID}}" data-activa="{{:abierta}}" class="toggle toggle-success ttgl"></div></td>
-                                </tr>
-                            {{/for}}
-                        </tbody>
-                    </table>
-                </div>
+            {{for horarios}}
+            <div class="row" id="sorteos-body">
+                <div class="col-sm-4"><a data-toggle="collapse" data-parent="#accordion" href="#sp{{:sorteo}}"><i class="fa fa-chevron-up"></i></a> {{:fecha}}</div>
+                        <div class="col-sm-4"><span class="text-uppercase"><span class="label label-primary">{{:~padding(sorteoID,6)}}</span> {{:descripcion}}</span></div>
+                        <div class="col-sm-4">
+                            <form class="premiar-btn" operadora="{{:sorteo}}" sorteo="{{:sorteoID}}">
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <input type="number" id="resultado-{{:sorteoID}}" class="form-control"  />
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button type="submit" class="btn btn-primary btn-block" ><i class="fa fa-check"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div class="col-sm-4">
             </div>
+            <hr/>
+            {{/for}}
         </div>
     </div>
 </script>

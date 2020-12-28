@@ -1,5 +1,5 @@
 "use strict";
-const versionActual = 201115;
+const versionActual = 201123;
 const versionRegistrada = parseFloat(localStorage.getItem("srq.tq.version"));
 
 function parche_201008() {
@@ -20,11 +20,17 @@ function parche_201115() {
   localStorage.setItem("srq.taq.protocolo", protocolo);
   localStorage.setItem("srq.tq.version", 201115);
 }
+function parche_201123() {
+  parche_201105();
+  parche_201115();
+  localStorage.setItem("srq.tq.version", 201123);
+}
 
 const parches = {
   201008: parche_201008,
   201105: parche_201105,
   201115: parche_201115,
+  201123: parche_201123,
 };
 
 if (versionRegistrada) {
