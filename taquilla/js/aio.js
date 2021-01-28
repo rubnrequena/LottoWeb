@@ -285,8 +285,12 @@ var init = function () {
         else {
           const sorteo = $sorteos.find((s) => s.sorteoID == sorteoID);
           const numeros = $elementos[sorteo.sorteo];
+          if (!numeros) {
+            return ''
+          } else {
           const numero = numeros.find((n) => n.id == numeroID);
           return numero ? numero.d : "NA";
+        }
         }
       },
       formatDate: dateFormat,
