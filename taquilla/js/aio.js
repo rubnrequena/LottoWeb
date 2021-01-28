@@ -288,9 +288,9 @@ var init = function () {
           if (!numeros) {
             return ''
           } else {
-          const numero = numeros.find((n) => n.id == numeroID);
-          return numero ? numero.d : "NA";
-        }
+            const numero = numeros.find((n) => n.id == numeroID);
+            return numero ? numero.d : "NA";
+          }
         }
       },
       formatDate: dateFormat,
@@ -499,7 +499,7 @@ var init = function () {
                 .map(function (perm) {
                   return [item].concat(perm);
                 })) ||
-              item
+            item
           );
         }, []);
       return result
@@ -684,8 +684,8 @@ var init = function () {
       notificacion(
         "TICKET PENDIENTE",
         "Posiblemente el ultimo ticket enviado por <b>" +
-          ltotal.format(2) +
-          "bs</b>, no se confirmo. </br>Por favor proceda a verificar.",
+        ltotal.format(2) +
+        "bs</b>, no se confirmo. </br>Por favor proceda a verificar.",
         null,
         true
       );
@@ -755,11 +755,11 @@ var init = function () {
     var srqag_data = storage.getItem("srqag.agenda")
       ? JSON.parse(storage.getItem("srqag.agenda"))
       : [
-          {
-            n: "",
-            v: "",
-          },
-        ];
+        {
+          n: "",
+          v: "",
+        },
+      ];
     srqag_s2.html(jsrender($("#rd-srqag-item"), srqag_data));
 
     srqag.on("shown.bs.modal", function (e) {
@@ -888,12 +888,12 @@ var init = function () {
           notificacion(
             "MONTO MINIMO NUMERO",
             "No es posible procesar la venta, el monto asignado al #" +
-              num.n +
-              " " +
-              num.d +
-              " no cumple con el minimo requerido (" +
-              formatNumber($meta.vnt_min_num, 2) +
-              ") por su banca"
+            num.n +
+            " " +
+            num.d +
+            " no cumple con el minimo requerido (" +
+            formatNumber($meta.vnt_min_num, 2) +
+            ") por su banca"
           );
           return;
         }
@@ -902,10 +902,10 @@ var init = function () {
         notificacion(
           "MONTO MINIMO TICKET",
           "No es posible procesar la venta, el monto total del ticket (" +
-            mtt +
-            ") no cumple con el minimo requerido por su banca (" +
-            formatNumber($meta.vnt_min_tkt, 2) +
-            ")"
+          mtt +
+          ") no cumple con el minimo requerido por su banca (" +
+          formatNumber($meta.vnt_min_tkt, 2) +
+          ")"
         );
         return;
       }
@@ -956,7 +956,7 @@ var init = function () {
         btnImprimir.prop("disabled", vendiendo);
         if (d.hasOwnProperty("code")) {
           if (d.code == 5)
-            notificacion("SORTEOS INV�LIDOS", sorteosInvalidos(d.sorteos));
+            notificacion("SORTEOS INVALIDOS", sorteosInvalidos(d.sorteos));
           else if (d.code == 6) {
             notificacion("TOPE TAQUILLA EXEDIDO", topeExedido(d.elementos));
             d.elementos.forEach(ajustarAtope);
@@ -965,14 +965,20 @@ var init = function () {
             notificacion("TOPE ANIMAL EXEDIDO", topeExedido(d.elementos));
             d.elementos.forEach(ajustarAtope);
             cesto_updateView();
+          } else if (d.code == 10) {
+            notificacion("JUGADA MINIMA NO PERMITIDA", "La jugada minima debe ser superior a " + d.monto);
+          } else if (d.code == 11) {
+            notificacion("SESION INVALIDA", "No se ha podido verificar su sesion, por favor vuelva a iniciar sesion nuevamente");
+          } else if (d.code == 12) {
+            notificacion("ERROR DE TICKET", "Lo siento, hubo un error al leer el ticket, vuelva a intenarlo o comuniquese con su administrador");
           } else if (d.code == 101) {
             notificacion(
               "VENTA CONFIRMADA",
               "TICKET: #" +
-                d.tk.ticketID +
-                "<br/><small>CODIGO: " +
-                d.tk.codigo +
-                "</small>"
+              d.tk.ticketID +
+              "<br/><small>CODIGO: " +
+              d.tk.codigo +
+              "</small>"
             );
             cesto_reiniciar();
           } else if (d.code == 4) {
@@ -988,16 +994,16 @@ var init = function () {
               d.venta.m.rw = true;
               socket.sendMessage("venta", d.venta, ventaHandler);
             });
-          } else notificacion("TICKET RECHAZADO");
+          } else notificacion("TICKET RECHAZADO", 'Razon desconocida');
           return;
         }
         notificacion(
           "VENTA CONFIRMADA",
           "TICKET: #" +
-            d.tk.ticketID +
-            "<br/><small>CODIGO: " +
-            d.tk.codigo +
-            "</small>"
+          d.tk.ticketID +
+          "<br/><small>CODIGO: " +
+          d.tk.codigo +
+          "</small>"
         );
         //imprimirTicket
         if (d.format == "print") {
@@ -1044,7 +1050,7 @@ var init = function () {
       } catch (err) {
         alert(
           "SRQ HA DETECTADO UN ERROR, Por favor notificar a su administrador. ERROR: " +
-            err.message
+          err.message
         );
         $("#vnt-ultimo").trigger("click");
       }
@@ -1087,7 +1093,7 @@ var init = function () {
       } catch (err) {
         alert(
           "SRQ HA DETECTADO UN ERROR, Por favor notificar a su administrador. ERROR: " +
-            err.message
+          err.message
         );
         $("#vnt-ultimo").trigger("click");
       }
@@ -2673,11 +2679,11 @@ var init = function () {
         function botResult() {
           $("#bot").html(
             ++r +
-              " de " +
-              repeat +
-              " ventas confirmadas, con " +
-              montot.format(2) +
-              " bs"
+            " de " +
+            repeat +
+            " ventas confirmadas, con " +
+            montot.format(2) +
+            " bs"
           );
           if (r < repeat) bot_venta();
           else $("#bot").append(",en " + (new Date().getTime() - tm) + " ms");
