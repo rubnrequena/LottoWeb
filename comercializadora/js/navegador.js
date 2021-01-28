@@ -237,7 +237,7 @@ function suspendido_nav(p, args) {
               notificacion(
                 "PAGO PROCESADO",
                 d.msg +
-                  '<br/><button class="btn btn-success btn-xs btn-block" onclick="location.reload();">Refrescar</button>',
+                '<br/><button class="btn btn-success btn-xs btn-block" onclick="location.reload();">Refrescar</button>',
                 null,
                 true
               );
@@ -253,7 +253,7 @@ function suspendido_nav(p, args) {
 }
 nav.paginas.addListener("suspendido", suspendido_nav);
 
-function suspendidoPago_nav(p, args) {}
+function suspendidoPago_nav(p, args) { }
 nav.paginas.addListener("suspendido_pago", suspendidoPago_nav);
 
 function sorteoMonitor_nav() {
@@ -1941,7 +1941,7 @@ function topes_nav(p, args) {
       socket.sendMessage(
         "taquillas",
         {
-          banca: bancas.val(),
+          banca: grupos.val(),
         },
         function (e, d) {
           taqs.html(jsrender($("#rd-taquilla-option"), d));
@@ -3269,15 +3269,15 @@ function reporteBalance_nav(p, args) {
             var monto = parseFloat(result.monto) * -1;
             balance_add(
               "PAGO:" +
-                result.id +
-                " B:" +
-                padding(result.origen, 4) +
-                "-" +
-                padding(result.destino, 4) +
-                " R:" +
-                result.recibo +
-                " F:" +
-                result.fecha,
+              result.id +
+              " B:" +
+              padding(result.origen, 4) +
+              "-" +
+              padding(result.destino, 4) +
+              " R:" +
+              result.recibo +
+              " F:" +
+              result.fecha,
               monto,
               user.usID,
               1
