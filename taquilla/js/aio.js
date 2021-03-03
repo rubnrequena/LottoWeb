@@ -1160,11 +1160,10 @@ var init = function () {
     function sorteos_updateView() {
       if (config.ordenSorteos == 0) $sorteos.sort(sorteos_ordenSorteo);
       else $sorteos.sort(sorteos_ordenCierre);
+      const sorteos_data = $sorteos.filter(sorteosDisponibles_filtro);
+      console.log('ACTUALIZANDO LISTADO DE SORTEOS >>', sorteos_data.length);
       sorteos.html(
-        jsrender(
-          $("#rd-sorteo-option"),
-          $sorteos.filter(sorteosDisponibles_filtro)
-        )
+        jsrender($("#rd-sorteo-option"), sorteos_data)
       );
     }
 
@@ -1542,6 +1541,8 @@ var init = function () {
         });
       });
     });
+    const MIN5 = 1000 * 60 * 5;
+    setInterval(sorteos_updateView, MIN5)
     sorteos_updateView();
 
     num.html(jsrender($("#rd-elemento-option"), $numeros));
