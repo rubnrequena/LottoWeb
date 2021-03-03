@@ -387,7 +387,7 @@
         <td><span class="cesto-indice">{{:#index+1}}</span> <a class="rem-cesto" href="#remover" indice="{{:#index}}"><i class="fa fa-trash"></i> </a></td>
         <td>{{:~pleno(numero,sorteoID)}}</td>
         {{if tpte}}
-        <td><span class="label label-warning"><i class="fa fa-warning"></i> {{:monto}}</span></td>
+        <td><span class="label label-warning"><i class="fa fa-warning"></i> {{:~formatn(monto,2)}}</span></td>
         {{else}}
         <td><label class="label label-success ncono" datan="{{:~formatn(monto,2,'.','')}}">{{:~formatn(monto,2)}}</label></td>
         {{/if}}
