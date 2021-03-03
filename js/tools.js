@@ -367,8 +367,8 @@ var dateFormat = (function () {
         Z: utc
           ? "UTC"
           : (String(date).match(timezone) || [""])
-              .pop()
-              .replace(timezoneClip, ""),
+            .pop()
+            .replace(timezoneClip, ""),
         o:
           (o > 0 ? "-" : "+") +
           pad(Math.floor(Math.abs(o) / 60) * 100 + (Math.abs(o) % 60), 4),
@@ -470,12 +470,16 @@ function formatNumber(n, c, d, t) {
     i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) +
     (c
       ? d +
-        Math.abs(n - i)
-          .toFixed(c)
-          .slice(2)
+      Math.abs(n - i)
+        .toFixed(c)
+        .slice(2)
       : "")
   );
 }
+Number.prototype.formatoMoneda = function (t) {
+  if (this < 1000) return formatNumber(this, 2, t);
+  else return formatNumber(this, 0, t);
+};
 Number.prototype.format = function (c, d, t) {
   return formatNumber(this, c, d, t);
 };

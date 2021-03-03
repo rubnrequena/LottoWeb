@@ -1744,7 +1744,7 @@ var init = function () {
         el = getElemento(linea.num || linea.numero, linea.sorteoID);
         _lineas.push({
           type: "linea",
-          text: ["#" + el.d, formatNumber(linea.monto, 0) + config.moneda].join(
+          text: ["#" + el.d, linea.monto.formatoMoneda() + config.moneda].join(
             "\t "
           ),
           align: "center",
@@ -1754,7 +1754,7 @@ var init = function () {
       _lineas.push({
         type: "linea",
         text:
-          "T:" + ticket.monto.format(2) + config.moneda + " AG" + _fingerprint,
+          "T:" + ticket.monto.formatoMoneda() + config.moneda + " AG" + _fingerprint,
         align: "left",
       });
       //_lineas.push({type:"linea",text:"CADUCA EN 3 DIAS",align:"center"});
@@ -1893,12 +1893,12 @@ var init = function () {
         el = getElemento(linea.num || linea.numero, linea.sorteoID);
         if (ci == 2) {
           ci = 1;
-          lo.l2 = el.d + " " + formatNumber(linea.monto, 0) + config.moneda;
+          lo.l2 = `${el.d} ${linea.monto.formatoMoneda()}${config.moneda}`;
           ldata[li].push(lo);
           lo = {};
         } else {
           ci = 2;
-          lo.l1 = el.d + " " + formatNumber(linea.monto, 0) + config.moneda;
+          lo.l1 = `${el.d} ${linea.monto.formatoMoneda()}${config.moneda}`;
           lo.l2 = " ";
         }
       }
@@ -1913,7 +1913,7 @@ var init = function () {
       _lineas.push({
         type: "linea",
         text:
-          "T:" + ticket.monto.format(2) + config.moneda + " AG" + _fingerprint,
+          "T:" + ticket.monto.formatoMoneda() + config.moneda + " AG" + _fingerprint,
         align: "left",
       });
       if (ticket.cliente) {
@@ -2006,7 +2006,7 @@ var init = function () {
 
       //_lineas.push({type:"linea",text:"TOTAL: "+ticket.monto,align:"center"});
       _lineas.push({
-        text: `*TOTAL: ${ticket.monto.format(2) + config.moneda}*`,
+        text: `*TOTAL: ${ticket.monto.formatoMoneda() + config.moneda}*`,
       });
       if (ticket.cliente) {
         _lineas.push({
@@ -2128,7 +2128,7 @@ var init = function () {
           lo.l2 =
             el.d.substr(0, 6) +
             " " +
-            formatNumber(linea.monto, 0) +
+            linea.monto.formatoMoneda() +
             config.moneda;
           ldata[li].push(lo);
           lo = {};
@@ -2137,7 +2137,7 @@ var init = function () {
           lo.l1 =
             el.d.substr(0, 6) +
             " " +
-            formatNumber(linea.monto, 0) +
+            linea.monto.formatoMoneda() +
             config.moneda;
           lo.l2 = " ";
         }
@@ -2153,7 +2153,7 @@ var init = function () {
       _lineas.push({
         type: "linea",
         text:
-          "T:" + ticket.monto.format(2) + config.moneda + " AG" + _fingerprint,
+          "T:" + ticket.monto.formatoMoneda() + config.moneda + " AG" + _fingerprint,
         align: "left",
       });
       if (ticket.cliente) {
@@ -2292,15 +2292,15 @@ var init = function () {
         el = getElemento(linea.num || linea.numero, linea.sorteoID);
         if (ci == 3) {
           ci = 1;
-          lo.l3 = [el.n + "x" + formatNumber(linea.monto, 0)].join("\t ");
+          lo.l3 = [el.n + "x" + linea.monto.formatoMoneda()].join("\t ");
           ldata[li].push(lo);
           lo = {};
         } else if (ci == 2) {
           ci++;
-          lo.l2 = [el.n + "x" + formatNumber(linea.monto, 0)].join("\t ");
+          lo.l2 = [el.n + "x" + linea.monto.formatoMoneda()].join("\t ");
         } else {
           ci++;
-          lo.l1 = [el.n + "x" + formatNumber(linea.monto, 0)].join("\t ");
+          lo.l1 = [el.n + "x" + linea.monto.formatoMoneda()].join("\t ");
           lo.l2 = " ";
           lo.l3 = " ";
         }
@@ -2316,7 +2316,7 @@ var init = function () {
       _lineas.push({
         type: "linea",
         text:
-          "T:" + ticket.monto.format(2) + config.moneda + " AG" + _fingerprint,
+          "T:" + ticket.monto.formatoMoneda() + config.moneda + " AG" + _fingerprint,
         align: "left",
       });
       if (ticket.cliente) {
@@ -2420,7 +2420,7 @@ var init = function () {
       _lineas.push({
         type: "linea",
         text:
-          "T:" + ticket.monto.format(2) + config.moneda + " AG" + _fingerprint,
+          "T:" + ticket.monto.formatoMoneda() + config.moneda + " AG" + _fingerprint,
         align: "left",
       });
       if (ticket.cliente) {
@@ -2479,7 +2479,7 @@ var init = function () {
       _lineas.push({
         type: "linea",
         text:
-          "T:" + ticket.monto.format(2) + config.moneda + " AG" + _fingerprint,
+          "T:" + ticket.monto.formatoMoneda() + config.moneda + " AG" + _fingerprint,
         align: "left",
       });
       if (ticket.cliente) {
@@ -2519,7 +2519,7 @@ var init = function () {
 
       function parseItems(n, e) {
         var a, b, c;
-        tx = zip_series(n).join(",") + "x" + e.monto;
+        tx = zip_series(n).join(",") + "x" + e.monto.formatoMoneda();
         cursor.push({
           type: "linea",
           text: tx,

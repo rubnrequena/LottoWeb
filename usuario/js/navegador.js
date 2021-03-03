@@ -2364,7 +2364,6 @@ nav.paginas.addListener("mensaje/m", smsLeer_nav);
 
 function conexiones_nav(p, args) {
   var tb = $("#con-table");
-  setTimeout(updateView, 3000);
   $("#con-off").click(function () {
     var ok = confirm(
       "Esta funcion desconectara y desactivara todas las taquillas registradas"
@@ -2377,10 +2376,13 @@ function conexiones_nav(p, args) {
     tb.html(
       '<tr><td colspan="2"><i class="fa fa-spinner fa-spin"></i> Espere, cargando...</td></tr>'
     );
-    socket.sendMessage("conexiones", null, function (e, d) {
+    socket.sendMessage("sesiones_dia", null, function (e, d) {
+      console.log('sesiones  :>> ', d);
       tb.html(jsrender($("#rd-conexiones"), d));
     });
   }
+
+  updateView();
 }
 nav.paginas.addListener("conexiones", conexiones_nav);
 
@@ -2444,7 +2446,7 @@ function suspendido_nav(p, args) {
               notificacion(
                 "PAGO PROCESADO",
                 d.msg +
-                  '<br/><button class="btn btn-success btn-xs btn-block" onclick="location.reload();">Refrescar</button>',
+                '<br/><button class="btn btn-success btn-xs btn-block" onclick="location.reload();">Refrescar</button>',
                 null,
                 true
               );

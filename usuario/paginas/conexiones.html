@@ -21,7 +21,8 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Usuario</th>
-                        <th>Conectado</th>
+                        <th>Ult. Conexion</th>
+                        <th>IP</th>
                     </tr>
                 </thead>
                 <tbody id="con-table">
@@ -35,8 +36,9 @@
 </div>
 <script type="text/x-jsrender" id="rd-conexiones">
     <tr>
-        <td><a href="#bancas/taquilla|{{:taquillaID}}"><span class="label label-default"><i class="fa fa-link"></i> {{:nombre}}</span></a> </td>
+        <td><a href="#bancas/taquilla|{{:id}}"><span class="label label-default"><i class="fa fa-link"></i> {{:nombre}}</span></a> </td>
         <td>{{:usuario}}</td>
-        <td>{{:~formatDate(conectado)}}</td>
+        <td>{{:hora}}</td>
+        <td>{{:ip}}</td>
     </tr>
 </script>

@@ -69,7 +69,11 @@ function socket_login(e, d) {
       );
   } else {
     $usuario = d.us;
-    $bancas = d.bn;
+    $bancas = d.bn.sort((a, b) => {
+      if (a.nombre < b.nombre) return -1
+      else if (a.nombre > b.nombre) return 1;
+      else return 0
+    });
     $elementos = d.el;
     $sorteos = d.st;
     $permisos = d.permisos || [];

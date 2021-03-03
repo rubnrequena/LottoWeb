@@ -80,9 +80,9 @@
             <td>TOTAL</td>
         {{/if}}
         <td>{{:ganadorNombre}}</td>
-        <td>{{:~formatNumber(jugado,0)}}</td>
-        <td>{{:~formatNumber(premios,0)}}</td>
-        <td>{{:~formatNumber(jugado-premios,0)}}</td>
+        <td>{{:~formatNumber(jugado,2)}}</td>
+        <td>{{:~formatNumber(premios,2)}}</td>
+        <td>{{:~formatNumber(jugado-premios,2)}}</td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-pnlsorteo">
@@ -121,8 +121,8 @@
         </td>
         <td>{{:fecha}}</td>
         <td>{{:desc}}</td>
-        <td>{{:~formatNumber(monto,0)}}</td>
-        <td class="text-right">{{if c==1}} {{:~formatNumber(balance,0)}} {{else}} -- {{/if}}</td>
+        <td>{{:~formatNumber(monto,2)}}</td>
+        <td class="text-right">{{if c==1}} {{:~formatNumber(balance,2)}} {{else}} -- {{/if}}</td>
     </tr>
 </script>
 <script type="text/x-jsrender" id="rd-procesar-pago">
