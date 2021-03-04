@@ -1161,7 +1161,6 @@ var init = function () {
       if (config.ordenSorteos == 0) $sorteos.sort(sorteos_ordenSorteo);
       else $sorteos.sort(sorteos_ordenCierre);
       const sorteos_data = $sorteos.filter(sorteosDisponibles_filtro);
-      console.log('ACTUALIZANDO LISTADO DE SORTEOS >>', sorteos_data.length);
       sorteos.html(
         jsrender($("#rd-sorteo-option"), sorteos_data)
       );
