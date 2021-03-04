@@ -384,7 +384,8 @@ function sorteoPublicar_nav(p, args) {
       } else return "TODAS";
     },
     srt: function (id) {
-      return findBy("sorteoID", id, $sorteos);
+      const sorteo = findBy("sorteoID", id, $sorteos)
+      return sorteo ? sorteo.nombre : '⚠️ SORTEO NO EXISTE ⚠️';
     },
   };
   const bancas = $("#bancas"),
