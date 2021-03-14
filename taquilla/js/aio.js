@@ -318,6 +318,12 @@ var init = function () {
   var vendiendo = false;
 
   function venta_nav(p, args) {
+    function sysMsg(msg) {
+      var sysMsg = $('#sys-msg');
+      var now = new Date().toLocaleTimeString();
+      sysMsg.html(now + ": " + msg);
+    }
+
     if (!$sorteos) {
       nav.nav("101");
       return;
@@ -1091,6 +1097,7 @@ var init = function () {
         sorteos.html(
           jsrender($("#rd-sorteo-option"), sorteosActualizados)
         );
+        sysMsg('sorteos actualizados')
       }
     }
 
