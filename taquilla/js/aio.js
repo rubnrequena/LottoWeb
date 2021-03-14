@@ -712,6 +712,7 @@ var init = function () {
     var num = $("#vnt-numeros");
     var sorteos = $("#vnt-sorteos");
     sorteos.on("change", (e) => {
+      if (!e.val) return;
       let triples = false;
       for (let i = 0; i < e.val.length; i++) {
         const sorteoID = e.val[i];
@@ -1158,13 +1159,18 @@ var init = function () {
       });
     }
 
-    function sorteos_updateView() {
-      if (config.ordenSorteos == 0) $sorteos.sort(sorteos_ordenSorteo);
-      else $sorteos.sort(sorteos_ordenCierre);
-      const sorteos_data = $sorteos.filter(sorteosDisponibles_filtro);
-      sorteos.html(
-        jsrender($("#rd-sorteo-option"), sorteos_data)
-      );
+    function sorteos_updateView(force = false) {
+      var sorteosActualizados = $sorteos.slice();
+      if (config.ordenSorteos == 0) sorteosActualizados.sort(sorteos_ordenSorteo);
+      else sorteosActualizados.sort(sorteos_ordenCierre);
+      sorteosActualizados = sorteosActualizados.filter(sorteosDisponibles_filtro);
+      if (force || $sorteos.length != sorteosActualizados.length) {
+        $sorteos = sorteosActualizados;
+        sorteos.val(null).trigger('change');
+        sorteos.html(
+          jsrender($("#rd-sorteo-option"), sorteosActualizados)
+        );
+      }
     }
 
     function sorteos_ordenSorteo(a, b) {
@@ -1541,9 +1547,9 @@ var init = function () {
         });
       });
     });
-    const MIN5 = 1000 * 60 * 5;
+    const MIN5 = 1000 * 60 * 1;
     setInterval(sorteos_updateView, MIN5)
-    sorteos_updateView();
+    sorteos_updateView(true);
 
     num.html(jsrender($("#rd-elemento-option"), $numeros));
     sorteos.select2("focus");
