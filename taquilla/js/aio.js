@@ -166,6 +166,7 @@ var init = function () {
   var $usuario;
   var $sesion;
   var $elementos;
+  /** @type {Array} */
   var $sorteos;
   var $numeros;
   var $servidor = {};
