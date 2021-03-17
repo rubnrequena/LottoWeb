@@ -183,6 +183,13 @@ var init = function () {
       return false;
     });
   });
+  /** @type {Number} */
+  var ventamax_timer;
+  nav.paginas.addListener(Navegador.EXIT, function (e, pagina) {
+    if (pagina == "ventamax") {
+      clearInterval(ventamax_timer);
+    }
+  })
   nav.paginas.addListener("login", function (p, args) {
     $("#login-form").submit(function (e) {
       e.preventDefault(e);
@@ -328,6 +335,8 @@ var init = function () {
       nav.nav("101");
       return;
     }
+    var SORTEOS = $sorteos.slice();
+
     $("#teclaimprimir").html(getKeyName(config.imprimirTecla));
     var triplesAcciones = $("#triples-acciones");
     var triplesConTerminal = $("#terminales-marca");
@@ -1087,12 +1096,12 @@ var init = function () {
     }
 
     function sorteos_updateView(force = false) {
-      var sorteosActualizados = $sorteos.slice();
+      var sorteosActualizados = SORTEOS.slice();
       if (config.ordenSorteos == 0) sorteosActualizados.sort(sorteos_ordenSorteo);
       else sorteosActualizados.sort(sorteos_ordenCierre);
       sorteosActualizados = sorteosActualizados.filter(sorteosDisponibles_filtro);
-      if (force || $sorteos.length != sorteosActualizados.length) {
-        $sorteos = sorteosActualizados;
+      if (force || SORTEOS.length != sorteosActualizados.length) {
+        SORTEOS = sorteosActualizados;
         sorteos.val(null).trigger('change');
         sorteos.html(
           jsrender($("#rd-sorteo-option"), sorteosActualizados)
@@ -1476,7 +1485,7 @@ var init = function () {
       });
     });
     const MIN5 = 1000 * 60 * 1;
-    setInterval(sorteos_updateView, MIN5)
+    ventamax_timer = setInterval(sorteos_updateView, MIN5)
     sorteos_updateView(true);
 
     num.html(jsrender($("#rd-elemento-option"), $numeros));
@@ -3685,7 +3694,6 @@ var init = function () {
 
     socket.addListener("elementos-init", function (e, d) {
       if (d.hasOwnProperty("hash")) {
-        console.log(elementosRecibidos);
         storage.setItem(CONFIG.ELEMENTOS_HASH, d.hash);
         storage.setItem(CONFIG.ELEMENTOS, JSON.stringify(elementosRecibidos));
         $elementos = elementosRecibidos;
